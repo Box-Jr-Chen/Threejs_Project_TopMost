@@ -1,28 +1,48 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <main>
+        <!-- 主體  -->
+        <router-view  class="routerview"  :style="{width:this.$store.state.width_main+'px',height:this.$store.state.height_main+'px'}"></router-view>
+    </main>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+  },
+  data() {
+        return {
+        }
+   },
+   methods: {
+        displayWindowSize() {
+           var self =this;
+            self.$store.state.height_main  =  window.innerHeight;
+            self.$store.state.width_main   = (16/9) * window.innerHeight  ;
+          }
+  },
+   mounted() {
+    this.displayWindowSize();
   }
 }
 </script>
 
 <style>
+body{
+    background: rgb(156, 156, 156);
+    overflow: hidden;
+    padding: 0;
+    margin: 0; 
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    align-items: center;
+    width: 100%;
+    height: 42rem;
+}
+.routerview{
+    padding: 0;
+    margin:  0 auto;
+    box-shadow:  2px 2px 6px rgba(0, 0, 0, 0.5);
 }
 </style>
