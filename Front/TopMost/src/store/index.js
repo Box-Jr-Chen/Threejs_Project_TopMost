@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import ThreeJs from '@/components/ThreeJs/threejs.js';
+import MapDesign from '@/components/ThreeJs/map.js';
 Vue.use(Vuex)
 
 
@@ -10,6 +11,7 @@ export default  new Vuex.Store({
     width_main:0,
     height_main:0,
     threejs :ThreeJs.ThreeJs,
+    MapDesign :MapDesign.Map,
   },
   mutations: {},
   actions: {

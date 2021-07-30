@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as THREE from "three";
+import "./InfiniteGridHelper";
 // import { error } from 'three';
 const OrbitControls = require('three-orbit-controls')(THREE);
 // import shader_glow from '@js/threejs/glow_shader.js';
@@ -26,7 +26,7 @@ class ThreeJs_3D {
     init(container) //id = container
     {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( '#F0FFF0');
+        this.scene.background = new THREE.Color("rgb(150, 150, 150)"); //#F0FFF0
         this.scene.fog = new THREE.Fog( '#F0FFF0', 200, 1000 );
         this.scene.add(new THREE.AmbientLight(0x404040));
 
@@ -36,58 +36,25 @@ class ThreeJs_3D {
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-        // this.sky = new THREE.Sky();
-        // this.sky.scale.setScalar( 450000 );
-        // this.scene.add( this.sky );
-
-        // var effectController = {
-        //     turbidity: 10,
-        //     rayleigh: 2,
-        //     mieCoefficient: 0.005,
-        //     mieDirectionalG: 0.8,
-        //     inclination: 0.49, // elevation / inclination
-        //     azimuth: 0.25, // Facing front,
-        //     sun: ! true
-        // };
-        //     var uniforms = this.sky.material.uniforms;
-
-        //     uniforms[ "turbidity" ].value = effectController.turbidity;
-        //     uniforms[ "rayleigh" ].value = effectController.rayleigh;
-        //     uniforms[ "mieCoefficient" ].value = effectController.mieCoefficient;
-        //     uniforms[ "mieDirectionalG" ].value = effectController.mieDirectionalG;
-        //     uniforms[ "sunPosition" ].value.set(400000, 400000, 400000);
+        this.grid = new THREE.InfiniteGridHelper(10, 100);
 
 
-        
-        // ground
-        // this.mesh_ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: '#FFFAFA', depthWrite: false } ) );
-        // this.mesh_ground.rotation.x = - Math.PI / 2;
-        // this.mesh_ground.position.y = -100;
-        // this.mesh_ground.receiveShadow = true;
-        // this.scene.add( this.mesh_ground );
+         this.scene.add(this.grid);
 
-        this.grid = new THREE.InfiniteGridHelper(10, 100); 
-        this.grid_color = {
-            value: 0xffffff
-          };
-        // this.grid.material.opacity = 0.2;
-        // this.grid.material.transparent = true;
-        this.scene.add( this.grid );
 
-        this.grid.material.uniforms.uSize1 =20;
-        this.grid.material.uniforms.uSize2 =151;
         //         初始化相机
         this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.set(-200, 50, 400 );
+        this.camera.position.set(0, 250, 0 );
         this.camera.lookAt(this.scene.position);
 
 
         //         初始化控制器
         this.controls = new OrbitControls(this.camera);
         this.controls.target.set(0, 0, 0);
-        this.controls.minDistance = 30;
-        this.controls.maxDistance = 400;
+        this.controls.minDistance = 100;
+        this.controls.maxDistance = 1600;
         this.controls.maxPolarAngle = Math.PI / 2.3;
+        this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
@@ -108,9 +75,14 @@ class ThreeJs_3D {
        //this.animated =  this.animate();
 
        this.animate();
-
+  
       // this.loader = new GLTFLoader();
 
+    }
+
+    ScreenAdd(object)
+    {
+        this.scene.add(object);
     }
 
     render() {
@@ -151,6 +123,7 @@ class ThreeJs_3D {
             //console.error(error, "load error!")
         });
     }
+
 
 }
 
