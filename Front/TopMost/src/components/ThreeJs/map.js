@@ -4,19 +4,39 @@ class Map {
         this.width=0;
         this.height=0;
         this.camera=0;
-        this.geometry = new THREE.BufferGeometry();
-        this.splinePointsLength = 0; //需要多少點
+        this.material_select= new THREE.MeshLambertMaterial( { color:  "rgb(225, 225, 0)" } );
+        this.material = new THREE.MeshLambertMaterial( { color:  "rgb(0, 0, 0)" } );
+        this.geometry_box= new THREE.PlaneGeometry( 8, 8 );
+        this.scene =null;
+        this.raycaster = null;
+        this.splinePointsLength = 3; //需要多少點
         this.splines={};
         this.splineHelperObjects = [];
+        this.positions = [];
+        this.ARC_SEGMENTS = 200;
+        this.point = new THREE.Vector3();
     }
-    init(width,height,camera){
+    init(width,height,camera,scene,raycaster){
+        var self = this;
+        self.width=width;
+        self.height=height;
+        self.camera=camera;
+        self.scene =scene;
+        self.raycaster =raycaster;
 
-        this.width=width;
-        this.height=height;
-        this.camera=camera;
 
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array(self.ARC_SEGMENTS*3),3));
+        for ( let i = 0; i < self.splinePointsLength; i ++ ) {
+            self.addSplineObject(self.positions[i]);
+        }
+
+        self.positions.length = 0;
+
+        for ( let i = 0; i < self.splinePointsLength; i ++ ) {
+            self.positions.push( self.splineHelperObjects[i].position );
+        }
+
+        self.geometry = new THREE.BufferGeometry();
+        self.geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array(self.ARC_SEGMENTS*3),3));
    
         let curve = new THREE.CatmullRomCurve3(self.positions);
         curve.curveType = 'catmullrom';
@@ -27,11 +47,23 @@ class Map {
         curve.mesh.castShadow = false;
 
         self.splines.uniform = curve;
+
+
+       // console.log(self.splines.uniform);
+
         for ( const k in self.splines ) {
 
-            const spline = self.splines[ k ];
+            const spline = self.splines[k];
             self.scene.add(spline.mesh);
         }
+
+        self.load( 
+            [
+                new THREE.Vector3( 0, 0,13 ),
+                new THREE.Vector3( 13, 0, 0 ),
+                new THREE.Vector3( -13, 0, - 13 )
+            ] 
+            ); 
 
         self.splines.uniform.tension = 0;
     }
@@ -41,7 +73,7 @@ class Map {
         self.splinePointsLength ++;
 
         self.positions.push( self.addSplineObject().position );
-
+        
         self.updateSplineOutline();
     }
 
@@ -68,28 +100,30 @@ class Map {
         var self =this;
         for ( const k in self.splines ) {
 
-            const spline = self.splines[ k ];
+            const spline = self.splines[k];
 
             const splineMesh = spline.mesh;
             const position = splineMesh.geometry.attributes.position;
+
+            //console.log(self.ARC_SEGMENTS);
 
             for ( let i = 0; i < self.ARC_SEGMENTS; i ++ ) {
 
                 const t = i / ( self.ARC_SEGMENTS - 1 );
                 spline.getPoint( t, self.point );
                 position.setXYZ( i, self.point.x, self.point.y, self.point.z );
-
             }
-
             position.needsUpdate = true;
 
+            //console.log(position);
         }
     }
 
     addSplineObject(position) {
         var self =this;
-
-        const object = new THREE.Mesh( self.geometry, self.material );
+        //console.log(position);
+        const object = new THREE.Mesh( self.geometry_box, self.material );
+        object.rotation.x = THREE.Math.degToRad( -90 );
         object.geometry.computeBoundingBox();
         if ( position ) {
             object.position.copy( position );
@@ -97,12 +131,14 @@ class Map {
 
         self.scene.add(object);
         self.splineHelperObjects.push(object);
-        return object;
 
+        return object;
     }
 
     load( new_positions ) {
+
         var self =this;
+ 
         while ( new_positions.length > self.positions.length ) {
             self.addPoint();
         }
@@ -117,7 +153,11 @@ class Map {
 
         self.updateSplineOutline();
     }
-
+    render() {
+       var self = this;
+        self.splines.uniform.mesh.visible = true;
+        self.updateSplineOutline();
+    }
     getScreenPos(Mesh){
         var self = this;
 

@@ -30,7 +30,7 @@ export default {
 
 <style>
 body{
-    background: rgb(156, 156, 156);
+    background: rgb(80, 80, 80);
     overflow: hidden;
     padding: 0;
     margin: 0; 

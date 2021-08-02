@@ -1,0 +1,104 @@
+.axis_arraw{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    transform:translate(-50%,-50%);
+    background: rgba(253, 149, 149, 0);
+  }
+.axis_x{
+    width: 7.5rem;
+    height: 1.5625rem;
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 110%;
+    top:50%;
+    /* background: rgba(7, 64, 251, 0.8); */
+}
+.x{
+    width: 6.25rem;
+    height: 0.3125rem;
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 40%;
+    top:  50%;
+    background: rgba(0, 255, 76, 0.8);
+}
+.arrow-left {
+    width: 0;
+    height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-bottom: 26px solid rgb(30, 255, 0);
+    position: absolute;
+    left: 80%;
+    top:0%;
+    transform:translate(-50%,-50%);
+    transform: rotate(90deg);
+}
+
+.arrow-left-hover {
+  width: 0;
+  height: 0;
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-bottom: 26px solid rgb(255, 238, 0, 0.8);
+  position: absolute;
+  left: 80%;
+  top:0%;
+  transform:translate(-50%,-50%);
+  transform: rotate(90deg);
+}
+
+.axis_y{
+      width:  1.5625rem;
+      height: 7.5rem;
+      position: absolute;
+      transform:translate(-50%,-50%);
+      left: 50%;
+      top:-11%;
+      /* background: rgba(7, 64, 251, 0.8); */
+}
+.y{
+    width: 5px;
+    height: 100px;
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 50%;
+    top:58%;
+    background: rgba(255, 94, 0, 0.8);
+}
+
+.arrow-top {
+  width: 0;
+  height: 0;
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-bottom: 26px solid rgb(255, 123, 0);
+  position: absolute;
+  left: 50%;
+  top:5%;
+  transform:translate(-50%,-50%);
+  }
+
+.x-hover{
+      background: rgba(255, 238, 0, 0.8);
+  }
+
+
+.arrow-top-hover {
+    width: 0;
+    height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-bottom: 26px solid rgb(255, 238, 0, 0.8);
+    position: absolute;
+    left: 50%;
+    top:5%;
+    transform:translate(-50%,-50%);
+}
+  
+.y-hover{
+      background: rgba(255, 238, 0, 0.8);
+}
+
+
