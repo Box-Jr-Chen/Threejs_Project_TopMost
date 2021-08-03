@@ -15,6 +15,12 @@ class Map {
         this.positions = [];
         this.ARC_SEGMENTS = 200;
         this.point = new THREE.Vector3();
+
+        
+        //Move
+        this.pointer = new THREE.Vector2(),
+        this.onUpPosition = new THREE.Vector2();
+        this.onDownPosition = new THREE.Vector2();
     }
     init(width,height,camera,scene,raycaster){
         var self = this;
@@ -93,6 +99,49 @@ class Map {
         self.scene.remove(point);
 
         self.updateSplineOutline();
+
+    }
+
+
+    onPointerDown_move( event ) {
+        var self =this;
+
+       
+
+        self.onDownPosition.x = event.clientX;
+        self.onDownPosition.y = event.clientY;
+
+        self.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        self.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+        self.raycaster.setFromCamera(self.pointer, self.camera);
+        self.raycaster.linePrecision =0.1;
+        const intersects = self.raycaster.intersectObjects( self.splineHelperObjects );
+        
+        if ( intersects.length > 0 ) {
+
+            const object = intersects[0].object;
+
+            self.splineHelperObjects.forEach(element => {
+                if(element == object)
+                {
+                    element.material = self.material_select;
+                    self.spline_Object_select.main = element;
+                }
+                else
+                {
+                    element.material = self.material;
+                }
+            });
+        }
+    }
+
+    onPointerUp_move() {
+        var self =this;
+        self.onUpPosition.x = event.clientX;
+        self.onUpPosition.y = event.clientY;
+
+       // if ( self.onDownPosition.distanceTo( self.onUpPosition ) === 0 ) self.transformControl.detach();
 
     }
 

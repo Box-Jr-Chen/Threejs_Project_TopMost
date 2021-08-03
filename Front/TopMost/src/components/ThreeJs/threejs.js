@@ -154,6 +154,14 @@ class ThreeJs_3D {
         });
     }
 
+    AddElementListener(stat_act,Action){
+        this.container.addEventListener( stat_act, Action );
+    }
+
+     RemoveElementListener(){
+        this.container.replaceWith(this.container.cloneNode(true));
+     }
+
 
 }
 

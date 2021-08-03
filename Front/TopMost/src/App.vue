@@ -23,7 +23,14 @@ export default {
           }
   },
    mounted() {
+    var self =this ;
     this.displayWindowSize();
+
+     //标注渲染
+        window.addEventListener('resize', ()=>{
+          self.displayWindowSize();
+          self.$store.commit('onWindowResize');
+        }, false);//添加窗口监听事件（resize-onresize即窗口或框架被重新调整大小）
   }
 }
 </script>

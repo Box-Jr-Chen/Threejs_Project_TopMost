@@ -13,7 +13,15 @@ export default  new Vuex.Store({
     threejs :ThreeJs.ThreeJs,
     MapDesign :MapDesign.Map,
   },
-  mutations: {},
+  mutations: {
+    onWindowResize() {
+      var self =this;
+
+      self.state.threejs.camera.aspect = window.innerWidth / window.innerHeight;
+      self.state.threejs.camera.updateProjectionMatrix();
+    // self.state.threejs.camera.setSize(window.innerWidth, window.innerHeight);
+    },
+  },
   actions: {
         // async AxiosGet(state, data) {
         // return await axios.get(data.path).then(response => {

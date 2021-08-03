@@ -1,6 +1,6 @@
 <template>
     <div>
-        
+        <MoveController></MoveController>
     </div>
 </template>
 
