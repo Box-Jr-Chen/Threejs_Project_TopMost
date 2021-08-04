@@ -4,13 +4,25 @@ export default {
    },
    computed:{
        axis_center: function() {
+
+          if(this.$store.state.threejs.mapDesign.spline_Object_select.main ==null)
             return "top:50%;"+"left:50%;";
+          else
+          {
+              var offset_x = ((this.$store.state.threejs.width_inner -this.$store.state.threejs.width))/2;
+              var offset_y = ((this.$store.state.threejs.height_inner -this.$store.state.threejs.height))+5;
+              var x = offset_x + this.$store.state.threejs.mapDesign.spline_Object_select.pos_screen.x;
+              var y = offset_y + this.$store.state.threejs.mapDesign.spline_Object_select.pos_screen.y;
+
+
+              return "top:"+y+"px;"+"left:"+x+"px;";
+          }
        }
    },
    data() {
        return {
-            enter_X:false,
-            enter_Y:false,
+            // enter_X:false,
+            // enter_Y:false,
        }
    },
    mounted() {
@@ -18,29 +30,46 @@ export default {
 
    },
    methods: {
-    mouseDown_x()
+    mouseDown_x(event)
     {
-        console.log("xxxxxx");
+        event
+        this.$store.state.threejs.mapDesign.mouseMove_x =true;
+        // console.log("xxxxxx");
     },
-    mouseDown_y()
+    mouseUp_x(event)
     {
-        console.log("yyyyy");
+        event
+
+    },
+    mouseDown_y(event)
+    {
+        event
+        this.$store.state.threejs.mapDesign.mouseMove_y =true;
+    },
+    mouseUp_y(event)
+    {
+        event
+
     },
     mouseenter_x()
     {
-        this.enter_X = true;
+        if(this.$store.state.threejs.mapDesign.mouseMove_y==false)
+            this.$store.state.threejs.mapDesign.mouseEnter_x = true;
     },
     mouseenter_y()
     {
-        this.enter_Y = true;
+        if(this.$store.state.threejs.mapDesign.mouseMove_x==false)
+            this.$store.state.threejs.mapDesign.mouseEnter_y = true;
     },
     mouseleave_x()
     {
-        this.enter_X = false;
+        if(this.$store.state.threejs.mapDesign.mouseMove_x==false)
+                this.$store.state.threejs.mapDesign.mouseEnter_x = false;
     },
     mouseleave_y()
     {
-        this.enter_Y = false;
+        if(this.$store.state.threejs.mapDesign.mouseMove_y==false)
+                this.$store.state.threejs.mapDesign.mouseEnter_y = false;
     }
    },
  }

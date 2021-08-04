@@ -18,9 +18,8 @@ export default {
         //測試
         setTimeout(()=>
          {
-            self.$store.state.threejs.AddElementListener('pointerdown',self.$store.state.MapDesign.onPointerDown_move);
-            self.$store.state.threejs.AddElementListener('pointerup',self.$store.state.MapDesign.onPointerUp_move);
-         },5000);
+            self.$store.state.threejs.Active_PointMove();
+         },2000);
 
 
    },

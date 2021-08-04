@@ -13,20 +13,17 @@ export default {
       mounted(){
         var self = this;
         const container = document.getElementById('container');
-        self.$store.state.threejs.init(container,()=>{
-          self.$store.state.MapDesign.init(
-              self.$store.state.threejs.width,
-              self.$store.state.threejs.height,
-              self.$store.state.threejs.camera,
-              self.$store.state.threejs.scene,
-              self.$store.state.threejs.raycaster
-            );
-            self.$store.state.threejs.otherender.push(self.$store.state.MapDesign);
-        });
+        self.$store.state.threejs.init(container);
 
         self.animate();
 
-
+        document.addEventListener('mouseup', function(event) { 
+          event
+          self.mouseup();
+        }, true);
+        // document.body.onmouseup = function() {
+        //   self.mouseup();
+        // }
         //document.addEventListener( 'pointerdown', self.onPointerDown );
         //document.addEventListener( 'pointerup', self.onPointerUp );
       },
@@ -40,6 +37,18 @@ export default {
         },
         onPointerUp(){
           console.log('pointerup');
+        },
+        mousemove(event){
+            var self = this;
+
+            if(self.$store.state.threejs.mapDesign.Sys_Status_now ==self.$store.state.threejs.mapDesign.Sys_MapStatus.select)
+            {
+              self.$store.state.threejs.mapDesign.mousemove(event.offsetX,event.offsetY);
+            }
+        },
+        mouseup(){
+          var self = this;
+          self.$store.state.threejs.MouseUp();
         }
       }
 }

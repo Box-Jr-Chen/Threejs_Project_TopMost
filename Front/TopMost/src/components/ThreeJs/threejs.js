@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import "./InfiniteGridHelper";
+import MapDesign from './map.js';  // 地圖設計系統
 // import { error } from 'three';
 const OrbitControls = require('three-orbit-controls')(THREE);
 // import shader_glow from '@js/threejs/glow_shader.js';
@@ -8,30 +9,34 @@ const OrbitControls = require('three-orbit-controls')(THREE);
 
 class ThreeJs_3D {
     constructor(){
-        this.fov = 40;
+        this.fov = 60;
         this.container = null; //web id container
         this.scene = null;
         this.width  = 0;
         this.height = 0;
+        this.width_inner= 0;
+        this.height_inner= 0;
         this.camera =  null;
         this.light = null;
         this.sky = null;
         this.renderer = null;
         this.raycaster = null;
+        this.mouse = null;
         this.geometry = null;
         this.loader = null;
         this.mesh_ground = null;
         this.grid = null;
         this.grid_color = null;
         this.otherender =[];
+
+        this.mapDesign = MapDesign.MapDesign;
     }
 
-    init(container,action_Map) //id = container
+    init(container) //id = container
     {
         this.container = container;
+        // console.log(this.container);
 
-        this.width  = this.container.clientWidth;
-        this.height = this.container.clientHeight;
 
 
         this.scene = new THREE.Scene();
@@ -53,7 +58,8 @@ class ThreeJs_3D {
 
         //         初始化相机
         var  value_ = 2 ;
-        this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+       // this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+       this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.set(0, 300, 0 );
         this.camera.lookAt(this.scene.position);
 
@@ -61,8 +67,8 @@ class ThreeJs_3D {
         //         初始化控制器
         this.controls = new OrbitControls(this.camera);
         this.controls.target.set(0, 0, 0);
-        this.controls.minDistance = 0;
-        this.controls.maxDistance = 100;
+        this.controls.minDistance = 10;
+        this.controls.maxDistance = 1000;
         this.controls.maxPolarAngle = Math.PI / 2.3;
         this.controls.enableRotate =false;
         this.controls.update();
@@ -88,13 +94,25 @@ class ThreeJs_3D {
     //    const cube = new THREE.Mesh( geometry, material );
     //    this.scene.add( cube );
 
+        this.mouse     = new THREE.Vector2(); // create once
 
-       this.animate();
 
-       if(action_Map !=null)
-        {
-            action_Map();
-        }
+        setTimeout(()=>{
+            this.width  = this.container.offsetWidth;
+            this.height = this.container.offsetHeight;
+            this.width_inner = window.innerWidth;
+            this.height_inner = window.innerHeight;
+
+           this.animate();
+           this.mapDesign.init(
+            this.width,
+            this.height,
+            this.camera,
+            this.scene
+          );
+          this.otherender.push(this.mapDesign);
+
+        },1000);
 
     }
 
@@ -158,11 +176,24 @@ class ThreeJs_3D {
         this.container.addEventListener( stat_act, Action );
     }
 
-     RemoveElementListener(){
+    RemoveElementListener(){
         this.container.replaceWith(this.container.cloneNode(true));
-     }
+    }
+
+    //Map_Draw
+    Active_PointMove(){
+       // console.log(this.mapDesign);
+        this.container.addEventListener('pointerdown',(event)=>{
+            this.mapDesign.onPointerDown_move(event);
+        });
+        //this.AddElementListener('pointerup',this.mapDesign.onPointerUp_move);
+    }
 
 
+    //Mouse
+    MouseUp(){
+        this.mapDesign.mouseup();
+    }
 }
 
 export default {ThreeJs :new ThreeJs_3D()}

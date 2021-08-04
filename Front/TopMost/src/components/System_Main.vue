@@ -1,5 +1,5 @@
 <template>
-  <div id="container">
+  <div id="container" @mousemove = "mousemove" >
     <system_drawMap></system_drawMap>
   </div>
 </template>
