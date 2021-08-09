@@ -10,6 +10,24 @@ export default  new Vuex.Store({
     width_main:0,
     height_main:0,
     threejs :ThreeJs.ThreeJs,
+    leftbtns:[
+      {
+        'img':'setting',
+        'title':'繪製地圖'
+      },
+      {
+        'img':'setting',
+        'title':'棧板設定'
+      },
+      {
+        'img':'setting',
+        'title':'貨物設定'
+      },
+      {
+        'img':'setting',
+        'title':'設定'
+      }
+    ]
   },
   mutations: {
     onWindowResize() {

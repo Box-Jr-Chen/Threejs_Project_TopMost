@@ -40,7 +40,7 @@ class ThreeJs_3D {
 
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color("rgb(150, 150, 150)"); //#F0FFF0
+        this.scene.background = new THREE.Color("rgb(80, 80, 80)"); //#F0FFF0
         // this.scene.fog = new THREE.Fog( '#F0FFF0', 200, 1000 );
         this.scene.add(new THREE.AmbientLight(0x404040));
 
@@ -50,14 +50,14 @@ class ThreeJs_3D {
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-        this.grid = new THREE.InfiniteGridHelper(10, 100);
+        this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(150, 150, 150)"));
 
 
         this.scene.add(this.grid);
 
 
         //         初始化相机
-        var  value_ = 2 ;
+      //  var  value_ = 2 ;
        // this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
        this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.set(0, 300, 0 );

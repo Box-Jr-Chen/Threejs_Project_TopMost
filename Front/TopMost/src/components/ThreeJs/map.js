@@ -18,7 +18,7 @@ class MapDesign {
         this.mouse_x_offsetX =0,
         this.mouse_x_offsetY =0,
         this.material_select= new THREE.MeshLambertMaterial( { color:  "rgb(225, 225, 0)" } );
-        this.material = new THREE.MeshLambertMaterial( { color:  "rgb(0, 0, 0)" } );
+        this.material = new THREE.MeshLambertMaterial( { color:  "rgb(225, 225, 225)" } );
         this.geometry_box= new THREE.PlaneGeometry( 8, 8 );
         this.scene =null;
         this.splinePointsLength = 3; //需要多少點

@@ -1,9 +1,19 @@
- import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
-
+import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
+import navbar from '@/components/navbar/navbar.vue'
+import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 export default {
     name: 'System_Main',
     components: {
-      system_drawMap
+      system_drawMap,
+      navbar,
+      system_mainUI
+      },
+      computed:{
+        leftmargin: function() {
+            var left =  'left:'+((window.innerWidth - this.$store.state.width_main)/2)+'px';
+            console.log(left);
+            return  left;   
+        }
       },
       data(){
           return{
