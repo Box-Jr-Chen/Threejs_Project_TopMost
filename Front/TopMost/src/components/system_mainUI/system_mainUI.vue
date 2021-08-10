@@ -1,7 +1,7 @@
 <template>
   <div class="leftbar">
 
-      <div class="btn_left" v-for="(item, index) in $store.state.leftbtns" :key="index">
+      <div class="btn_left" v-bind:class="{btn_left_active:$store.state.panel_select ==index}" v-for="(item, index) in $store.state.leftbtns" :key="index" @click="select_panel(index)">
           <img class="img" :src="require('@/assets/img/'+item.img+'.png')"/>
           <p>{{item.title}}</p>
       </div>

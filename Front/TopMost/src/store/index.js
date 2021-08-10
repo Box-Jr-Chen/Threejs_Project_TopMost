@@ -10,10 +10,11 @@ export default  new Vuex.Store({
     width_main:0,
     height_main:0,
     threejs :ThreeJs.ThreeJs,
+    panel_select:0,
     leftbtns:[
       {
         'img':'setting',
-        'title':'繪製地圖'
+        'title':'倉儲排列'
       },
       {
         'img':'setting',
@@ -25,7 +26,7 @@ export default  new Vuex.Store({
       },
       {
         'img':'setting',
-        'title':'設定'
+        'title':'繪製地圖'
       }
     ]
   },
