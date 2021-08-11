@@ -50,7 +50,7 @@ class ThreeJs_3D {
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-        this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(150, 150, 150)"));
+        this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(130, 130, 130)"));
 
 
         this.scene.add(this.grid);
@@ -111,7 +111,6 @@ class ThreeJs_3D {
             this.scene
           );
           this.otherender.push(this.mapDesign);
-
         },1000);
 
     }
@@ -193,6 +192,18 @@ class ThreeJs_3D {
     //Mouse
     MouseUp(){
         this.mapDesign.mouseup();
+    }
+
+    //Active Control
+    Active_controls()
+    {
+        this.controls.enabled = true;
+    }
+
+    //UnActive Control
+    UnActive_controls()
+    {
+        this.controls.enabled = false;
     }
 }
 

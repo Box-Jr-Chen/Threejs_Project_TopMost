@@ -11,7 +11,6 @@ export default {
       computed:{
         leftmargin: function() {
             var left =  'left:'+((window.innerWidth - this.$store.state.width_main)/2)+'px';
-            console.log(left);
             return  left;   
         }
       },
@@ -22,8 +21,8 @@ export default {
       },
       mounted(){
         var self = this;
-        const container = document.getElementById('container');
-        self.$store.state.threejs.init(container);
+         const container = document.getElementById('container');
+         self.$store.state.threejs.init(container);
 
         self.animate();
 

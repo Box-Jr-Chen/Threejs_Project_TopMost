@@ -9,8 +9,11 @@ export default  new Vuex.Store({
   state: {  
     width_main:0,
     height_main:0,
+    border_main:0,
+    contain_rightpanel:null,
     threejs :ThreeJs.ThreeJs,
     panel_select:0,
+    panel_show_addPallet_inSetting_Pallet:false,
     leftbtns:[
       {
         'img':'setting',
@@ -36,7 +39,12 @@ export default  new Vuex.Store({
 
       self.state.threejs.camera.aspect = window.innerWidth / window.innerHeight;
       self.state.threejs.camera.updateProjectionMatrix();
-    // self.state.threejs.camera.setSize(window.innerWidth, window.innerHeight);
+    },
+    Show_Panel_addPallet(){
+      this.state.panel_show_addPallet_inSetting_Pallet= true;
+    },
+    Hide_Panel_addPallet(){
+      this.state.panel_show_addPallet_inSetting_Pallet= false;
     },
   },
   actions: {

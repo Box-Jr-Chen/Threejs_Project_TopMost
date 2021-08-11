@@ -10,8 +10,8 @@
 }
 
 .btn_left{
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
     background: rgb(211, 211, 211);
     box-shadow:  1px 1px 4px rgba(0, 0, 0, 0.5);
     padding: 0;
@@ -35,7 +35,7 @@
     font-weight: bold;
 }
 .img{
-    width: 2.3rem;
+    width: 2.8rem;
     height: auto;
     margin-top: 0.2rem;
 }

@@ -18,7 +18,7 @@ class MapDesign {
         this.mouse_x_offsetX =0,
         this.mouse_x_offsetY =0,
         this.material_select= new THREE.MeshLambertMaterial( { color:  "rgb(225, 225, 0)" } );
-        this.material = new THREE.MeshLambertMaterial( { color:  "rgb(225, 225, 225)" } );
+        this.material = new THREE.MeshLambertMaterial( { color:  "rgb(00, 0, 0)" } );
         this.geometry_box= new THREE.PlaneGeometry( 8, 8 );
         this.scene =null;
         this.splinePointsLength = 3; //需要多少點
@@ -62,8 +62,10 @@ class MapDesign {
    
         let curve = new THREE.CatmullRomCurve3(self.positions);
         curve.curveType = 'catmullrom';
+        var linecolor =  new THREE.Color("rgb(225, 225, 225)");
         curve.mesh = new THREE.Line( self.geometry.clone(), new THREE.LineBasicMaterial( {
-            color: 0xff0000,
+            // color: 0xff0000,
+            color: linecolor,
             opacity: 1
         } ) );
         curve.mesh.castShadow = false;
@@ -141,7 +143,7 @@ class MapDesign {
         // console.log(this.camera);
 
         const intersects = raycaster.intersectObjects( this.splineHelperObjects );
-        console.log(intersects);
+       // console.log(intersects);
         if ( intersects.length > 0 ) {
 
             const object = intersects[0].object;
