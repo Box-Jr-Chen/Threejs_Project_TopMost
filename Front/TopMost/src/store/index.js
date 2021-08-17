@@ -14,6 +14,7 @@ export default  new Vuex.Store({
     threejs :ThreeJs.ThreeJs,
     panel_select:0,
     panel_show_addPallet_inSetting_Pallet:false,
+    panel_show_addPallet_inSetting_Project:false,
     leftbtns:[
       {
         'img':'setting',
@@ -45,6 +46,12 @@ export default  new Vuex.Store({
     },
     Hide_Panel_addPallet(){
       this.state.panel_show_addPallet_inSetting_Pallet= false;
+    },
+    Show_Panel_addProject(){
+      this.state.panel_show_addPallet_inSetting_Project= true;
+    },
+    Hide_Panel_addProject(){
+      this.state.panel_show_addPallet_inSetting_Project= false;
     },
   },
   actions: {
