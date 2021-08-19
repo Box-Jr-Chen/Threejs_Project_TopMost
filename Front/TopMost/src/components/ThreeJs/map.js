@@ -42,11 +42,10 @@ class MapDesign {
         self.height=height;
         self.camera=camera;
         self.scene =scene;
+    }
 
-
-        // console.log(self.width);
-        // console.log(self.height);
-
+    DrawPoint_Line()
+    {
         for ( let i = 0; i < self.splinePointsLength; i ++ ) {
             self.addSplineObject(self.positions[i]);
         }
@@ -72,9 +71,6 @@ class MapDesign {
 
         self.splines.uniform = curve;
 
-
-       // console.log(self.splines.uniform);
-
         for ( const k in self.splines ) {
 
             const spline = self.splines[k];
@@ -91,6 +87,8 @@ class MapDesign {
 
         self.splines.uniform.tension = 0;
     }
+
+
 
     addPoint(){
         var self =this;
@@ -249,7 +247,10 @@ class MapDesign {
     }
     render() {
        var self = this;
-        self.splines.uniform.mesh.visible = true;
+
+       if ( typeof(self.splines.uniform) !== "undefined" && self.splines.uniform !== null ) {
+                self.splines.uniform.mesh.visible = true;
+       }
 
         self.getSelectPos_Main();
         self.updateSplineOutline();
@@ -274,11 +275,8 @@ class MapDesign {
         var self =this;
         if(self.spline_Object_select.main !=null)
         {
-            
             self.spline_Object_select.pos_screen = self.getScreenPos(self.spline_Object_select.main );
-            //console.log(self.spline_Object_select.main);
         }
-  
     }
     ScreenToWorldPos(pos){
         var self = this;

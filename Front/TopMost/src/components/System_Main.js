@@ -1,16 +1,18 @@
 import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
+import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
 import navbar from '@/components/navbar/navbar.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 export default {
     name: 'System_Main',
     components: {
       system_drawMap,
+      system_WH_FrameLess,
       navbar,
       system_mainUI
       },
       computed:{
         leftmargin: function() {
-            var left =  'left:'+((window.innerWidth - this.$store.state.width_main)/2)+'px';
+            var     left =  'left:'+((window.innerWidth - this.$store.state.width_main)/2)+'px';
             return  left;   
         }
       },
