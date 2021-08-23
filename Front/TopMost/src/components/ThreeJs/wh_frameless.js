@@ -27,55 +27,6 @@ class wh_frameless {
         this.line_WH =[];
         this.line_AREA =[];
 
-        this.vertices_WH = 
-        [
-               [-420,     60],  //point1
-               [-420,    -140],  //point2
-               [ 320,    -140],  //point3
-               [ 320,    60],   //point4
-               [ 280,    60],   //point5
-               [ 280,    200],   //point6
-               [ 130,    200],   //point7
-               [ 130,    60],   //point8
-               [-420,    60],  //point9 back
-        ];
-
-
-        this.areas_WH = 
-        [
-            {
-                "area":"area_01",
-                "vertices": [
-                    [-410,     50],  //point1
-                    [-410,    -130],  //point2
-                    [-200,    -130],  //point3
-                    [ -200,    50],   //point4
-                    [-410,     50]  //point5
-                ]             
-            },
-            // {
-            //     "area":"area_02",
-            //     "vertices": [
-            //         [-160,     50],  //point1
-            //         [-160,    -130],  //point2
-            //         [20,    -130],  //point3
-            //         [20,    50],   //point4
-            //         [-160,     50]  //point5
-            //     ]             
-            // },
-            // {
-            //     "area":"area_03",
-            //     "vertices": [
-            //         [60,     50],  //point1
-            //         [60,    -130],  //point2
-            //         [280,    -130],  //point3
-            //         [280,    50],   //point4
-            //         [60,     50]  //point5
-            //     ]             
-            // }
-        ];
-
-
         this.axes = 'xzy';
         this.planeAxes = this.axes.substr( 0, 2 );
         this.material_grid = new THREE.ShaderMaterial( {
@@ -114,8 +65,6 @@ class wh_frameless {
                
                }
                `,
-    
-    
             fragmentShader: `
                
                varying vec3 worldPosition;
@@ -172,12 +121,12 @@ class wh_frameless {
         self.scene =scene;
 
     }
-    createMap()
+    createMap(WH_borders,areas_borders)
     {
         var self = this;
 
         var points_WH=[];
-        self.vertices_WH.forEach(item=>{
+        WH_borders.forEach(item=>{
             points_WH.push(new THREE.Vector3(item[0],0,-item[1]));
         });
         var geometry = new THREE.BufferGeometry().setFromPoints( points_WH );
@@ -187,7 +136,7 @@ class wh_frameless {
         self.scene.add( lineWH );
 
         //區域
-        self.areas_WH.forEach(area=>{
+        areas_borders.forEach(area=>{
             var points_area=[];
             area.vertices.forEach(item=>{
                 points_area.push(new THREE.Vector3(item[0],0,-item[1]));
@@ -201,12 +150,12 @@ class wh_frameless {
         });
 
         //區域格線
-        self.areas_WH.forEach(item=>{
+        areas_borders.forEach(item=>{
             var grid = self.CreateAreaGrid(item.vertices);
 
          const tGroup = new THREE.Group();
-            tGroup.add(grid[0]);
             tGroup.add(grid[1]);
+            tGroup.add(grid[2]);
             self.scene.add( tGroup );
         });
     }
@@ -257,9 +206,6 @@ girlPoint(polygon) {
     return  pointArr; //返回多边形边界和内部的点
 }
 
-
-
-
 minMax(arr) {
     arr.sort(this.compareNum);
     return [Math.floor(arr[0]), Math.ceil(arr[arr.length - 1])];
@@ -274,7 +220,6 @@ compareNum(a, b) {
         return 0;
     }
 }
-
 
 //第一个参数标识多边形轮廓上的点以及内部的等边距的点集
 //第二个参数标识多边形轮廓上的点
@@ -297,6 +242,7 @@ delaunay(polygonPointsArr, polygonData) {
     return usefulIndexArr;
 }
 
+//儲存用的點位與顯示點位轉換 z=-z
 CreateAreaGrid(Area)
 {
         //console.log(Area);
@@ -312,11 +258,9 @@ CreateAreaGrid(Area)
             posArr_check.push(elem[0],0,elem[1]);
         });
 
+       
+        var Rect_calcaulate = this.findRectCenter(posArr_check); //計算用
 
-        var Rect = this.findRectCenter(posArr_check); //計算用
-
-        console.log("Rect");
-        console.log(Rect);
 
         this.geometry = new  THREE.BufferGeometry();
         this.geometry.index = new THREE.BufferAttribute(new Uint16Array(usefulIndexArr), 1); //设置几何体的索引
@@ -338,17 +282,16 @@ CreateAreaGrid(Area)
         });
 
 
-        return [mesh,mesh2]
+        return [Rect_calcaulate,mesh,mesh2]
 }
-
-
+//找尋每格中心
 findRectCenter(posArr)
 {
         //先找到同緯度 做頻均
         var  x_value = -1;
         //var  index = 1;  //三次取一次x座標
         var  result =[];
-        var  result_y =[];
+        var  step_y =[];
 
         posArr.forEach(function(vertice,index) {
 
@@ -388,20 +331,41 @@ findRectCenter(posArr)
                         }
     
                     });
-                    result_y.push(array_y);
+                    step_y.push(array_y);
                 }
             } 
 
         })
 
-        result_y.forEach(function(vertice,index) {
-            
+        step_y.forEach(function(vertice,index) {
+              var index_next = index+1;
+              //判斷是否超過矩陣
+              if(index_next<step_y.length)
+              {
+                    var result_y =[];
+
+                    vertice.forEach(function(vertice_inx,index_inx) {
+                        step_y[index_next].forEach(function(vertice_next_inx,index_nect_inx) {
+                                   if(index_inx ==index_nect_inx )
+                                   {
+                                        var x = (vertice_inx[0] + vertice_next_inx[0])/2;
+                                        var z = (vertice_inx[1] + vertice_next_inx[1])/2;
+                                        result_y.push([x,z]);
+                                        return;
+                                   }
+                        });
+                    });
+                    result.push(result_y);
+
+              }
         })
 
+        // console.log("step_y:");
+        // console.log(step_y);
+        // console.log("result:");
+        // console.log(result);
 
-
-        
-        return result_y;
+        return result;
 }
 
 }

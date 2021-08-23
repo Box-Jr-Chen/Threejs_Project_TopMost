@@ -32,7 +32,54 @@ export default  new Vuex.Store({
         'img':'setting',
         'title':'繪製地圖'
       }
-    ]
+    ],
+   //位置資訊
+   WH_borders: 
+   [
+          [-420,     60],  //point1
+          [-420,    -140],  //point2
+          [ 320,    -140],  //point3
+          [ 320,    60],   //point4
+          [ 280,    60],   //point5
+          [ 280,    200],   //point6
+          [ 130,    200],   //point7
+          [ 130,    60],   //point8
+          [-420,    60],  //point9 back
+   ],
+   Areas_borders: 
+   [
+       {
+           "area":"area_01",
+           "vertices": [
+               [-410,     50],  //point1
+               [-410,    -130],  //point2
+               [-200,    -130],  //point3
+               [ -200,    50],   //point4
+               [-410,     50]  //point5
+           ]             
+       },
+       {
+           "area":"area_02",
+           "vertices": [
+               [-160,     50],  //point1
+               [-160,    -130],  //point2
+               [20,    -130],  //point3
+               [20,    50],   //point4
+               [-160,     50]  //point5
+           ]             
+       },
+       {
+           "area":"area_03",
+           "vertices": [
+               [60,     50],  //point1
+               [60,    -130],  //point2
+               [280,    -130],  //point3
+               [280,    50],   //point4
+               [60,     50]  //point5
+           ]             
+       }
+   ]
+
   },
   mutations: {
     onWindowResize() {

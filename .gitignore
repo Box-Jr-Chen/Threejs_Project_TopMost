@@ -2,6 +2,7 @@
 Front/TopMost/node_modules
 /Front/TopMost/dist
 
+Back/node_modules
 
 # local env files
 .env.local

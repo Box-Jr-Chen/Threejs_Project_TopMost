@@ -16,7 +16,12 @@ export default {
         var waitSysInit =  setInterval(() => {
             if(self.$store.state.threejs.sysInit==true)
             {
-                self.$store.state.threejs.WH_FrameLess.createMap();
+                console.log(self.$store.state.Areas_borders);
+
+                self.$store.state.threejs.WH_FrameLess.createMap(
+                    self.$store.state.WH_borders,
+                    self.$store.state.Areas_borders
+                );
                 clearInterval(waitSysInit);
             }
         }, 500);
