@@ -6,20 +6,27 @@ async function list(req, res) {
 
     return await
     warehouse
-      .findAll()
+      .findAll({attributes: ['id', 'title']})
       .then((warehouses) => res.status(200).send(warehouses))
       .catch((error) => { res.status(400).send(error); })}
   
   
-  
-  async function add(req, res) { 
-      console.log(req.body);
+async function findOne(req, res) { 
 
-      return await res.json(
-        {
-          'result':'none'
-        }
-      )
+        var id = req.query.id;
+
+        const parsed = parseInt(id);
+        if (isNaN(parsed)|| parsed<1) { res.status(404).send({"error":"id is wrong"}) }
+
+        return await
+        warehouse
+          .findOne({where:{id:id}})
+          .then((warehouses) => res.status(200).send(warehouses))
+          .catch((error) => { res.status(400).send(error); })}
+
+  
+async function add(req, res) { 
+
          var title = req.body.title;
          var borders = req.body.borders;
         return await
@@ -71,4 +78,4 @@ async function list(req, res) {
       .then((warehouses) => res.status(200).send(p_id))
       .catch((error) => { res.status(400).send(error); })}
   
-module.exports = { list,add,update,deleted};
+module.exports = { findOne,list,add,update,deleted};

@@ -1,12 +1,18 @@
 // import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import store from '@/store'
 import ThreeJs from '@/components/ThreeJs/threejs.js';
+import axios from 'axios';
+
 Vue.use(Vuex)
 
 
 export default  new Vuex.Store({
   state: {  
+    baseUrlApi: process.env.VUE_APP_baseUrl,
+    data_warehouse_Api: process.env.VUE_APP_baseUrl,
+
     width_main:0,
     height_main:0,
     border_main:0,
@@ -102,56 +108,56 @@ export default  new Vuex.Store({
     },
   },
   actions: {
-        // async AxiosGet(state, data) {
-        // return await axios.get(data.path).then(response => {
-        //     return response.data;
-        // }).catch(error => {
-        //     return error;
-        //     //return Promise(error);
-        // })
-        // },
-        // async AxiosPost(state, data) {
+        async AxiosGet(state, data) {
+        return await axios.get(data.path).then(response => {
+            return response.data;
+        }).catch(error => {
+            return error;
+            //return Promise(error);
+        })
+        },
+        async AxiosPost(state, data) {
 
+        return await axios.post(data.path, data.form).then(response => {
+            return response.data;
+        }).catch(error => {
+            return error;
+        // return Promise.rejecte(error);
+        })
+        },
+        async AxiosPatch(state, data) {   //測試
+        return await axios.patch(data.path, data.form).then(response => {
+            return response.data;
+        }).catch(error => {
+            return Promise.rejecte(error);
+        })
+        },
+        async AxiosDelete(state, data) {   //測試
+        return await axios.delete(data.path).then(response => {
+            return response.data;
+        }).catch(error => {
+            return error;
+        })
+        },
 
-        // return await axios.post(data.path, data.form).then(response => {
-        //     return response.data;
-        // }).catch(error => {
-        //     return error;
-        // // return Promise.rejecte(error);
-        // })
-        // },
-        // async AxiosPatch(state, data) {   //測試
-        // return await axios.patch(data.path, data.form).then(response => {
-        //     return response.data;
-        // }).catch(error => {
-        //     return Promise.rejecte(error);
-        // })
-        // },
-        // async AxiosDelete(state, data) {   //測試
-        // return await axios.delete(data.path).then(response => {
-        //     return response.data;
-        // }).catch(error => {
-        //     return error;
-        // })
-        // },
-        // async A_Login(state, data) {
-        // var self= this;
-        // var data_post = {
-        //     'path': self.state.baseUrlApi + self.state.loginApi,
-        //     'form': data
-        // };
-        // state
-        // //console.log(data_post);
-        // return await store
-        //     .dispatch('AxiosPost', data_post)
-        //     .then(response => {
-        //         return  response;
-        //     }
-        //     ).catch(error => {
-        //         return error;
-        //     });
-        // //return await this.AxiosPost(state, data);
-        // }
+        async A_GetWarehouse(state) {
+          var self= this;
+          var data = {
+            'path': self.state.data_warehouse_Api+"?id=1",
+          };
+          state
+          console.log(data.path);
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+    
+          //return await this.AxiosGet(state, data);
+        },
   },
   modules: {
 
