@@ -121,49 +121,10 @@ class wh_frameless {
         self.scene =scene;
 
     }
-    createMap(WH_borders,areas_borders)
-    {
-        var self = this;
 
-        var points_WH=[];
-        WH_borders.forEach(item=>{
-            points_WH.push(new THREE.Vector3(item[0],0,-item[1]));
-        });
-        var geometry = new THREE.BufferGeometry().setFromPoints( points_WH );
-        var lineWH = new THREE.Line( geometry, this.material_line );
 
-        self.line_WH.push(lineWH);
-        self.scene.add( lineWH );
-
-        //區域
-        areas_borders.forEach(area=>{
-            var points_area=[];
-            area.vertices.forEach(item=>{
-                points_area.push(new THREE.Vector3(item[0],0,-item[1]));
-            });
-
-            var geometry = new THREE.BufferGeometry().setFromPoints( points_area );
-            var line_area = new THREE.Line( geometry, this.material_line_area );
-
-            self.line_AREA.push(line_area);
-            self.scene.add( line_area );
-        });
-
-        //區域格線
-        areas_borders.forEach(item=>{
-            var grid = self.CreateAreaGrid(item.vertices);
-
-         const tGroup = new THREE.Group();
-            tGroup.add(grid[1]);
-            tGroup.add(grid[2]);
-            self.scene.add( tGroup );
-        });
-    }
-
-    render(){
-  
-
-    }
+render(){
+}
 
 
 //生成等距點陣
@@ -242,48 +203,7 @@ delaunay(polygonPointsArr, polygonData) {
     return usefulIndexArr;
 }
 
-//儲存用的點位與顯示點位轉換 z=-z
-CreateAreaGrid(Area)
-{
-        //console.log(Area);
 
-        const polygonPointsArr = this.girlPoint(Area); //多边形边界的点以及内部的点
-        const usefulIndexArr = this.delaunay(polygonPointsArr, Area); //三角剖分
-
-
-        const posArr = []; //顶点坐标
-        const posArr_check = []; //顶点坐标_計算 因為顯示z軸為-
-        polygonPointsArr.forEach(elem => {
-            posArr.push(elem[0],0,-elem[1]);
-            posArr_check.push(elem[0],0,elem[1]);
-        });
-
-       
-        var Rect_calcaulate = this.findRectCenter(posArr_check); //計算用
-
-
-        this.geometry = new  THREE.BufferGeometry();
-        this.geometry.index = new THREE.BufferAttribute(new Uint16Array(usefulIndexArr), 1); //设置几何体的索引
-        this.geometry.attributes.position = new THREE.BufferAttribute(new Float32Array(posArr), 3); //设置几何体的顶点坐标
-        var material = new THREE.MeshBasicMaterial({
-            color: new THREE.Color("rgb(255, 255, 0)"),
-        });
-
-        var mesh = new THREE.Mesh(this.geometry,   material);
-        mesh.position.z = -0.01;
-        mesh.scale.set(1,-1,1); 
-
-
-        const mesh2 = mesh.clone();
-        
-        mesh2.material = new THREE.MeshBasicMaterial({
-            wireframe: true,
-            color: 0x009999,
-        });
-
-
-        return [Rect_calcaulate,mesh,mesh2]
-}
 //找尋每格中心
 findRectCenter(posArr)
 {
@@ -367,6 +287,106 @@ findRectCenter(posArr)
 
         return result;
 }
+
+///計算矩陣區域
+Algs_grid(Area)
+{
+    const polygonPointsArr = this.girlPoint(Area); //多边形边界的点以及内部的点
+    const usefulIndexArr = this.delaunay(polygonPointsArr, Area); //三角剖分
+
+    return [polygonPointsArr,usefulIndexArr];
+}
+//計算矩陣各單位中心
+Algs_RectCenter(polygonPointsArr)
+{
+    const posArr_check = []; //顶点坐标_計算 因為顯示z軸為-
+        polygonPointsArr.forEach(elem => {
+            posArr_check.push(elem[0],0,elem[1]);
+        });
+
+    return   this.findRectCenter(posArr_check); //計算用
+}
+
+//儲存用的點位與顯示點位轉換 z=-z
+m_createAreaGrid(polygonPointsArr,usefulIndexArr)
+{
+        // const polygonPointsArr = this.girlPoint(Area); //多边形边界的点以及内部的点
+        // const usefulIndexArr = this.delaunay(polygonPointsArr, Area); //三角剖分
+
+
+        const posArr = []; //顶点坐标
+        polygonPointsArr.forEach(elem => {
+            posArr.push(elem[0],0,-elem[1]);
+        });
+
+       
+        // var Rect_calcaulate = this.findRectCenter(posArr_check); //計算用
+
+
+        this.geometry = new  THREE.BufferGeometry();
+        this.geometry.index = new THREE.BufferAttribute(new Uint16Array(usefulIndexArr), 1); //设置几何体的索引
+        this.geometry.attributes.position = new THREE.BufferAttribute(new Float32Array(posArr), 3); //设置几何体的顶点坐标
+        var material = new THREE.MeshBasicMaterial({
+            color: new THREE.Color("rgb(255, 255, 0)"),
+        });
+
+        var mesh = new THREE.Mesh(this.geometry,   material);
+        mesh.position.z = -0.01;
+        mesh.scale.set(1,-1,1); 
+
+
+        const mesh2 = mesh.clone();
+        
+        mesh2.material = new THREE.MeshBasicMaterial({
+            wireframe: true,
+            color: 0x009999,
+        });
+
+
+        return [mesh,mesh2]
+}
+createWaveHouse(WH_borders)
+{
+    var self = this;
+
+    var points_WH=[];
+    WH_borders.forEach(item=>{
+        points_WH.push(new THREE.Vector3(item[0],0,-item[1]));
+    });
+    var geometry = new THREE.BufferGeometry().setFromPoints( points_WH );
+    var lineWH = new THREE.Line( geometry, this.material_line );
+
+    self.line_WH.push(lineWH);
+    self.scene.add( lineWH );
+
+}
+createAreaLine(borders)
+{
+    var self = this;
+    //區域
+    var points_area=[];
+    borders.forEach(item=>{
+        points_area.push(new THREE.Vector3(item[0],0,-item[1]));
+    });
+
+    var geometry = new THREE.BufferGeometry().setFromPoints( points_area );
+    var line_area = new THREE.Line( geometry, this.material_line_area );
+
+    self.line_AREA.push(line_area);
+    self.scene.add( line_area );
+}
+CreateAreaGrid(polygonPointsArr,usefulIndexArr)
+{
+    var self = this;
+
+    //區域格線
+    var grid = self.m_createAreaGrid(polygonPointsArr,usefulIndexArr);
+    const tGroup = new THREE.Group();
+    tGroup.add(grid[0]);
+    tGroup.add(grid[1]);
+    self.scene.add( tGroup );
+}
+
 
 }
 

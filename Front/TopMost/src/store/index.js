@@ -11,8 +11,10 @@ Vue.use(Vuex)
 export default  new Vuex.Store({
   state: {  
     baseUrlApi: process.env.VUE_APP_baseUrl,
-    data_warehouse_Api: process.env.VUE_APP_baseUrl,
-
+    data_warehouse_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_warehouse,
+    data_area_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area,
+    data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
+    id_getWavehouse:1,
     width_main:0,
     height_main:0,
     border_main:0,
@@ -40,51 +42,20 @@ export default  new Vuex.Store({
       }
     ],
    //位置資訊
-   WH_borders: 
-   [
-          [-420,     60],  //point1
-          [-420,    -140],  //point2
-          [ 320,    -140],  //point3
-          [ 320,    60],   //point4
-          [ 280,    60],   //point5
-          [ 280,    200],   //point6
-          [ 130,    200],   //point7
-          [ 130,    60],   //point8
-          [-420,    60],  //point9 back
-   ],
+   WH_borders:{
+     id :-1,
+     title:"",
+     borders:[]
+   } 
+,
    Areas_borders: 
-   [
-       {
-           "area":"area_01",
-           "vertices": [
-               [-410,     50],  //point1
-               [-410,    -130],  //point2
-               [-200,    -130],  //point3
-               [ -200,    50],   //point4
-               [-410,     50]  //point5
-           ]             
-       },
-       {
-           "area":"area_02",
-           "vertices": [
-               [-160,     50],  //point1
-               [-160,    -130],  //point2
-               [20,    -130],  //point3
-               [20,    50],   //point4
-               [-160,     50]  //point5
-           ]             
-       },
-       {
-           "area":"area_03",
-           "vertices": [
-               [60,     50],  //point1
-               [60,    -130],  //point2
-               [280,    -130],  //point3
-               [280,    50],   //point4
-               [60,     50]  //point5
-           ]             
-       }
-   ]
+   {
+     id_wavehouse :-1,
+     title_wavehouse:"",
+     areas:   
+     []
+   }
+
 
   },
   mutations: {
@@ -143,10 +114,9 @@ export default  new Vuex.Store({
         async A_GetWarehouse(state) {
           var self= this;
           var data = {
-            'path': self.state.data_warehouse_Api+"?id=1",
+            'path': self.state.data_warehouse_Api+"?id="+self.state.id_getWavehouse,
           };
           state
-          console.log(data.path);
           return await store
               .dispatch('AxiosGet', data)
               .then(response => {
@@ -155,8 +125,57 @@ export default  new Vuex.Store({
               ).catch(error => {
                 return error;
               });
-    
-          //return await this.AxiosGet(state, data);
+        },
+
+
+
+        async A_GetArea(state) {
+          var self= this;
+          var data = {
+            'path': self.state.data_area_Api+"?id="+self.state.id_getWavehouse,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_UpdateArea(state, areadata) {
+          var self= this;
+          var data = {
+            'path': self.state.data_area_Api,
+            'form': areadata
+          };
+          state
+          return await store
+              .dispatch('AxiosPatch', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
+
+        async A_Getinterval(state) {
+          var self= this;
+          var data = {
+            'path': self.state.data_interval_Api,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
         },
   },
   modules: {

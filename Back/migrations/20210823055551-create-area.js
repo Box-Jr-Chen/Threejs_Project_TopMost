@@ -17,19 +17,17 @@ module.exports = {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       },
+      title:{
+        type: Sequelize.STRING
+      },
       borders: {
+        type: Sequelize.TEXT
+      },
+      data_rect_position: {
         type: Sequelize.TEXT
       },
       data_rect: {
         type: Sequelize.TEXT
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     });
   },

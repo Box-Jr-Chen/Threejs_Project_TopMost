@@ -11,8 +11,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+     //await queryInterface.bulkDelete("setting_area_intervals",null,{truncate: true, restartIdentity: true});
      await queryInterface.bulkDelete("setting_area_intervals",null,{});
 
+     await queryInterface.sequelize.query("ALTER TABLE setting_area_intervals AUTO_INCREMENT = 1;");
 
      return await queryInterface.bulkInsert(
       "setting_area_intervals",

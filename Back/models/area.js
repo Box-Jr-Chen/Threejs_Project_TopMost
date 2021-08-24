@@ -21,8 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
     }, 
     id_wavehouse: DataTypes.INTEGER,
-
+    title: DataTypes.STRING,
     borders: DataTypes.TEXT,
+    data_rect_position: DataTypes.TEXT,
     data_rect: DataTypes.TEXT
   }, {
     sequelize,

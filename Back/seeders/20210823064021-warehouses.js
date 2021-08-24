@@ -11,6 +11,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+     await queryInterface.bulkDelete("warehouses",null,{});
+
+     //重新開始1
+     await queryInterface.sequelize.query("ALTER TABLE warehouses AUTO_INCREMENT = 1;");
 
      return await queryInterface.bulkInsert(
       "warehouses",
@@ -30,7 +34,8 @@ module.exports = {
           "]",
 
         }
-      ]
+      ],
+      {autoIncrement: true, restartIdentity: true}
     );
 
   },
