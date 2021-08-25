@@ -12,7 +12,7 @@ module.exports = {
       "areas",
       [
         {
-          id_wavehouse:1,
+          id_warehouse:1,
           title:"區域 A",
           borders:"["+
                 "[-410,     50],"+
@@ -20,10 +20,13 @@ module.exports = {
                 "[-200,    -130],"+
                 "[ -200,    50],"+
                 "[-410,     50] "+
-                "] "         
+                "] ",
+          width:0,
+          length:0, 
+          pos_init:""      
         },
         {
-          id_wavehouse:1,
+          id_warehouse:1,
           title:"區域 B",
           borders:"["+
                 "[-160, 50], "+
@@ -31,10 +34,13 @@ module.exports = {
                 "[  20,-130],  "+
                 "[  20,  50],  "+
                 "[-160,  50]  "+
-                  "] "         
+                  "] " ,
+          width:0,
+          length:0, 
+          pos_init:""         
         },
         {
-          id_wavehouse:1,
+          id_warehouse:1,
           title:"區域 C",
           borders:"["+
                   "[60,50],"+
@@ -42,7 +48,10 @@ module.exports = {
                   "[280,-130],"+
                   "[280,50],"+
                   "[60,50]"+
-                  "] "         
+                  "] ",
+          width:0,
+          length:0, 
+          pos_init:""     
         }
       ]
     );

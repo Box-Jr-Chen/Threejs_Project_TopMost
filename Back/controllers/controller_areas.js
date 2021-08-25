@@ -4,16 +4,16 @@ const warehouse = db['warehouse'];
 
 async function list(req, res) { 
     
-    var id_Wavehouse = req.query.id;
+    var id_Warehouse = req.query.id;
 
-    const parsed_id = parseInt(id_Wavehouse);
+    const parsed_id = parseInt(id_Warehouse);
     if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
 
     return await
     area
       .findAll({
-          attributes: ['id', 'id_wavehouse','title', 'borders','data_rect_position','data_rect'],
-          where: {id_wavehouse: parsed_id},
+          attributes: ['id', 'id_warehouse','title', 'borders','width','length','pos_init'],
+          where: {id_warehouse: parsed_id},
           include: [
             {
               model: warehouse,
@@ -27,13 +27,13 @@ async function list(req, res) {
 
   
 async function add(req, res) { 
-         var id_wavehouse = req.body.id_wavehouse;
+         var id_warehouse = req.body.id_warehouse;
          var title = req.body.title;
          var borders = req.body.borders;
         return await
         area
           .create({
-            id_wavehouse:id_wavehouse,
+            id_warehouse:id_warehouse,
             title:title,
             borders:borders,
             data_rect_position :null,
@@ -57,17 +57,21 @@ async function add(req, res) {
 
 async function update(req, res){
     var id = req.body.id;
+    var id_warehouse = req.body.id_warehouse;
     var title = req.body.title;
     var borders = req.body.borders;
-    var data_rect_position = req.body.data_rect_position;
-    var data_rect = req.body.data_rect;
+    var width = req.body.width;
+    var length = req.body.length;
+    var pos_init = req.body.pos_init;
     return await
     area
     .update({
+      id_warehouse:id_warehouse,
        title:title,
        borders:borders,
-       data_rect_position:data_rect_position,
-       data_rect:data_rect,
+       width:width,
+       length:length,
+       pos_init:pos_init
     },{where:{id:id}})
     .then((area) => res.status(200).send({'result':'success'}))
     .catch((error) => { res.status(400).send(error); })}

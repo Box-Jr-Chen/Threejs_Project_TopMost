@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     interval: DataTypes.INTEGER
   }, {
     sequelize,
+    createdAt:false,
+    updatedAt:false,
     modelName: 'setting_area_interval',
   });
   return setting_area_interval;

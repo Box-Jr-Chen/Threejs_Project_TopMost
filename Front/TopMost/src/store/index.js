@@ -50,7 +50,7 @@ export default  new Vuex.Store({
 ,
    Areas_borders: 
    {
-     id_wavehouse :-1,
+    id_warehouse :-1,
      title_wavehouse:"",
      areas:   
      []

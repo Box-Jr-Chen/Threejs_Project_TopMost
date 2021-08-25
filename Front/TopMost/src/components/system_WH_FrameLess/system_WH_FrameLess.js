@@ -41,16 +41,17 @@ export default {
                         self.$store.state.threejs.WH_FrameLess.interval =  parseInt(response.interval);
                         //獲得區域資料
                         self.$store.dispatch('A_GetArea').then(response =>{
+
                             self.$store.state.Areas_borders.areas =[];
                                 var data = response;
-                                self.$store.state.Areas_borders.id_wavehouse = data[0].id_wavehouse;
+                                self.$store.state.Areas_borders.id_warehouse = data[0].id_warehouse;
                                 self.$store.state.Areas_borders.title_wavehouse = data[0].warehouse.title;
 
                                 data.forEach(element => {
-                                        element.borders    =  JSON.parse(element.borders);
-                                        element.data_rect    =  JSON.parse(element.data_rect);
-
-                                        delete element['id_wavehouse'];
+                                        if(element.borders !=="")
+                                            element.borders      =  JSON.parse(element.borders);
+                     
+                                        //delete element['id_warehouse'];
                                         delete element['warehouse'];
                                         self.$store.state.Areas_borders.areas.push(element);
                                         
@@ -58,37 +59,32 @@ export default {
                                         var algs_grid = self.$store.state.threejs.WH_FrameLess.Algs_grid(element.borders);
                                         //演算法 方格中心計算
                                         var algs_rectcenter = self.$store.state.threejs.WH_FrameLess.Algs_RectCenter(algs_grid[0]);
-                                         if(element.data_rect ===null)
+                                         if(element.width ===0 || element.length ===0|| element.pos_init ==="")
                                          {
-                                            element.data_rect = algs_rectcenter;
-                                            
-                                            //紀錄
-                                            var data_rect_use=[];
-                                            algs_rectcenter.forEach(item_x=>{
-                                                var cell_y=[];
-                                                item_x.forEach(item_y=>{
-                                                      item_y
-                                                      cell_y.push(0);
-                                                });
-                                                data_rect_use.push(cell_y);
+                                             //console.log(algs_rectcenter[0][0]);
+                                            //找到長高與初始位置 重新上傳資料庫
+                                            element.width = algs_rectcenter.length;
+                                            element.length = algs_rectcenter[0].length;
 
-                                            });
+                                            var pos = algs_rectcenter[0][0];
 
-
-                                            //找到中心位置和設定無使用狀態 重新上傳資料庫
+                                            element.pos_init ="["+pos[0]+","+pos[1]+"]";
+                                            element.rect = algs_rectcenter;
                                             var borderstr = JSON.stringify(element.borders);
-                                            var algs_rectcenterstr = JSON.stringify(algs_rectcenter);
-                                            var data_rect_usestr = JSON.stringify(data_rect_use);
+                                            // var algs_rectcenterstr = JSON.stringify(algs_rectcenter);
+                                            // var data_rect_usestr = JSON.stringify(data_rect_use);
 
                                             data={
                                                 id:element.id,
+                                                id_warehouse:element.id_warehouse,
                                                 title:element.title,
                                                 borders:borderstr,
-                                                data_rect_position:algs_rectcenterstr,
-                                                data_rect:data_rect_usestr
+                                                width:element.width,
+                                                length:element.length,
+                                                pos_init:element.pos_init
                                             };
 
-                                            console.log(data);
+                                            // console.log(data);
                                             self.$store.dispatch('A_UpdateArea',data).then(response =>{
                                                     if(response.result !==undefined)
                                                     {
@@ -100,7 +96,7 @@ export default {
                                          }
                                          else  //TODO做比對
                                          {
-
+                                            console.log("比對");
                                          }
                                         //創建區域視覺
                                         self.$store.state.threejs.WH_FrameLess.createAreaLine(element.borders);

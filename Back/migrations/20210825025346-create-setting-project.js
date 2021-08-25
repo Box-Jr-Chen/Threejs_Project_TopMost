@@ -1,26 +1,17 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('areas', {
+    await queryInterface.createTable('setting_projects', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_warehouse: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'warehouses',
-          key: 'id'
-        },
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
-      },
-      title:{
+      title: {
         type: Sequelize.STRING
       },
-      borders: {
+      img: {
         type: Sequelize.TEXT
       },
       width: {
@@ -29,12 +20,12 @@ module.exports = {
       length: {
         type: Sequelize.INTEGER
       },
-      pos_init: {
-        type: Sequelize.TEXT
+      height: {
+        type: Sequelize.INTEGER
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('areas');
+    await queryInterface.dropTable('setting_projects');
   }
 };

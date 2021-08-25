@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class area extends Model {
+  class setting_pallet extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,43 +13,23 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  area.init({
+  setting_pallet.init({
     id:{
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
       autoIncrement: true,
     }, 
-    id_warehouse: DataTypes.INTEGER,
     title: DataTypes.STRING,
-    borders: DataTypes.TEXT,
+    img: DataTypes.TEXT,
     width: DataTypes.INTEGER,
     length: DataTypes.INTEGER,
-    pos_init:DataTypes.TEXT
+    height: DataTypes.INTEGER
   }, {
     sequelize,
     createdAt:false,
     updatedAt:false,
-    modelName: 'area',
+    modelName: 'setting_pallet',
   });
-
-  area.associate = (models)=>{
-       
-      models.warehouse.hasMany(area,{
-        as:'id_warehouse',
-        foreignKey:{
-          type:DataTypes.INTEGER,
-          allowNull:false,
-          name:'id_warehouse',
-        },
-        targetKey: 'id'
-      });
-
-      area.belongsTo(models.warehouse,{
-        foreignKey: 'id_warehouse'
-    }); 
-  }
-
-
-  return area;
+  return setting_pallet;
 };

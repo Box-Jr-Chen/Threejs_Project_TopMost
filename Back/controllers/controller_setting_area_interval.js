@@ -10,5 +10,5 @@ async function FindInterval(req, res) {
             })
       .then((interval) => res.status(200).send(interval))
       .catch((error) => { res.status(400).send(error); })}
-  
+
 module.exports = { FindInterval};
