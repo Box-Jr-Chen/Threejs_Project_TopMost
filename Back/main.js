@@ -9,6 +9,8 @@ const router_setting_area_interval = require('./routes/router_setting_area_inter
 const router_setting_pallet = require('./routes/router_setting_pallet');
 const router_setting_project = require('./routes/router_setting_project');
 
+const router_algs = require('./routes/router_algs');
+
 app.use(cors());
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -30,6 +32,10 @@ app.use('/warehouse',async (req,res)=>{
 
 app.use('/setting_project',async (req,res)=>{
    await router_setting_project(req,res) ;
+});
+
+app.use('/algs',async (req,res)=>{
+   await router_algs(req,res) ;
 });
 
 app.listen(port,()=>{
