@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class setting_area_interval extends Model {
+  class setting_system extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,13 +13,21 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  setting_area_interval.init({
-    interval: DataTypes.INTEGER
+  setting_system.init({
+    id:{
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    }, 
+    interval: DataTypes.INTEGER,
+    sort_amount: DataTypes.INTEGER
   }, {
     sequelize,
     createdAt:false,
     updatedAt:false,
-    modelName: 'setting_area_interval',
+    modelName: 'setting_system',
+    tableName:'setting_systems'
   });
-  return setting_area_interval;
+  return setting_system;
 };

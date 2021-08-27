@@ -12,28 +12,23 @@ module.exports = {
      * }], {});
     */
      //await queryInterface.bulkDelete("setting_area_intervals",null,{truncate: true, restartIdentity: true});
-     await queryInterface.bulkDelete("setting_area_intervals",null,{});
+     await queryInterface.bulkDelete("setting_systems",null,{});
 
-     await queryInterface.sequelize.query("ALTER TABLE setting_area_intervals AUTO_INCREMENT = 1;");
+     await queryInterface.sequelize.query("ALTER TABLE setting_systems AUTO_INCREMENT = 1;");
 
      return await queryInterface.bulkInsert(
-      "setting_area_intervals",
+      "setting_systems",
       [
         {
           interval:10,
+          sort_amount:10
         }
       ]
     );
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
 
-     return await queryInterface.bulkDelete("setting_area_intervals",null,{});
+     return await queryInterface.bulkDelete("setting_systems",null,{});
   }
 };
