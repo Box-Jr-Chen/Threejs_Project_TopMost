@@ -74,6 +74,7 @@ async function add(req, res) {
 
 
 async function update(req, res){
+        var id = req.body.id;
         var id_warehouse = req.body.id_warehouse;
          var id_areas = req.body.id_areas;
          var id_pallet = req.body.id_pallet;
@@ -82,9 +83,10 @@ async function update(req, res){
          var layout=req.body.layout;
          var remove=req.body.remove;
 
-
-         const parsed_id = parseInt(id_warehouse);
+         const parsed_id = parseInt(id);
          if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
+         const parsed_id_warehouse = parseInt(id_warehouse);
+         if (isNaN(parsed_id_warehouse)|| parsed_id_warehouse<1) { res.status(404).send({"error":"warehouse is wrong"}) }
          const parsed_pallet = parseInt(id_pallet);
          if (isNaN(parsed_pallet)|| parsed_pallet<1) { res.status(404).send({"error":"pallet is wrong"}) }
          const parsed_project = parseInt(id_project);
@@ -97,7 +99,6 @@ async function update(req, res){
          const parsed_remove = parseInt(remove);
          if (isNaN(parsed_remove)|| parsed_remove<0) { res.status(404).send({"error":"remove is wrong"}) }
 
-         
     return await
     pallets
     .update({
@@ -107,8 +108,8 @@ async function update(req, res){
         id_project:parsed_project,
         pos :pos,
         layout :parsed_layout,
-        remove:parsed_remove,
-    })
+        remove:parsed_remove
+    },{where:{id:parsed_id}})
     .then((pallets) => res.status(200).send({'result':'success'}))
     .catch((error) => { res.status(400).send(error); })}
   
