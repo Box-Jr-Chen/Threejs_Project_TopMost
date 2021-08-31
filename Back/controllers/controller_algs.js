@@ -74,6 +74,10 @@ async function Sorting_prject(req, res) {
             {
                 indexs.push(area.id);
             }
+            else if(area.width=== null||area.length=== null )
+            {
+                indexs.push(area.id);
+            }
         });
 
         //刪除不能判斷的矩陣
@@ -378,7 +382,9 @@ async function Sorting_prject(req, res) {
              result_sortpallet.push(result_pallet);
       };
 
-      return res_reuslt.send(result_sortpallet);
+      result_success.cause = result_sortpallet;
+
+      return res_reuslt.send(result_success);
 }
 
 //排列貨物 並檢查空間是否可以排列貨物(包括陣列內是否有空間與貨物大小是否符合空間)
@@ -507,8 +513,6 @@ async function SpaceinArea(array_area_3d,project) {
         }
 
     });
-
-
 
     //console.log("--------------------------------3");
 

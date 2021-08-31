@@ -386,6 +386,30 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     tGroup.add(grid[1]);
     self.scene.add( tGroup );
 }
+CreateProject(initpos,posArr){
+    var x_arraw = [];
+    var y_arrow = [];
+
+    posArr.forEach(e=>{
+        x_arraw.push(e[0]);
+        y_arrow.push(e[1]);
+    })
+
+    //找出X 範圍
+    x_arraw.sort();
+
+    var x_grid = (x_arraw[x_arraw.length-1] -x_arraw[0]) +1 ; 
+    var x_center = (x_arraw[x_arraw.length-1] -x_arraw[0])/2 ;
+    
+    //找出Y 範圍
+    y_arrow.sort();
+    var y_grid = (x_arraw[y_arrow.length-1] -y_arrow[0]) +1 ; 
+    var y_center = (x_arraw[y_arrow.length-1] -y_arrow[0])/2 ;
+
+
+   
+
+}
 
 
 }

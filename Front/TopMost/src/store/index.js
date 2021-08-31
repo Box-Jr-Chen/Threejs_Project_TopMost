@@ -14,6 +14,7 @@ export default  new Vuex.Store({
     data_warehouse_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_warehouse,
     data_area_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area,
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
+    data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
     id_getWavehouse:1,
     width_main:0,
     height_main:0,
@@ -46,16 +47,16 @@ export default  new Vuex.Store({
      id :-1,
      title:"",
      borders:[]
-   } 
-,
+   },
    Areas_borders: 
    {
     id_warehouse :-1,
      title_wavehouse:"",
      areas:   
      []
-   }
-
+   },
+   
+   Project_sort:null
 
   },
   mutations: {
@@ -177,6 +178,28 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+        async A_Postsorting_project(state) {
+          var self= this;
+
+          var form = {
+            "id_warehouse":self.state.id_getWavehouse
+          };
+
+          var data = {
+            'path': self.state.data_sorting_project_Api,
+            'form': form
+          };
+          state
+          return await store
+            .dispatch('AxiosPost', data)
+            .then(response => {
+              return  response;
+            }
+            ).catch(error => {
+              return error;
+            });
+        }
   },
   modules: {
 
