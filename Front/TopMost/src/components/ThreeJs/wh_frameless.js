@@ -310,18 +310,11 @@ Algs_RectCenter(polygonPointsArr)
 //儲存用的點位與顯示點位轉換 z=-z
 m_createAreaGrid(polygonPointsArr,usefulIndexArr)
 {
-        // const polygonPointsArr = this.girlPoint(Area); //多边形边界的点以及内部的点
-        // const usefulIndexArr = this.delaunay(polygonPointsArr, Area); //三角剖分
-
-
         const posArr = []; //顶点坐标
         polygonPointsArr.forEach(elem => {
             posArr.push(elem[0],0,-elem[1]);
         });
-
        
-        // var Rect_calcaulate = this.findRectCenter(posArr_check); //計算用
-
 
         this.geometry = new  THREE.BufferGeometry();
         this.geometry.index = new THREE.BufferAttribute(new Uint16Array(usefulIndexArr), 1); //设置几何体的索引
@@ -386,7 +379,11 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     tGroup.add(grid[1]);
     self.scene.add( tGroup );
 }
-CreateProject(initpos,posArr){
+CreateProject(posArr){
+
+    var pos = [-402.5,-122.5];
+    var interval = 15;
+    var area_zeropoint =[pos[0]-(interval/2),pos[1]-(interval/2)]
     var x_arraw = [];
     var y_arrow = [];
 
@@ -395,19 +392,50 @@ CreateProject(initpos,posArr){
         y_arrow.push(e[1]);
     })
 
-    //找出X 範圍
+    //找出Y 範圍
     x_arraw.sort();
 
     var x_grid = (x_arraw[x_arraw.length-1] -x_arraw[0]) +1 ; 
     var x_center = (x_arraw[x_arraw.length-1] -x_arraw[0])/2 ;
     
-    //找出Y 範圍
+    //找出X 範圍
     y_arrow.sort();
-    var y_grid = (x_arraw[y_arrow.length-1] -y_arrow[0]) +1 ; 
-    var y_center = (x_arraw[y_arrow.length-1] -y_arrow[0])/2 ;
+    var y_grid = (y_arrow[y_arrow.length-1] -y_arrow[0]) +1 ; 
+    var y_center = (y_arrow[y_arrow.length-1] -y_arrow[0])/2 ;
+
+    console.log(x_grid +";"+x_center);
+    console.log(y_grid +";"+y_center);
+
+    //找出棧板的左下角點
+    var project_zeropoint =[area_zeropoint[0]+interval*x_arraw[0],area_zeropoint[1]+interval*y_arrow[0]]
+
+    //棧板的最右邊x
+    var project_border_x = project_zeropoint[0] + interval *x_grid;
+    //棧板的最上邊y
+    var height_border_y  = project_zeropoint[1] + interval *y_grid;
+    
+    var project_center = [project_zeropoint[0] +((project_border_x -project_zeropoint[0])/2) ,project_zeropoint[1] +((height_border_y -project_zeropoint[1])/2) ];
 
 
-   
+    const posArr = [
+        project_zeropoint,
+        [project_border_x,project_zeropoint[1]],
+        [project_border_x,height_border_y],
+        [project_zeropoint[0],height_border_y],
+    ]; //顶点坐标
+
+
+    this.geometry = new  THREE.BufferGeometry();
+    this.geometry.index = new THREE.BufferAttribute(new Uint16Array(usefulIndexArr), 1); //设置几何体的索引
+    this.geometry.attributes.position = new THREE.BufferAttribute(new Float32Array(posArr), 3); //设置几何体的顶点坐标
+    var material = new THREE.MeshBasicMaterial({
+        color: new THREE.Color("rgb(255, 255, 0)"),
+    });
+
+    var mesh = new THREE.Mesh(this.geometry,   material);
+    mesh.position.z = -0.01;
+    mesh.scale.set(1,-1,1); 
+
 
 }
 

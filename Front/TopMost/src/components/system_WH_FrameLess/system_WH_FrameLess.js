@@ -14,7 +14,7 @@ export default {
    mounted() {
     var self= this;
 
-    self.$store.state.threejs.WH_FrameLess.CreateProject([[1,5],[0,2],[4,7],[3,3]]);
+    self.$store.state.threejs.WH_FrameLess.CreateProject([[1,0],[2,0],[3,0],[4,0],[1,1],[2,1],[3,1],[4,1]]);
     return;
 
     // //等待ThreeJs初始成功
