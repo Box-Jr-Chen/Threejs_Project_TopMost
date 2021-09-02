@@ -1,0 +1,16 @@
+.btn_startalgs{
+    width: 4.8rem;
+    height: 4.8rem;
+    background: linear-gradient(to bottom, rgb(233, 233, 233) 0%, rgb(167, 167, 167) 100%);
+    position: absolute;
+    left: 89%;
+    top:10%;
+    border: 1px block solid ;
+    border-radius: 5px;
+}
+
+
+.btn_startalgs:active{
+    background: linear-gradient(to bottom, rgb(167, 167, 167) 0%, rgb(133, 133, 133) 100%);
+
+}

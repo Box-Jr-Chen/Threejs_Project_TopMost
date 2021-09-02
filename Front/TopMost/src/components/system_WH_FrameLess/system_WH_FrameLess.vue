@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="btn_startalgs" @click="startAlgs">
+            排列開始
+        </div>
     </div>
 </template>
 

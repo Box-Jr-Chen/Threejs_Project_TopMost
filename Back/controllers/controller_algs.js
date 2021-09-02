@@ -55,7 +55,7 @@ async function Sorting_prject(req, res) {
     
     //判斷是否有區域
     var areas = await  area.findAll({
-        attributes: ['id','width','length'],
+        attributes: ['id','width','length','pos_init'],
         where: {id_warehouse: id_warehouse}
       });
 
@@ -182,6 +182,7 @@ async function Sorting_prject(req, res) {
                 'pallet':palletss[i].id,
                 'type':palletss[i].id_pallet+'-'+ palletss[i].id_project,
                 'area':0,
+                'init':[-999,-999,-999],
                 'layout':0,
                 'pos':[]
             };
@@ -328,6 +329,7 @@ async function Sorting_prject(req, res) {
                             //是否排列成功
                             if(JsonisEmpty(result) ===false)
                             {
+                                result_pallet.init = areas[j].pos_init;
                                 result_pallet.area = areas[j].id;
                                 result_pallet.layout = result.layout;
                                 result_pallet.pos = result.pos;
@@ -345,6 +347,7 @@ async function Sorting_prject(req, res) {
                     //是否排列成功
                     if(JsonisEmpty(result) ===false)
                     {
+                        result_pallet.init = areas[j].pos_init;
                         result_pallet.area = areas[j].id;
                         result_pallet.layout = result.layout;
                         result_pallet.pos = result.pos;
@@ -368,6 +371,7 @@ async function Sorting_prject(req, res) {
                     //是否排列成功
                     if(JsonisEmpty(result) ===false)
                     {
+                        result_pallet.init = areas[j].pos_init;
                         result_pallet.area = areas[j].id;
                         result_pallet.layout = result.layout;
                         result_pallet.pos = result.pos;
