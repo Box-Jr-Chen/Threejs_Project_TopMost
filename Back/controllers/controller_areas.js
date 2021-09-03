@@ -12,7 +12,7 @@ async function list(req, res) {
     return await
     area
       .findAll({
-          attributes: ['id', 'id_warehouse','title', 'borders','width','length','pos_init'],
+          attributes: ['id', 'id_warehouse','title', 'borders','width','length','pos_init','interval'],
           where: {id_warehouse: parsed_id},
           include: [
             {
@@ -63,7 +63,7 @@ async function update(req, res){
     var width = req.body.width;
     var length = req.body.length;
     var pos_init = req.body.pos_init;
-    
+    var  interval= req.body.interval;
     return await
     area
     .update({
@@ -72,7 +72,8 @@ async function update(req, res){
        borders:borders,
        width:width,
        length:length,
-       pos_init:pos_init
+       pos_init:pos_init,
+       interval:interval
     },{where:{id:id}})
     .then((area) => res.status(200).send({'result':'success'}))
     .catch((error) => { res.status(400).send(error); })}

@@ -23,7 +23,8 @@ module.exports = {
                 "] ",
           width:0,
           length:0, 
-          pos_init:""      
+          pos_init:"",
+          interval:0,    
         },
         {
           id_warehouse:1,
@@ -37,7 +38,8 @@ module.exports = {
                   "] " ,
           width:0,
           length:0, 
-          pos_init:""         
+          pos_init:"" ,
+          interval:0,           
         },
         {
           id_warehouse:1,
@@ -51,7 +53,8 @@ module.exports = {
                   "] ",
           width:0,
           length:0, 
-          pos_init:""     
+          pos_init:"" ,
+          interval:0,    
         }
       ]
     );

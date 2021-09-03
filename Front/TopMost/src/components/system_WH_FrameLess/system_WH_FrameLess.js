@@ -92,9 +92,10 @@ export default {
                                         var algs_grid = self.$store.state.threejs.WH_FrameLess.Algs_grid(element.borders);
                                         //演算法 方格中心計算
                                         var algs_rectcenter = self.$store.state.threejs.WH_FrameLess.Algs_RectCenter(algs_grid[0]);
-                                         if(element.width ===0 || element.length ===0|| element.pos_init ==="")
+
+                                        //判斷Area 是否需要重新計算
+                                         if(element.width ===0 || element.length ===0|| element.pos_init ==="" ||element.interval!==self.$store.state.threejs.WH_FrameLess.interval)
                                          {
-                                             //console.log(algs_rectcenter[0][0]);
                                             //找到長高與初始位置 重新上傳資料庫
                                             element.width = algs_rectcenter.length;
                                             element.length = algs_rectcenter[0].length;
@@ -104,9 +105,8 @@ export default {
                                             element.pos_init ="["+pos[0]+","+pos[1]+"]";
                                             element.rect = algs_rectcenter;
                                             var borderstr = JSON.stringify(element.borders);
-                                            // var algs_rectcenterstr = JSON.stringify(algs_rectcenter);
-                                            // var data_rect_usestr = JSON.stringify(data_rect_use);
-
+                                   
+                                            //更新area資料
                                             data={
                                                 id:element.id,
                                                 id_warehouse:element.id_warehouse,
@@ -114,7 +114,8 @@ export default {
                                                 borders:borderstr,
                                                 width:element.width,
                                                 length:element.length,
-                                                pos_init:element.pos_init
+                                                pos_init:element.pos_init,
+                                                interval:self.$store.state.threejs.WH_FrameLess.interval
                                             };
 
                                             //區域更新
@@ -133,9 +134,6 @@ export default {
                                             console.log("比對");
                                             data_waittofinish[index] = true;
                                          }
-
-            
-                                        //  self.$store.state.threejs.WH_FrameLess.CreateProject([[0,0],[1,0],[0,1],[1,1]]);
 
                                         //創建區域視覺
                                         self.$store.state.threejs.WH_FrameLess.createAreaLine(element.borders);
@@ -176,7 +174,7 @@ export default {
                     self.$store.state.Project_sort.forEach(function(project,index){
                         index
                         var init_pos = JSON.parse(project.init);
-                       
+                      // console.log(project.pos);
                         self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos);
                     });
 

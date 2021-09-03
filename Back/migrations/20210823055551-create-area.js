@@ -31,6 +31,11 @@ module.exports = {
       },
       pos_init: {
         type: Sequelize.TEXT
+      },
+      interval: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue:0
       }
     });
   },

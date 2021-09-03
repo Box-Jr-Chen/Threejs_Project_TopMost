@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     borders: DataTypes.TEXT,
     width: DataTypes.INTEGER,
     length: DataTypes.INTEGER,
-    pos_init:DataTypes.TEXT
+    pos_init:DataTypes.TEXT,
+    interval:DataTypes.INTEGER
   }, {
     sequelize,
     createdAt:false,

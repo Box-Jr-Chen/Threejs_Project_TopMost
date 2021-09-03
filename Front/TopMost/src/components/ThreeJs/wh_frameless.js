@@ -380,15 +380,18 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     self.scene.add( tGroup );
 }
 CreateProject(name,pos,posArr){
-    console.log(pos);
-    console.log(this.interval);
+  //  console.log(pos);
+ //   console.log(this.interval);
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
     var x_arraw = [];
     var y_arrow = [];
 
-    console.log(area_zeropoint);
+    //var test = [11,10,9];
+    // test = test.sort(this.compareDecimals);
+
+    //console.log(test);
 
     posArr.forEach(e=>{
         x_arraw.push(e[0]);
@@ -396,20 +399,18 @@ CreateProject(name,pos,posArr){
     })
     
     //找出Y 範圍
-    x_arraw.sort();
+    x_arraw.sort(this.compareDecimals);
 
     var x_grid = (x_arraw[x_arraw.length-1] -x_arraw[0]) +1 ; 
    // var x_center = (x_arraw[x_arraw.length-1] -x_arraw[0])/2 ;
     
     //找出X 範圍
-    y_arrow.sort();
+    y_arrow.sort(this.compareDecimals);
     var y_grid = (y_arrow[y_arrow.length-1] -y_arrow[0]) +1 ; 
    // var y_center = (y_arrow[y_arrow.length-1] -y_arrow[0])/2 ;
 
     // console.log(x_grid +";"+x_center);
     // console.log(y_grid +";"+y_center);
-
-  
 
     //找出棧板的左下角點
     var project_zeropoint =[area_zeropoint[0]+this.interval*x_arraw[0],area_zeropoint[1]+this.interval*y_arrow[0]]
@@ -435,7 +436,7 @@ CreateProject(name,pos,posArr){
        
     ]; //顶点坐标
 
-//console.log(vertices);
+
 
     var positions = [];
     var normals = [];
@@ -472,11 +473,15 @@ CreateProject(name,pos,posArr){
     var mesh = new THREE.Mesh(geometry,material);
     mesh.scale.set(1,1,1);
     mesh.name = name;
-   // console.log(mesh);
 
     self.scene.add(mesh);
 }
+compareDecimals(a, b) {
+    if (a === b) 
+         return 0;
 
+    return a < b ? -1 : 1;
+}
 }
 
 
