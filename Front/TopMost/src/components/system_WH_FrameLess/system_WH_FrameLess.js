@@ -186,6 +186,8 @@ export default {
         var self = this;
         if(self.can_algs)
         {
+            self.$store.state.threejs.WH_FrameLess.DeleteProject();
+
             self.sortPRoject_recommand();
             //排列
         }

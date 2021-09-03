@@ -379,19 +379,15 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     tGroup.add(grid[1]);
     self.scene.add( tGroup );
 }
+//創造貨物平面
 CreateProject(name,pos,posArr){
-  //  console.log(pos);
- //   console.log(this.interval);
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
     var x_arraw = [];
     var y_arrow = [];
 
-    //var test = [11,10,9];
-    // test = test.sort(this.compareDecimals);
 
-    //console.log(test);
 
     posArr.forEach(e=>{
         x_arraw.push(e[0]);
@@ -408,9 +404,6 @@ CreateProject(name,pos,posArr){
     y_arrow.sort(this.compareDecimals);
     var y_grid = (y_arrow[y_arrow.length-1] -y_arrow[0]) +1 ; 
    // var y_center = (y_arrow[y_arrow.length-1] -y_arrow[0])/2 ;
-
-    // console.log(x_grid +";"+x_center);
-    // console.log(y_grid +";"+y_center);
 
     //找出棧板的左下角點
     var project_zeropoint =[area_zeropoint[0]+this.interval*x_arraw[0],area_zeropoint[1]+this.interval*y_arrow[0]]
@@ -474,8 +467,25 @@ CreateProject(name,pos,posArr){
     mesh.scale.set(1,1,1);
     mesh.name = name;
 
+    this.line_project.push(mesh);
+
     self.scene.add(mesh);
 }
+
+DeleteProject()
+{
+    if(this.line_project.length >0)
+     {
+        this.line_project.forEach(element=>{
+            this.scene.remove(element);
+        });
+
+        this.line_project.splice(0, this.line_project.length);
+        this.line_project =[];
+     }
+}
+
+///比對大小
 compareDecimals(a, b) {
     if (a === b) 
          return 0;
