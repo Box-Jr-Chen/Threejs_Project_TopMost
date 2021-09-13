@@ -2,10 +2,8 @@ import * as THREE from "three";
 import "./InfiniteGridHelper";
 import MapDesign from './map.js';  // 地圖設計系統
 import WH_FrameLess from './wh_frameless.js';  // 地圖設計系統
-// import { error } from 'three';
+import {Viewer} from './three-dxf/three-dxf.js';  // dxf匯入
 const OrbitControls = require('three-orbit-controls')(THREE);
-// import shader_glow from '@js/threejs/glow_shader.js';
-// import shader_phong from "@js/threejs/Phong.js";
 
 
 class ThreeJs_3D {
@@ -32,13 +30,13 @@ class ThreeJs_3D {
 
         this.mapDesign = MapDesign.MapDesign;
         this.WH_FrameLess = WH_FrameLess.wh_frameless;
-
+      //  this.threeDxf  = ThreeDxf;
         this.sysInit = false;
     }
 
     init(container) //id = container
     {
-
+     
         this.sysInit = false;
         this.container = container;
         // console.log(this.container);
@@ -62,21 +60,21 @@ class ThreeJs_3D {
 
 
         //         初始化相机
-        var  value_ = 2 ;
-        this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
-       // this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 1000);
+       // var  value_ = 2 ;
+        //this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+        this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
         this.camera.position.set(0, 300, 0 );
         this.camera.lookAt(this.scene.position);
 
 
         //         初始化控制器
-        this.controls = new OrbitControls(this.camera);
-        this.controls.target.set(0, 0, 0);
-        this.controls.rotateSpeed *= -1;
-        this.controls.minDistance = 10;
-        this.controls.maxDistance = 1000;
+        this.controls = new OrbitControls(this.camera,this.container);
+        //this.controls.target.set(0, 0, 0);
+       // this.controls.rotateSpeed *= -1;
+     //   this.controls.minDistance = 10;
+      //  this.controls.maxDistance = 1000;
         // this.controls.maxPolarAngle = Math.PI / 2.3;
-        this.controls.enableRotate =false;
+       // this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
@@ -233,6 +231,12 @@ class ThreeJs_3D {
         this.WH_FrameLess.createMap();
     }
 
+    DXFReader(data)
+    {
+        data
+        //console.log(this.threeDxf);
+        Viewer(this.scene,this.camera,this.controls,this.width,this.height,data);
+    }
 
 }
 

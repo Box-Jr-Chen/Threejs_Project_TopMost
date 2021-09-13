@@ -1,6 +1,9 @@
+import json_factory from "@/assets/dxf/factory.json"
+
 export default {
     name: 'system_WH_FrameLess',
      components:{
+        json_factory
    },
    computed:{
 
@@ -13,10 +16,16 @@ export default {
        }
    },
    mounted() {
-    var self= this;
+        var   factory = json_factory ;
 
+        var self= this;
+        self.waitSysInit =  setInterval(() => {
+            if(self.$store.state.threejs.sysInit==false) return;
+            clearInterval(self.waitSysInit);
+            self.$store.state.threejs.DXFReader(factory);
 
-
+        }, 500);
+        /*
      //等待ThreeJs初始成功
      self.waitSysInit =  setInterval(() => {
         
@@ -156,7 +165,7 @@ export default {
 
 
      }, 500);
-
+    */
 
    },
    methods: {
@@ -191,6 +200,11 @@ export default {
             self.sortPRoject_recommand();
             //排列
         }
-      }
+      },
+      onFileChange(e) {
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+          return;
+      },
    },
  }

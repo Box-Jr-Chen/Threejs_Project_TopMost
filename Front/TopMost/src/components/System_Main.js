@@ -2,6 +2,8 @@ import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
 import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
 import navbar from '@/components/navbar/navbar.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
+
+
 export default {
     name: 'System_Main',
     components: {
