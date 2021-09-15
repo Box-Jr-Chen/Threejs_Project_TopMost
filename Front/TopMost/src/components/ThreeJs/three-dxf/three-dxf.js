@@ -1,5 +1,5 @@
 import * as THREE from "three";
-
+// const OrbitControls = require('three-orbit-controls')(THREE);
 // Three.js extension functions. Webpack doesn't seem to like it if we modify the THREE object directly.
 var THREEx = { Math: {} };
 
@@ -86,7 +86,7 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
  * @constructor
  */
 //  export function Viewer(scene,camera, width, height,data, font) {
-  export function Viewer(scene,camera,controls, width, height,data) {
+  export function Viewer(scene,camera,controls,container, width, height,data) {
 
   createLineTypeShaders(data);
 
@@ -96,6 +96,9 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     min: { x: false, y: false, z: false },
     max: { x: false, y: false, z: false },
   };
+
+  var objs =[];
+
   for (i = 0; i < data.entities.length; i++) {
     entity = data.entities[i];
     obj = drawEntity(entity, data);
@@ -113,11 +116,11 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
       if (bbox.max.y && (dims.max.y === false || dims.max.y < bbox.max.y))
         dims.max.y = bbox.max.y;
       if (bbox.max.z && (dims.max.z === false || dims.max.z < bbox.max.z))
-        dims.max.z = bbox.max.z;
-
-      
-      scene.add(obj);
+        dims.max.z = bbox.max.z;   
     }
+
+    objs.push(obj);
+
     obj = null;
   }
 
@@ -155,33 +158,44 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
       },
     };
 
-    //Camera
-    // camera = new THREE.OrthographicCamera(
-     camera = new THREE.PerspectiveCamera(
-        viewPort.left,
-        viewPort.right,
-        viewPort.top,
-        viewPort.bottom,
-        1,
-        19
-      );
-      camera.position.z = 10;
-      camera.position.x = viewPort.center.x;
-      camera.position.y = viewPort.center.y;
 
 
+      var scale = 0.01;
 
-// var renderer = (this.renderer = new THREE.WebGLRenderer());
-// renderer.setSize(width, height);
-// renderer.setClearColor(0xfffffff, 1);
 
-// parent.appendChild(renderer.domElement);
-// parent.style.display = 'block';
+      var g = new THREE.Group();
+      
+      g.position.set(viewPort.center.x,0,viewPort.center.y);
+      // objs
+      for(var o=0;o<objs.length;o++)
+      {
+        g.add(objs[o]);
+      }
+
+
+       g.scale.set(scale,scale,scale);
+       g.rotation.x = -Math.PI / 2;
+
+
+      scene.add(g);
+
+
+      // const geometry = new THREE.BoxGeometry( 10, 10, 10 );
+      // const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+      // const cube = new THREE.Mesh( geometry, material );
+      // const cube2 = new THREE.Mesh( geometry, material );
+      // scene.add( cube );
+      // scene.add( cube2 );
+      // cube.position.set( viewPort.right * scale,0,-viewPort.top* scale);
+      // cube2.position.set( viewPort.left * scale,0,-viewPort.bottom* scale);
+
+      g.position.set(viewPort.left * scale,0,-viewPort.bottom* scale);
+
+
 
   function drawEntity(entity, data) {
     var mesh;
 
-     console.log(entity.type);
 
     if (entity.type === 'CIRCLE' || entity.type === 'ARC') {
       mesh = drawArc(entity, data);
@@ -196,19 +210,19 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     } else if (entity.type === 'SOLID') {
       mesh = drawSolid(entity, data);
     } else if (entity.type === 'POINT') {
-      mesh = drawPoint(entity, data);
+      // mesh = drawPoint(entity, data);
     } else if (entity.type === 'INSERT') {
       mesh = drawBlock(entity, data);
     } else if (entity.type === 'SPLINE') {
-      mesh = drawSpline(entity, data);
+      // mesh = drawSpline(entity, data);
     } else if (entity.type === 'MTEXT') {
       //mesh = drawMtext(entity, data);
     } else if (entity.type === 'ELLIPSE') {
-      mesh = drawEllipse(entity, data);
+      //  mesh = drawEllipse(entity, data);
     } else if (entity.type === 'DIMENSION') {
       var dimTypeEnum = entity.dimensionType & 7;
       if (dimTypeEnum === 0) {
-        mesh = drawDimension(entity, data);
+        // mesh = drawDimension(entity, data);
       } else {
         console.log('Unsupported Dimension type: ' + dimTypeEnum);
       }
@@ -218,38 +232,38 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     return mesh;
   }
 
-  function drawEllipse(entity, data) {
-    var color = getColor(entity, data);
+  // function drawEllipse(entity, data) {
+  //   var color = getColor(entity, data);
 
-    var xrad = Math.sqrt(
-      Math.pow(entity.majorAxisEndPoint.x, 2) +
-        Math.pow(entity.majorAxisEndPoint.y, 2)
-    );
-    var yrad = xrad * entity.axisRatio;
-    var rotation = Math.atan2(
-      entity.majorAxisEndPoint.y,
-      entity.majorAxisEndPoint.x
-    );
+  //   var xrad = Math.sqrt(
+  //     Math.pow(entity.majorAxisEndPoint.x, 2) +
+  //       Math.pow(entity.majorAxisEndPoint.y, 2)
+  //   );
+  //   var yrad = xrad * entity.axisRatio;
+  //   var rotation = Math.atan2(
+  //     entity.majorAxisEndPoint.y,
+  //     entity.majorAxisEndPoint.x
+  //   );
 
-    var curve = new THREE.EllipseCurve(
-      entity.center.x,
-      entity.center.y,
-      xrad,
-      yrad,
-      entity.startAngle,
-      entity.endAngle,
-      false, // Always counterclockwise
-      rotation
-    );
+  //   var curve = new THREE.EllipseCurve(
+  //     entity.center.x,
+  //     entity.center.y,
+  //     xrad,
+  //     yrad,
+  //     entity.startAngle,
+  //     entity.endAngle,
+  //     false, // Always counterclockwise
+  //     rotation
+  //   );
 
-    var points = curve.getPoints(50);
-    var geometry = new THREE.BufferGeometry().setFromPoints(points);
-    var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
+  //   var points = curve.getPoints(50);
+  //   var geometry = new THREE.BufferGeometry().setFromPoints(points);
+  //   var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
 
-    // Create the final object to add to the scene
-    var ellipse = new THREE.Line(geometry, material);
-    return ellipse;
-  }
+  //   // Create the final object to add to the scene
+  //   var ellipse = new THREE.Line(geometry, material);
+  //   return ellipse;
+  // }
 
   // function drawMtext(entity, data) {
   //   var color = getColor(entity, data);
@@ -336,52 +350,52 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
   //   return text;
   // }
 
-  function drawSpline(entity, data) {
-    var color = getColor(entity, data);
+  // function drawSpline(entity, data) {
+  //   var color = getColor(entity, data);
 
-    var points = entity.controlPoints.map(function (vec) {
-      return new THREE.Vector2(vec.x, vec.y);
-    });
+  //   var points = entity.controlPoints.map(function (vec) {
+  //     return new THREE.Vector2(vec.x, vec.y);
+  //   });
 
-    var interpolatedPoints = [];
-    var curve;
-    if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
-      var i = 0;
-      for (i = 0; i + 2 < points.length; i = i + 2) {
-        if (entity.degreeOfSplineCurve === 2) {
-          curve = new THREE.QuadraticBezierCurve(
-            points[i],
-            points[i + 1],
-            points[i + 2]
-          );
-        } else {
-          curve = new THREE.QuadraticBezierCurve3(
-            points[i],
-            points[i + 1],
-            points[i + 2]
-          );
-        }
-        interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
-      }
-      if (i < points.length) {
-        curve = new THREE.QuadraticBezierCurve3(
-          points[i],
-          points[i + 1],
-          points[i + 1]
-        );
-        interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
-      }
-    } else {
-      curve = new THREE.SplineCurve(points);
-      interpolatedPoints = curve.getPoints(100);
-    }
+  //   var interpolatedPoints = [];
+  //   var curve;
+  //   if (entity.degreeOfSplineCurve === 2 || entity.degreeOfSplineCurve === 3) {
+  //     var i = 0;
+  //     for (i = 0; i + 2 < points.length; i = i + 2) {
+  //       if (entity.degreeOfSplineCurve === 2) {
+  //         curve = new THREE.QuadraticBezierCurve(
+  //           points[i],
+  //           points[i + 1],
+  //           points[i + 2]
+  //         );
+  //       } else {
+  //         curve = new THREE.QuadraticBezierCurve3(
+  //           points[i],
+  //           points[i + 1],
+  //           points[i + 2]
+  //         );
+  //       }
+  //       interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
+  //     }
+  //     if (i < points.length) {
+  //       curve = new THREE.QuadraticBezierCurve3(
+  //         points[i],
+  //         points[i + 1],
+  //         points[i + 1]
+  //       );
+  //       interpolatedPoints.push.apply(interpolatedPoints, curve.getPoints(50));
+  //     }
+  //   } else {
+  //     curve = new THREE.SplineCurve(points);
+  //     interpolatedPoints = curve.getPoints(100);
+  //   }
 
-    var geometry = new THREE.BufferGeometry().setFromPoints(interpolatedPoints);
-    var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
-    var splineObject = new THREE.Line(geometry, material);
+  //   var geometry = new THREE.BufferGeometry().setFromPoints(interpolatedPoints);
+  //   var material = new THREE.LineBasicMaterial({ linewidth: 1, color: color });
+  //   var splineObject = new THREE.Line(geometry, material);
 
-    return splineObject;
-  }
+  //   return splineObject;
+  // }
 
   function drawLine(entity, data) {
 
@@ -461,15 +475,17 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     return line;
   }
 
-  function drawArc(entity, data) {
+ function drawArc(entity, data) {
+
     var startAngle, endAngle;
     if (entity.type === 'CIRCLE') {
       startAngle = entity.startAngle || 0;
       endAngle = startAngle + 2 * Math.PI;
     } else {
+
       startAngle = entity.startAngle;
       endAngle = entity.endAngle;
-    }
+   }
 
     var curve = new THREE.ArcCurve(0, 0, entity.radius, startAngle, endAngle);
 
@@ -485,8 +501,8 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     arc.position.y = entity.center.y;
     arc.position.z = entity.center.z;
 
-    return arc;
-  }
+   return arc;
+ }
 
   function drawSolid(entity, data) {
     var material,
@@ -575,55 +591,56 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
   //   return text;
   // }
 
-  function drawPoint(entity, data) {
-    var geometry, material, point;
+  // function drawPoint(entity, data) {
+  //   var geometry, material, point;
 
-    //geometry = new THREE.Geometry();
-    geometry = new THREE.BufferGeometry();
-    geometry.vertices.push(
-      new THREE.Vector3(entity.position.x, entity.position.y, entity.position.z)
-    );
+  //   //geometry = new THREE.Geometry();
+  //   geometry = new THREE.BufferGeometry();
+  //   geometry.vertices.push(
+  //     new THREE.Vector3(entity.position.x, entity.position.y, entity.position.z)
+  //   );
 
-    // TODO: could be more efficient. PointCloud per layer?
+  //   // TODO: could be more efficient. PointCloud per layer?
 
-    var numPoints = 1;
+  //   var numPoints = 1;
 
-    var color = getColor(entity, data);
-    var colors = new Float32Array(numPoints * 3);
-    colors[0] = color.r;
-    colors[1] = color.g;
-    colors[2] = color.b;
+  //   var color = getColor(entity, data);
+  //   var colors = new Float32Array(numPoints * 3);
+  //   colors[0] = color.r;
+  //   colors[1] = color.g;
+  //   colors[2] = color.b;
 
-    geometry.colors = colors;
-    geometry.computeBoundingBox();
+  //   geometry.colors = colors;
+  //   geometry.computeBoundingBox();
 
-    material = new THREE.PointsMaterial({
-      size: 0.05,
-      vertexColors: THREE.VertexColors,
-    });
-    point = new THREE.Points(geometry, material);
-    scene.add(point);
-  }
+  //   material = new THREE.PointsMaterial({
+  //     size: 0.05,
+  //     vertexColors: THREE.VertexColors,
+  //   });
+  //   point = new THREE.Points(geometry, material);
+  //   scene.add(point);
+  // }
 
-  function drawDimension(entity, data) {
-    var block = data.blocks[entity.block];
+  // function drawDimension(entity, data) {
+  //   var block = data.blocks[entity.block];
 
-    if (!block || !block.entities) return null;
+  //   if (!block || !block.entities) return null;
 
-    var group = new THREE.Object3D();
-    if(entity.anchorPoint) {
-        group.position.x = entity.anchorPoint.x;
-        group.position.y = entity.anchorPoint.y;
-        group.position.z = entity.anchorPoint.z;
-    }
+  //   var group = new THREE.Object3D();
+  //   if(entity.anchorPoint) {
+  //       group.position.x = entity.anchorPoint.x;
+  //       group.position.y = entity.anchorPoint.y;
+  //       group.position.z = entity.anchorPoint.z;
+  //   }
 
-    for (var i = 0; i < block.entities.length; i++) {
-      var childEntity = drawEntity(block.entities[i], data, group);
-      if (childEntity) group.add(childEntity);
-    }
+  //   for (var i = 0; i < block.entities.length; i++) {
+  //     var childEntity = drawEntity(block.entities[i], data, group);
+  //     if (childEntity) group.add(childEntity);
+  //   }
 
-    return group;
-  }
+  //   return group;
+  // }
+ 
 
   function drawBlock(entity, data) {
 

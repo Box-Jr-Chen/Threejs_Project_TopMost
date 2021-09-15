@@ -4,14 +4,21 @@ const setting_pallet = db['setting_pallet'];
 async function list(req, res) { 
     return await
     setting_pallet
-      .findAll()
+      .findAll({order: [['id']]})
       .then((setting_pallets) => res.status(200).send(setting_pallets))
       .catch((error) => { res.status(400).send(error); })}
   
   
 async function add(req, res) { 
 
-         var title = req.body.title;
+        var id = await setting_pallet.count();
+
+        if(id <10)
+            id = '0'+(id+1);
+        else
+            id = (id+1);
+      
+         var title ='棧板'+id;
          var img  = "";
          var width = req.body.width;
          var length = req.body.length;

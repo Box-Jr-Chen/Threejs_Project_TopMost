@@ -60,21 +60,21 @@ class ThreeJs_3D {
 
 
         //         初始化相机
-       // var  value_ = 2 ;
-        //this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
-        this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
-        this.camera.position.set(0, 300, 0 );
-        this.camera.lookAt(this.scene.position);
+         var  value_ = 2 ;
+         this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+        //this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
+         this.camera.position.set(0, 500, 0 );
+         this.camera.lookAt(this.scene.position);
 
 
         //         初始化控制器
         this.controls = new OrbitControls(this.camera,this.container);
-        //this.controls.target.set(0, 0, 0);
-       // this.controls.rotateSpeed *= -1;
-     //   this.controls.minDistance = 10;
-      //  this.controls.maxDistance = 1000;
-        // this.controls.maxPolarAngle = Math.PI / 2.3;
-       // this.controls.enableRotate =false;
+        this.controls.target.set(0, 0, 0);
+        this.controls.rotateSpeed *= -1;
+        this.controls.minDistance = 10;
+        this.controls.maxDistance = 1000;
+        this.controls.maxPolarAngle = Math.PI / 2.3;
+        this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
@@ -233,11 +233,10 @@ class ThreeJs_3D {
 
     DXFReader(data)
     {
-        data
+        //data
         //console.log(this.threeDxf);
-        Viewer(this.scene,this.camera,this.controls,this.width,this.height,data);
+        Viewer(this.scene,this.camera,this.controls,this.container,this.width,this.height,data);
     }
-
 }
 
 export default {ThreeJs :new ThreeJs_3D()}

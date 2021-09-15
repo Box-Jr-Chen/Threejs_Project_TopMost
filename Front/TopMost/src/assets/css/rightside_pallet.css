@@ -1,5 +1,5 @@
 #rightside_pallet{
-    width: 20rem;
+    width: 25rem;
     height: 35rem;
     background: rgb(211, 211, 211);
     border: 1px rgb(42, 42, 42) solid;
@@ -14,19 +14,21 @@
 }
 .title p {
     padding-left: 0.5rem;
-    width: 90%;
-    font: 1.8rem ;
+    width: 100%;
+    height: 10%;
+    font-size: 1.2rem ;
     font-family:  sans-serif;
     font-weight: bold;
 }
 .title .add_block{
-    width: 30%;
+    width: 40%;
     height: 100%;
-    padding-top: 0.75rem;
+    padding-top: 1rem;
+    padding-left: 3.2rem;
 }
 .btn_active_panel_pallet{
-    width: 4rem;
-    height: 1.5rem;
+    width: 5rem;
+    height: 2rem;
     background: linear-gradient(to bottom, rgb(182, 181, 181) 0%, rgb(129, 129, 129) 100%);
     color: white;
     border-radius: 3px;
@@ -43,25 +45,69 @@
 .btn_active_panel_pallet .word{
     width: 50%;
     padding-left: 0.3rem;
-    padding-top: 0.15rem;
+    padding-top: 0.2rem;
+    font-size: 1.2rem ;
+    font-family:  sans-serif;
+    font-weight: bold;
     
 }
+.btn_fix_panel_pallet{
+    width: 3rem;
+    height: 2rem;
+    background: linear-gradient(to bottom, rgb(115, 184, 149) 0%, rgb(54, 168, 98) 100%);
+    color: white;
+    border-radius: 3px;
+    border: 1px rgb(112, 112, 112) solid;
+    cursor: pointer;
+    display: flex;
+    
+}
+.btn_fix_panel_pallet:active{
+    background: linear-gradient(to bottom, rgb(54, 168, 98) 0%, rgb(41, 126, 74) 100%);
+}
 
+.btn_delete_panel_pallet{
+    width: 3rem;
+    height: 2rem;
+    background: linear-gradient(to bottom, rgb(190, 123, 77) 0%, rgb(168, 100, 54) 100%);
+    color: white;
+    border-radius: 3px;
+    border: 1px rgb(112, 112, 112) solid;
+    cursor: pointer;
+    display: flex;
+    
+}
+.btn_delete_panel_pallet:active{
+    background: linear-gradient(to bottom, rgb(168, 100, 54) 0%, rgb(122, 67, 30) 100%);
+}
 
+.btn_fix_panel_pallet .word{
+    font-size: 1.1rem;
+    margin: 0;
+    margin-top: 0.2rem;
+    margin-left: 0.4rem;
+}
+.btn_delete_panel_pallet .word{
+    font-size: 1.1rem;
+    margin: 0;
+    margin-top: 0.2rem;
+    margin-left: 0.4rem;
+}
 .inner_outline{
     width: 95%;
-    height: 89%;
+    height: 87%;
     background: rgb(70, 70, 70);
     border: 1px rgb(153, 153, 153) solid;
     margin: 0 auto;
     text-align: center;
+    overflow-y: auto;
 }
 
 
 .pallet_cell{
     width: 99%;
     height: 4rem;
-    background: rgb(211, 211, 211);
+    background: rgb(187, 187, 187);
     border: 1px rgb(112, 112, 112) solid;
     display: flex;
     flex-direction: start;
@@ -74,11 +120,15 @@
     margin-left: 0.2rem;
     border: 1px rgb(112, 112, 112) solid;
 }
+.pallet_cell .context{
+    width: 10.5rem;
+    text-align: left;
+    margin-top: 1.2rem;
+}
 .pallet_cell div{
     margin: 0 auto;
-    text-align: center;
-    margin-top: 1.2rem;
-    font-size: 1.25rem;
+    margin-top: 1rem;
+    font-size: 1.23rem;
     font-weight: bold;
 }
 .cross_container{
@@ -107,7 +157,7 @@
 
  #cross:before {
    left: 50%;
-   width: 30%;
+   width: 40%;
    margin-left: -15%;
    height: 100%;
  }

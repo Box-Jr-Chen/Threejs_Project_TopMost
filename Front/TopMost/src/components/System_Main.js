@@ -1,6 +1,7 @@
+import navbar from '@/components/navbar/navbar.vue'
+import Leftbar from '@/components/system_mainUI/Leftbar/Leftbar.vue'
 import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
 import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
-import navbar from '@/components/navbar/navbar.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 
 
@@ -10,7 +11,8 @@ export default {
       system_drawMap,
       system_WH_FrameLess,
       navbar,
-      system_mainUI
+      system_mainUI,
+      Leftbar
       },
       computed:{
         leftmargin: function() {
@@ -20,7 +22,6 @@ export default {
       },
       data(){
           return{
-
           }
       },
       mounted(){

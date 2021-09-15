@@ -15,6 +15,8 @@ export default  new Vuex.Store({
     data_area_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area,
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
     data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
+    setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
+    
     id_getWavehouse:1,
     width_main:0,
     height_main:0,
@@ -23,11 +25,14 @@ export default  new Vuex.Store({
     threejs :ThreeJs.ThreeJs,
     panel_select:0,
     panel_show_addPallet_inSetting_Pallet:false,
+    panel_show_deletePallet_inSetting_Pallet:false,
     panel_show_addPallet_inSetting_Project:false,
+
+
     leftbtns:[
       {
         'img':'setting',
-        'title':'倉儲排列'
+        'title':'區域設定'
       },
       {
         'img':'setting',
@@ -37,10 +42,6 @@ export default  new Vuex.Store({
         'img':'setting',
         'title':'貨物設定'
       },
-      {
-        'img':'setting',
-        'title':'繪製地圖'
-      }
     ],
    //位置資訊
    WH_borders:{
@@ -56,7 +57,22 @@ export default  new Vuex.Store({
      []
    },
    
-   Project_sort:null
+   //棧板
+   pillets:[],
+   pillet_add_fix:{
+    id:0,
+    width:0,
+    length:0,
+    height:0,
+   },
+   pillet_delete:{
+    id:0
+   },
+   Project_sort:null,
+
+   //棧板設定
+
+   //貨物設定
 
   },
   mutations: {
@@ -72,11 +88,11 @@ export default  new Vuex.Store({
     Hide_Panel_addPallet(){
       this.state.panel_show_addPallet_inSetting_Pallet= false;
     },
-    Show_Panel_addProject(){
-      this.state.panel_show_addPallet_inSetting_Project= true;
+    Show_Panel_deletePallet(){
+      this.state.panel_show_deletePallet_inSetting_Pallet= true;
     },
-    Hide_Panel_addProject(){
-      this.state.panel_show_addPallet_inSetting_Project= false;
+    Hide_Panel_deletePallet(){
+      this.state.panel_show_deletePallet_inSetting_Pallet= false;
     },
   },
   actions: {
@@ -128,8 +144,6 @@ export default  new Vuex.Store({
               });
         },
 
-
-
         async A_GetArea(state) {
           var self= this;
           var data = {
@@ -161,7 +175,6 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-
 
         async A_Getinterval(state) {
           var self= this;
@@ -199,7 +212,70 @@ export default  new Vuex.Store({
             ).catch(error => {
               return error;
             });
-        }
+        },
+        async A_GetPallets(state) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_pillet_Api,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_PostPallets(state,data_post) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_pillet_Api,
+            'form': data_post,
+          };
+          state
+          return await store
+              .dispatch('AxiosPost', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_UpdatePallets(state,data_post) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_pillet_Api,
+            'form': data_post,
+          };
+          state
+          return await store
+              .dispatch('AxiosPatch', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_DeletePallets(state,id) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_pillet_Api+"?id="+id,
+          };
+          console.log(data.path);
+          state
+          return await store
+              .dispatch('AxiosDelete', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
   },
   modules: {
 
