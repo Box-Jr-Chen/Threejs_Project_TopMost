@@ -265,7 +265,6 @@ export default  new Vuex.Store({
           var data = {
             'path': self.state.setting_pillet_Api+"?id="+id,
           };
-          console.log(data.path);
           state
           return await store
               .dispatch('AxiosDelete', data)
