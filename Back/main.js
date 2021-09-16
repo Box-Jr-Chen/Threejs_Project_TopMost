@@ -31,6 +31,9 @@ app.use('/warehouse',async (req,res)=>{
    await router_setting_pallet(req,res) ;
 });
 
+app.use('/setting_project',async (req,res)=>{
+   await router_setting_project(req,res) ;
+});
 
 app.use('/algs',async (req,res)=>{
    await router_algs(req,res) ;

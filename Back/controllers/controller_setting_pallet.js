@@ -11,6 +11,42 @@ async function list(req, res) {
   
 async function add(req, res) { 
 
+        var width =  parseInt(req.body.width);
+        var length = parseInt(req.body.length);
+        var height = parseInt(req.body.height);
+
+        if(isNaN(width) || width<=0)
+        {
+          res.status(200).send(
+            res.json(
+                {
+                  'result':'error',
+                  'msg':'width error'
+                }
+              ));
+        }
+        if(isNaN(length) || length<=0)
+        {
+          res.status(200).send(
+            res.json(
+                {
+                  'result':'error',
+                  'msg':'length error'
+                }
+              ));
+        }
+        if(isNaN(height) || height<=0)
+        {
+          res.status(200).send(
+            res.json(
+                {
+                  'result':'error',
+                  'msg':'height error'
+                }
+              ));
+        }
+
+
         var id = await setting_pallet.count();
 
         if(id <10)
@@ -20,9 +56,8 @@ async function add(req, res) {
       
          var title ='棧板'+id;
          var img  = "";
-         var width = req.body.width;
-         var length = req.body.length;
-         var height = req.body.height;
+
+
         return await
         setting_pallet
           .create({
@@ -56,6 +91,39 @@ async function update(req, res){
     var width = req.body.width;
     var length = req.body.length;
     var height = req.body.height;
+
+
+    if(isNaN(width) || width<=0)
+    {
+      res.status(200).send(
+        res.json(
+            {
+              'result':'error',
+              'msg':'width error'
+            }
+          ));
+    }
+    if(isNaN(length) || length<=0)
+    {
+      res.status(200).send(
+        res.json(
+            {
+              'result':'error',
+              'msg':'length error'
+            }
+          ));
+    }
+    if(isNaN(height) || height<=0)
+    {
+      res.status(200).send(
+        res.json(
+            {
+              'result':'error',
+              'msg':'height error'
+            }
+          ));
+    }
+
 
     return await
     setting_pallet

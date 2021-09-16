@@ -21,6 +21,9 @@
             <div class="btn btn_enter" @click="fix_pillet"  v-if="$store.state.pillet_add_fix.id >0">修改</div>
             <div class="btn btn_cancel" @click="hide_addpanel">取消</div>
         </div>
+        <div  class="error_msg">
+            {{$store.state.pallet_error}}
+        </div>
     </div>
    </div>
 </template>

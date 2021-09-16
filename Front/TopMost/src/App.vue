@@ -19,7 +19,8 @@ export default {
         displayWindowSize() {
              var self =this;
              self.$store.state.height_main   =  window.innerHeight;
-             self.$store.state.width_main    = (16/9) * window.innerHeight  ;
+            // self.$store.state.width_main    = (16/9) * window.innerHeight  ;
+             self.$store.state.width_main    = window.innerWidth  ;
              self.$store.state.border_main   = (window.innerHeight - self.$store.state.width_main)/2  ;
           }
   },

@@ -10,6 +10,7 @@ export default {
               // height:0,
               // width:0,
               // length:0
+              showMsgTime :null
           }
       },
       mounted(){
@@ -21,8 +22,7 @@ export default {
           contain.addEventListener('mouseleave',()=>{
             self.$store.state.threejs.Active_controls();
           });
-        //   var list =  window.getEventListeners(contain);
-        //   console.log(list);
+   
       },
       methods:{
             hide_addpanel(){
@@ -38,10 +38,15 @@ export default {
                 };
 
                 self.$store.dispatch('A_PostPallets',data).then(response =>{
+                  console.log(response);
                   if(response.result !=='error')
                     {
                       //更新
                       self.update_pillets();
+                    }
+                    else
+                    {
+                      self.error_msg(response.msg);
                     }
                 });
 
@@ -61,6 +66,10 @@ export default {
                     //更新
                     self.update_pillets();
                   }
+                  else
+                  {
+                    self.error_msg(response.msg);
+                  }
               });
             },
             update_pillets(){
@@ -72,12 +81,20 @@ export default {
                           self.$store.commit('Hide_Panel_addPallet');
                       }
                   });
+            },
+            error_msg(msg){
+              var self = this;
+
+              self.$store.state.pallet_error =msg;
+              
+              console.log(self.$store.state.pallet_error);
+
+              if( self.showMsgTime !==null)
+                  clearTimeout(self.showMsgTime);
+
+               self.showMsgTime = setTimeout(() => {
+                  self.$store.state.pallet_error ='';
+                }, 1000);
             }
-            // width_type(num){
-            //     return this.$store.state.pillet_add_fix.width = parseInt(num);
-            // },
-            // height_type(num){
-            //     return this.$store.state.pillet_add_fix.height = parseInt(num);
-            // }
       }
 }

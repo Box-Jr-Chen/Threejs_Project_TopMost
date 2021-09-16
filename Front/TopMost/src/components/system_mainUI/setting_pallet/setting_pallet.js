@@ -15,10 +15,8 @@ export default {
 
                     if(this.$store.state.contain_rightpanel !=null)
                     {
-                        //var x = (this.$store.state.border_main*2) + this.$store.state.width_main -  (this.$store.state.contain_rightpanel.offsetWidth/2);
                         var x = (this.$store.state.width_main/2) -(this.$store.state.contain_rightpanel.offsetWidth/2) -15;
-                        var y = ((this.$store.state.height_main/2) *(2.5/4)) -  (this.$store.state.contain_rightpanel.offsetHeight/2);
-                        return "left:"+x+"px; top:"+y+"px;";
+                        return "left:"+x+"px; top:  50%;";
                     }
 
                 return "left:0px; top:0px;";
@@ -31,7 +29,7 @@ export default {
       mounted(){
 
             this.$store.state.contain_rightpanel = document.getElementById("rightside_pallet");
-             //   console.log(contain_rightpanel.offsetWidth+";"+contain_rightpanel.offsetHeight );
+
             this.LoadPallet();
       },
       methods:{
@@ -41,7 +39,6 @@ export default {
                 self.$store.dispatch('A_GetPallets').then(response =>{
                    if(response.result !=='error')
                     {
-                        console.log(response);
                         self.$store.state.pillets = response;
                     }
                 });

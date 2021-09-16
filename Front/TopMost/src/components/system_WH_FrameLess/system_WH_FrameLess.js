@@ -1,4 +1,4 @@
-import json_factory from "@/assets/dxf/factory.json"
+import json_factory from "@/assets/dxf/20210526_2.json"
 
 export default {
     name: 'system_WH_FrameLess',
@@ -175,12 +175,11 @@ export default {
             self.$store.dispatch('A_Postsorting_project').then(response =>{
                 if(response.result ===undefined)
                     return;
-                console.log(response);
                 if(response.result==="success")
                 {
-                     console.log(response);
-                    self.$store.state.Project_sort = response.cause;
-                    self.$store.state.Project_sort.forEach(function(project,index){
+                     //console.log(response);
+                    self.$store.state.pillet_sort = response.cause;
+                    self.$store.state.pillet_sort.forEach(function(project,index){
                         index
                         var init_pos = JSON.parse(project.init);
                       // console.log(project.pos);

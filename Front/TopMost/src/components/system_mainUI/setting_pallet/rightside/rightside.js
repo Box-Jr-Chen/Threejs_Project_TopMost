@@ -21,6 +21,7 @@ export default {
                 this.$store.state.pillet_add_fix.width =0;
                 this.$store.state.pillet_add_fix.length =0;
                 this.$store.state.pillet_add_fix.height =0;
+                this.$store.state.pallet_error='';
             },
             show_fixpanel(item){
                 this.$store.commit('Show_Panel_addPallet');

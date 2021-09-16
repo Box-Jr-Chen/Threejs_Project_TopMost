@@ -1,7 +1,7 @@
 <template>
   <div class="system_mainUI" >
-      <setting_pallet v-if="$store.state.panel_select ==1"/>
-      <setting_project  v-if="$store.state.panel_select ==2"/>
+      <setting_pallet v-if="$store.state.panel_select ==2"/>
+      <setting_project  v-if="$store.state.panel_select ==3"/>
   </div>
 </template>
 

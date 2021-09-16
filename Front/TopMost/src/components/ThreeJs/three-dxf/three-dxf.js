@@ -176,7 +176,6 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
        g.scale.set(scale,scale,scale);
        g.rotation.x = -Math.PI / 2;
 
-
       scene.add(g);
 
 

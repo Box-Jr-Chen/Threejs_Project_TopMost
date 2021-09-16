@@ -4,7 +4,7 @@ import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
 import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 
-
+import json_factory from "@/assets/dxf/20210526_3.json"
 export default {
     name: 'System_Main',
     components: {
@@ -12,7 +12,8 @@ export default {
       system_WH_FrameLess,
       navbar,
       system_mainUI,
-      Leftbar
+      Leftbar,
+      json_factory
       },
       computed:{
         leftmargin: function() {
@@ -22,6 +23,7 @@ export default {
       },
       data(){
           return{
+            waitSysInit :null,
           }
       },
       mounted(){
@@ -35,6 +37,14 @@ export default {
           event
           self.mouseup();
         }, true);
+
+
+        self.waitSysInit =  setInterval(() => {
+            if(self.$store.state.threejs.sysInit==false) return;
+            clearInterval(self.waitSysInit);
+            self.$store.state.threejs.DXFReader(json_factory);
+
+        }, 500);
         // document.body.onmouseup = function() {
         //   self.mouseup();
         // }

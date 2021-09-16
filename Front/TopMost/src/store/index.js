@@ -16,7 +16,7 @@ export default  new Vuex.Store({
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
     data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
     setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
-    
+    setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
     id_getWavehouse:1,
     width_main:0,
     height_main:0,
@@ -27,19 +27,23 @@ export default  new Vuex.Store({
     panel_show_addPallet_inSetting_Pallet:false,
     panel_show_deletePallet_inSetting_Pallet:false,
     panel_show_addPallet_inSetting_Project:false,
-
+    panel_show_deletePallet_inSetting_Project:false,
 
     leftbtns:[
       {
-        'img':'setting',
+        'img':'sort_icon',
+        'title':'貨物排列'
+      },
+      {
+        'img':'area_icon',
         'title':'區域設定'
       },
       {
-        'img':'setting',
+        'img':'pallet_icon',
         'title':'棧板設定'
       },
       {
-        'img':'setting',
+        'img':'project_icon',
         'title':'貨物設定'
       },
     ],
@@ -57,7 +61,7 @@ export default  new Vuex.Store({
      []
    },
    
-   //棧板
+   //棧板設定
    pillets:[],
    pillet_add_fix:{
     id:0,
@@ -68,11 +72,21 @@ export default  new Vuex.Store({
    pillet_delete:{
     id:0
    },
-   Project_sort:null,
-
-   //棧板設定
-
+   pallet_error:'',
    //貨物設定
+   projects:[],
+   project_add_fix:{
+    id:0,
+    width:0,
+    length:0,
+    height:0,
+   },
+   project_delete:{
+    id:0
+   },
+   project_error:'',
+  //排列後的棧板
+  pillet_sort:null,
 
   },
   mutations: {
@@ -94,6 +108,19 @@ export default  new Vuex.Store({
     Hide_Panel_deletePallet(){
       this.state.panel_show_deletePallet_inSetting_Pallet= false;
     },
+
+    Show_Panel_addProject(){
+      this.state.panel_show_addPallet_inSetting_Project= true;
+    },
+    Hide_Panel_addProject(){
+      this.state.panel_show_addPallet_inSetting_Project= false;
+    },
+    Show_Panel_deleteProject(){
+      this.state.panel_show_deletePallet_inSetting_Project= true;
+    },
+    Hide_Panel_deleteProject(){
+      this.state.panel_show_deletePallet_inSetting_Project= false;
+    },
   },
   actions: {
         async AxiosGet(state, data) {
@@ -113,14 +140,14 @@ export default  new Vuex.Store({
         // return Promise.rejecte(error);
         })
         },
-        async AxiosPatch(state, data) {   //測試
+        async AxiosPatch(state, data) {  
         return await axios.patch(data.path, data.form).then(response => {
             return response.data;
         }).catch(error => {
             return Promise.rejecte(error);
         })
         },
-        async AxiosDelete(state, data) {   //測試
+        async AxiosDelete(state, data) {   
         return await axios.delete(data.path).then(response => {
             return response.data;
         }).catch(error => {
@@ -213,6 +240,7 @@ export default  new Vuex.Store({
               return error;
             });
         },
+        //Pallets Data
         async A_GetPallets(state) {
           var self= this;
           var data = {
@@ -266,6 +294,75 @@ export default  new Vuex.Store({
             'path': self.state.setting_pillet_Api+"?id="+id,
           };
           state
+          return await store
+              .dispatch('AxiosDelete', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
+        //Projects Data
+        async A_GetProjects(state) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_project_Api,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_PostProjects(state,data_post) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_project_Api,
+            'form': data_post,
+          };
+          state
+     
+          return await store
+              .dispatch('AxiosPost', data)
+              .then(response => {
+                console.log(response);
+                return  response;
+              }
+              ).catch(error => {
+                console.log(error);
+                return error;
+              });
+        },
+        async A_UpdateProjects(state,data_post) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_project_Api,
+            'form': data_post,
+          };
+          state
+          return await store
+              .dispatch('AxiosPatch', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_DeleteProjects(state,id) {
+          var self= this;
+          var data = {
+            'path': self.state.setting_project_Api+"?id="+id,
+          };
+          state
+
+
           return await store
               .dispatch('AxiosDelete', data)
               .then(response => {

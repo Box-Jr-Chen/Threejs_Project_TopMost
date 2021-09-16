@@ -13,7 +13,6 @@
         </div>
     </div>
     <div class="inner_outline">
-
         <div class="pallet_cell"  v-for="(item,index) in $store.state.pillets"  :key="index">
             <img src="@/assets/img/pallet.png" alt="">
              <div class="context">

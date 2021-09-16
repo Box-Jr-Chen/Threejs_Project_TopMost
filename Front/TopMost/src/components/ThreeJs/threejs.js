@@ -52,7 +52,7 @@ class ThreeJs_3D {
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-        this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(130, 130, 130)"));
+      //  this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(130, 130, 130)"));
 
 
         this.scene.add(this.grid);
@@ -69,6 +69,7 @@ class ThreeJs_3D {
 
         //         初始化控制器
         this.controls = new OrbitControls(this.camera,this.container);
+        this.controls.touches.ONE = THREE.TOUCH.PAN;
         this.controls.target.set(0, 0, 0);
         this.controls.rotateSpeed *= -1;
         this.controls.minDistance = 10;
@@ -234,7 +235,6 @@ class ThreeJs_3D {
     DXFReader(data)
     {
         //data
-        //console.log(this.threeDxf);
         Viewer(this.scene,this.camera,this.controls,this.container,this.width,this.height,data);
     }
 }

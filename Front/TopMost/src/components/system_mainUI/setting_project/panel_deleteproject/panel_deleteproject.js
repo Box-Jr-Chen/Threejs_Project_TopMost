@@ -1,5 +1,5 @@
 export default {
-    name: 'panel_deletepallet',
+    name: 'panel_deleteproject',
     components: {
  
       },
@@ -14,7 +14,7 @@ export default {
       },
       mounted(){
           var self= this;
-          const contain = document.getElementById('panel_deletepallet');
+          const contain = document.getElementById('panel_deleteproject');
           contain.addEventListener('mouseenter',()=>{
             self.$store.state.threejs.UnActive_controls();
           });
@@ -25,29 +25,30 @@ export default {
         //   console.log(list);
       },
       methods:{
-            hide_addpanel(){
-                this.$store.commit('Hide_Panel_addPallet');
+            hide_deletepanel(){
+                this.$store.commit('Hide_Panel_deleteProject');
                 this.$store.state.threejs.Active_controls();
             },
-            delete_pillet(){
+            delete_project(){
                 var self = this;
 
-                self.$store.dispatch('A_DeletePallets',self.$store.state.pillet_delete.id).then(response =>{
+                self.$store.dispatch('A_DeleteProjects',self.$store.state.project_delete.id).then(response =>{
                   if(response.result !=='error')
                     {
+                    
                       //更新
-                      self.update_pillets();
+                      self.update_projects();
                     }
                 });
 
             },
-            update_pillets(){
+            update_projects(){
                   var self = this;
-                  self.$store.dispatch('A_GetPallets').then(response =>{
+                  self.$store.dispatch('A_GetProjects').then(response =>{
                     if(response.result !=='error')
                       {
-                          self.$store.state.pillets = response;
-                          self.$store.commit('Hide_Panel_deletePallet');
+                          self.$store.state.projects = response;
+                          self.$store.commit('Hide_Panel_deleteProject');
                       }
                   });
             }
