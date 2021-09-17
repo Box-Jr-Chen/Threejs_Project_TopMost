@@ -11,7 +11,7 @@ const router_setting_project = require('./routes/router_setting_project');
 const route_pallets = require('./routes/route_pallets');
 
 const router_algs = require('./routes/router_algs');
-
+const route_dxfjson = require('./routes/route_dxfjson');
 app.use(cors());
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -41,6 +41,10 @@ app.use('/algs',async (req,res)=>{
 
 app.use('/pallet',async (req,res)=>{
    await route_pallets(req,res) ;
+});
+
+app.use('/dxf',async (req,res)=>{
+   await route_dxfjson(req,res) ;
 });
 
 app.listen(port,()=>{

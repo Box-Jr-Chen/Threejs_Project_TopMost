@@ -8,10 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title:Sequelize.TEXT,
-      borders: {
-        type: Sequelize.TEXT
-      }
+      title:Sequelize.TEXT
     });
   },
   down: async (queryInterface, Sequelize) => {

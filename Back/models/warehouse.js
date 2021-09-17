@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       }, 
       title:DataTypes.TEXT,
-      borders: DataTypes.TEXT
     }, 
     {
       sequelize,
