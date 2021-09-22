@@ -1,0 +1,92 @@
+.BG{
+    background: rgba(0, 0, 0, 0.609);
+    top:0;
+    z-index :1;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+}
+.title{
+    font-size: 1.5rem;
+    padding: 0;
+    margin: 0.3rem 0 0 0.5rem;
+}
+.panel_readFactory{
+    width: 25rem;
+    height: 28rem;
+    background: rgb(121, 121, 121);
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index: 4;
+}
+
+.div_Factory{
+    width: 95%;
+    height: 20rem;
+    margin:0 auto;
+    margin-top:0.5rem;
+    background: rgb(214, 214, 214);
+}
+.Factory_option{
+    font-size:2rem;
+    border: 1px rgb(42, 42, 42) solid;
+}
+.Factory_option_select{
+    background: rgb(103, 187, 173);
+}
+
+.btn_block{
+    width: 95%;
+    height: 2.5rem;
+    margin: 0 auto;
+    margin-top: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: Row;
+    justify-content: end;
+}
+.btn{
+    border: 1px rgb(148, 148, 148) solid;
+    height: 3.2rem;
+    border-radius: 3px;
+    font-size: 2rem;
+    color: white;
+    padding-top: 0.3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.btn_enter_disactive{
+    background: linear-gradient(to bottom, rgb(104, 104, 104) 0%, rgb(51, 51, 51) 100%);
+    color:gray;
+}
+
+.btn_enter{
+    background: linear-gradient(to bottom, rgb(97, 156, 39) 0%, rgb(56, 112, 0) 100%);
+    cursor: pointer;
+    color:rgb(238, 238, 238);
+}
+.btn_enter:active{
+    background: linear-gradient(to bottom, rgb(56, 112, 0) 0%, rgb(36, 71, 0) 100%);
+}
+
+.loading{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0, 0, 0, 0.52);
+    z-index: 5;
+}
+
+.loading img{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index: 99;
+}

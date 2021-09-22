@@ -69,7 +69,7 @@ class ThreeJs_3D {
 
         //         初始化控制器
         this.controls = new OrbitControls(this.camera,this.container);
-        this.controls.touches.ONE = THREE.TOUCH.PAN;
+        // this.controls.touches.ONE = THREE.TOUCH.PAN;
         this.controls.target.set(0, 0, 0);
         this.controls.rotateSpeed *= -1;
         this.controls.minDistance = 10;

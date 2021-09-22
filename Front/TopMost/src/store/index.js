@@ -17,6 +17,8 @@ export default  new Vuex.Store({
     data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
     setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
     setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
+    setting_files_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getfiles_dxf,
+    setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
     id_getWavehouse:1,
     width_main:0,
     height_main:0,
@@ -28,7 +30,7 @@ export default  new Vuex.Store({
     panel_show_deletePallet_inSetting_Pallet:false,
     panel_show_addPallet_inSetting_Project:false,
     panel_show_deletePallet_inSetting_Project:false,
-
+    init_loadFactory:false,
     leftbtns:[
       {
         'img':'sort_icon',
@@ -87,7 +89,9 @@ export default  new Vuex.Store({
    project_error:'',
   //排列後的棧板
   pillet_sort:null,
-
+  //工廠設定
+  factories:[],
+  factory_select:0
   },
   mutations: {
     onWindowResize() {
@@ -372,6 +376,41 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+
+        //Factory
+        async A_GetFactories(state){
+          var self= this;
+          var data = {
+            'path': self.state.setting_files_DXF_Api,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        //Json
+        async A_GetJson(state,name){
+          var self= this;
+          var data = {
+            'path': self.state.setting_json_DXF_Api+'?name='+name,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        }
+
   },
   modules: {
 

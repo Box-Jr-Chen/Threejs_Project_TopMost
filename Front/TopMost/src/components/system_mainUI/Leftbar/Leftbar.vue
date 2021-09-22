@@ -11,4 +11,4 @@
 <script src="./Leftbar.js" />
 
 
-<style lang="css" src="@/assets/css/system_mainUI.css" scoped />
+<style lang="css" src="@/components/system_mainUI/system_mainUI.css" scoped />

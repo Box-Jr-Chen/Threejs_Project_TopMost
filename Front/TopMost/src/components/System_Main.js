@@ -13,7 +13,7 @@ export default {
       navbar,
       system_mainUI,
       Leftbar,
-      json_factory
+      json_factory,
       },
       computed:{
         leftmargin: function() {
@@ -39,12 +39,14 @@ export default {
         }, true);
 
 
-        self.waitSysInit =  setInterval(() => {
-            if(self.$store.state.threejs.sysInit==false) return;
-            clearInterval(self.waitSysInit);
-            self.$store.state.threejs.DXFReader(json_factory);
+        // self.waitSysInit =  setInterval(() => {
+        //     if(self.$store.state.threejs.sysInit==false) return;
+        //     clearInterval(self.waitSysInit);
+        //     self.$store.state.threejs.DXFReader(json_factory);
 
-        }, 500);
+        // }, 500);
+
+        
         // document.body.onmouseup = function() {
         //   self.mouseup();
         // }
