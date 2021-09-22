@@ -91,8 +91,15 @@ export default  new Vuex.Store({
   pillet_sort:null,
   //工廠設定
   factories:[],
-  factory_select:0
+  factory_select:0,
+
+  //area區域
+  area_show_afd: false,
+  show_afd:false
+
+
   },
+
   mutations: {
     onWindowResize() {
       var self =this;
@@ -124,6 +131,12 @@ export default  new Vuex.Store({
     },
     Hide_Panel_deleteProject(){
       this.state.panel_show_deletePallet_inSetting_Project= false;
+    },
+    Show_Panel_adfPallet(){
+      this.state.area_show_afd= true;
+    },
+    Hide_Panel_adfPallet(){
+      this.state.area_show_afd= false;
     },
   },
   actions: {

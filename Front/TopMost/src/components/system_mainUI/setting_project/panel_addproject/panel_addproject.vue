@@ -17,9 +17,9 @@
             <p class="context_english">(mm)</p>
             </div>
             <div class="btn_block">
-            <div class="btn btn_enter" @click="add_project"  v-if="$store.state.project_add_fix.id <=0">確認</div>
-            <div class="btn btn_enter" @click="fix_project"  v-if="$store.state.project_add_fix.id >0">修改</div>
-            <div class="btn btn_cancel" @click="hide_addpanel">取消</div>
+                <div class="btn btn_enter" @click="add_project"  v-if="$store.state.project_add_fix.id <=0">確認</div>
+                <div class="btn btn_enter" @click="fix_project"  v-if="$store.state.project_add_fix.id >0">修改</div>
+                <div class="btn btn_cancel" @click="hide_addpanel">取消</div>
             </div>
             <div  class="error_msg">
                 {{$store.state.project_error}}

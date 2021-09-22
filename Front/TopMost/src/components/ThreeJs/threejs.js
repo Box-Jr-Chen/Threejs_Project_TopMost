@@ -27,11 +27,16 @@ class ThreeJs_3D {
         this.grid = null;
         this.grid_color = null;
         this.otherender =[];
+        this.areas_ins =[];
+        this.areas_ins_add =[];
 
         this.mapDesign = MapDesign.MapDesign;
         this.WH_FrameLess = WH_FrameLess.wh_frameless;
       //  this.threeDxf  = ThreeDxf;
         this.sysInit = false;
+
+
+        this.add_ins_mat = new THREE.MeshBasicMaterial( { color: "rgb(255, 255, 0)" } );
     }
 
     init(container) //id = container
@@ -61,8 +66,8 @@ class ThreeJs_3D {
 
         //         初始化相机
          var  value_ = 2 ;
-         this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
-        //this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
+        this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+       // this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
          this.camera.position.set(0, 500, 0 );
          this.camera.lookAt(this.scene.position);
 
@@ -75,7 +80,7 @@ class ThreeJs_3D {
         this.controls.minDistance = 10;
         this.controls.maxDistance = 1000;
         this.controls.maxPolarAngle = Math.PI / 2.3;
-        this.controls.enableRotate =false;
+         this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
@@ -236,6 +241,48 @@ class ThreeJs_3D {
     {
         //data
         Viewer(this.scene,this.camera,this.controls,this.container,this.width,this.height,data);
+    }
+
+    CreateArea_Add_01()
+    {
+        const geometry = new THREE.BufferGeometry();
+
+        const vertices = new Float32Array( [
+            0.0, 0.0,  0.0,
+            0.0, 0.0,  -30.0,
+            30.0, 0.0,  0.0,
+
+            30.0, 0.0,  0.0,
+            0.0, 0.0,  -30.0,
+            30.0, 0.0,  -30.0,
+        ] );
+
+        // itemSize = 3 because there are 3 values (components) per vertex
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        const material = this.add_ins_mat;
+        const mesh = new THREE.Mesh( geometry, material );
+        this.areas_ins_add.push(mesh);
+        mesh.scale.set(1,-1,1)
+        console.log(mesh);
+        mesh.geometry.attributes.position.dynamic =true;
+        this.scene.add(mesh);
+
+        this.areas_ins_add[0].geometry.attributes.position.array[0] =10;
+        this.areas_ins_add[0].geometry.attributes.position.array[1] =0;
+        this.areas_ins_add[0].geometry.attributes.position.array[2] =12;
+
+        setTimeout(()=>{
+            mesh.geometry.attributes.position.array[0] =0;
+            mesh.geometry.attributes.position.array[1] =0;
+            mesh.geometry.attributes.position.array[2] =2;
+            console.log('change');
+        },1000);
+
+    }
+
+    DeleteArea_Add()
+    {
+        
     }
 }
 
