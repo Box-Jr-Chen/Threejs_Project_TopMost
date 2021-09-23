@@ -19,7 +19,6 @@ export default  new Vuex.Store({
     setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
     setting_files_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getfiles_dxf,
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
-    id_getWavehouse:1,
     width_main:0,
     height_main:0,
     border_main:0,
@@ -95,6 +94,7 @@ export default  new Vuex.Store({
   factory_select:0,
 
   //area區域
+  areas:[],
   area_show_afd: false,
   show_afd:false,
   addIns_pos:{
@@ -195,11 +195,10 @@ export default  new Vuex.Store({
             return error;
         })
         },
-
-        async A_GetWarehouse(state) {
+        async A_Getinterval(state) {
           var self= this;
           var data = {
-            'path': self.state.data_warehouse_Api+"?id="+self.state.id_getWavehouse,
+            'path': self.state.data_interval_Api,
           };
           state
           return await store
@@ -212,10 +211,47 @@ export default  new Vuex.Store({
               });
         },
 
+        async A_Postsorting_project(state) {
+          var self= this;
+
+          var form = {
+            "id_warehouse":self.state.factory_id
+          };
+
+          var data = {
+            'path': self.state.data_sorting_project_Api,
+            'form': form
+          };
+          state
+          return await store
+            .dispatch('AxiosPost', data)
+            .then(response => {
+              return  response;
+            }
+            ).catch(error => {
+              return error;
+            });
+        },
+        async A_GetWarehouse(state) {
+          var self= this;
+          var data = {
+            'path': self.state.data_warehouse_Api+"?id="+self.state.factory_id,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        //Area Data
         async A_GetArea(state) {
           var self= this;
           var data = {
-            'path': self.state.data_area_Api+"?id="+self.state.id_getWavehouse,
+            'path': self.state.data_area_Api+"?id="+self.state.factory_id,
           };
           state
           return await store
@@ -258,44 +294,6 @@ export default  new Vuex.Store({
               ).catch(error => {
                 return error;
               });
-        },
-
-        async A_Getinterval(state) {
-          var self= this;
-          var data = {
-            'path': self.state.data_interval_Api,
-          };
-          state
-          return await store
-              .dispatch('AxiosGet', data)
-              .then(response => {
-                return  response;
-              }
-              ).catch(error => {
-                return error;
-              });
-        },
-
-        async A_Postsorting_project(state) {
-          var self= this;
-
-          var form = {
-            "id_warehouse":self.state.id_getWavehouse
-          };
-
-          var data = {
-            'path': self.state.data_sorting_project_Api,
-            'form': form
-          };
-          state
-          return await store
-            .dispatch('AxiosPost', data)
-            .then(response => {
-              return  response;
-            }
-            ).catch(error => {
-              return error;
-            });
         },
         //Pallets Data
         async A_GetPallets(state) {

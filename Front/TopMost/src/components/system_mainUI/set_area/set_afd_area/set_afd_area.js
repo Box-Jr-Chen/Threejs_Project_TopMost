@@ -23,8 +23,6 @@ export default {
         hide_addpanel:function(){
             this.$store.state.area_show_afd = false;
             this.$store.state.show_afd = false;
-
-
             this.$store.state.threejs.CreateArea_Delete_01();
         },
         add_project:function(){
@@ -43,16 +41,15 @@ export default {
             }
 
             self.$store.dispatch('A_PostArea',data).then(response =>{
-                response
-                // if(response.result !=='error')
-                //   {
-                //   }
-                //   else
-                //   {
-                //     //self.error_msg(response.msg);
-                //   }
+                  if(response.result !=='error')
+                  {
+                    self.hide_addpanel();
+                    self.LoadAreas();
+                  }
+                  else
+                  {
+                  }
               });
-
         },
         fix_project:function(){
 
@@ -60,14 +57,8 @@ export default {
         delete_project:function(){
 
         },
-        oninput:function(value){
-                console.log(value);
-        },
         changeinput:function(index,index_2,index_set){
-
             var result = 0;
-
-
             
             if(index_set ==3)  //L_X
             {
@@ -119,7 +110,18 @@ export default {
             this.getAdd_Ins.geometry.attributes.position.needsUpdate      =  true;
 
 
+        },
+        LoadAreas:function(){
+            var self =this;
+            self.$store.dispatch('A_GetArea').then(response =>{
+                if(response.result !=='error')
+                  {
+                    self.$store.state.areas =response;
+                  }
+
+              });
         }
+
 
     }
 }

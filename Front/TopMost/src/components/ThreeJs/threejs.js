@@ -275,8 +275,8 @@ class ThreeJs_3D {
             this.scene.remove(this.areas_ins_add[0]);
             this.areas_ins_add[0] =null;
             this.areas_ins_add =[];
-            //console.log(this.areas_ins_add);
     }
+
 
 }
 

@@ -16,7 +16,8 @@
             </div>
             </div>
             <div class="inner_outline">
-            <!-- <div class="pallet_cell"  v-for="(item,index) in $store.state.pillets"  :key="index">
+
+            <div class="pallet_cell"  v-for="(item,index) in $store.state.areas"  :key="index">
                 <img src="@/assets/img/pallet.png" alt="">
                 <div class="context">
                     <font color="#FF0000">{{item.width}}</font><font color="#2E8B57">x</font><font color="#FF0000">{{item.length}}</font><font color="#2E8B57">x</font><font color="#FF0000">{{item.height}}</font>(mm)
@@ -33,7 +34,7 @@
                     刪除
                     </div>
                 </div> 
-            </div> -->
+            </div>
 
         </div> 
       </div>
