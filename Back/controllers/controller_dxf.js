@@ -81,10 +81,13 @@ async function getDxFJson(req, res) {
                   });
             }
     
+
+
     
                await  f_read(path_json+'/'+id_Warehouse+'.json',(json)=>{
                    res.status(200).send({
                     'result':'success',
+                    'index':e.id,
                     'meg':json
                 });
             },(error)=>{

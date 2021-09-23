@@ -248,13 +248,14 @@ class ThreeJs_3D {
         const geometry = new THREE.BufferGeometry();
 
         const vertices = new Float32Array( [
-            0.0, 0.0,  0.0,
-            0.0, 0.0,  -30.0,
-            30.0, 0.0,  0.0,
+            0.0, 5.0,  0.0,
+            0.0, 5.0,  -30.0,
+            30.0, 5.0,  0.0,
 
-            30.0, 0.0,  0.0,
-            0.0, 0.0,  -30.0,
-            30.0, 0.0,  -30.0,
+
+            0.0, 5.0,  -30.0,
+            30.0, 5.0,  -30.0,
+            30.0, 5.0,  0.0,
         ] );
 
         // itemSize = 3 because there are 3 values (components) per vertex
@@ -262,28 +263,21 @@ class ThreeJs_3D {
         const material = this.add_ins_mat;
         const mesh = new THREE.Mesh( geometry, material );
         this.areas_ins_add.push(mesh);
-        mesh.scale.set(1,-1,1)
-        console.log(mesh);
+        mesh.scale.set(1,-1,1);
+        mesh.position.set(mesh.position.x,10,mesh.position.z);
         mesh.geometry.attributes.position.dynamic =true;
         this.scene.add(mesh);
 
-        this.areas_ins_add[0].geometry.attributes.position.array[0] =10;
-        this.areas_ins_add[0].geometry.attributes.position.array[1] =0;
-        this.areas_ins_add[0].geometry.attributes.position.array[2] =12;
-
-        setTimeout(()=>{
-            mesh.geometry.attributes.position.array[0] =0;
-            mesh.geometry.attributes.position.array[1] =0;
-            mesh.geometry.attributes.position.array[2] =2;
-            console.log('change');
-        },1000);
-
-    }
-
-    DeleteArea_Add()
-    {
         
     }
+
+    CreateArea_Delete_01(){
+            this.scene.remove(this.areas_ins_add[0]);
+            this.areas_ins_add[0] =null;
+            this.areas_ins_add =[];
+            //console.log(this.areas_ins_add);
+    }
+
 }
 
 export default {ThreeJs :new ThreeJs_3D()}

@@ -19,13 +19,7 @@ export default {
                 this.$store.commit('Show_Panel_adfPallet');
                 this.$store.state.show_afd = true;
 
-
-                this.$store.state.threejs.CreateArea_Add_01();
-                // this.$store.state.pillet_add_fix.id =0;
-                // this.$store.state.pillet_add_fix.width =0;
-                // this.$store.state.pillet_add_fix.length =0;
-                // this.$store.state.pillet_add_fix.height =0;
-                // this.$store.state.pallet_error='';
+                this.$store.commit('Create_Ins_AddArea');
             },
             show_fixpanel(item){
                 this.$store.commit('Show_Panel_addPallet');

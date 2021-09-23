@@ -91,12 +91,22 @@ export default  new Vuex.Store({
   pillet_sort:null,
   //工廠設定
   factories:[],
+  factory_id:0, //回傳的工廠ID 數字
   factory_select:0,
 
   //area區域
   area_show_afd: false,
-  show_afd:false
-
+  show_afd:false,
+  addIns_pos:{
+    'left':{
+      'x':0,
+      'z':0
+    },
+    'right':{
+      'x':0,
+      'z':0
+    }
+  }
 
   },
 
@@ -138,6 +148,20 @@ export default  new Vuex.Store({
     Hide_Panel_adfPallet(){
       this.state.area_show_afd= false;
     },
+    Create_Ins_AddArea(){
+      this.state.threejs.CreateArea_Add_01();
+
+      if(this.state.threejs.areas_ins_add.length >0)
+      {
+        //z 要轉負
+
+        this.state.addIns_pos.left.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
+        this.state.addIns_pos.left.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
+        this.state.addIns_pos.right.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
+        this.state.addIns_pos.right.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[17];
+      }
+
+    }
   },
   actions: {
         async AxiosGet(state, data) {
@@ -196,6 +220,22 @@ export default  new Vuex.Store({
           state
           return await store
               .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+        async A_PostArea(state, areadata) {
+          var self= this;
+          var data = {
+            'path': self.state.data_area_Api+"?id="+self.state.id_getWavehouse,
+            'form': areadata
+          };
+          state
+          return await store
+              .dispatch('AxiosPost', data)
               .then(response => {
                 return  response;
               }

@@ -42,6 +42,8 @@ export default {
                         if(response.meg ==='no Json')
                                 return;
                         
+
+                        self.$store.state.factory_id = response.index;
                         var dxf_json = JSON.parse(response.meg);
 
                         self.$store.state.threejs.DXFReader(dxf_json);

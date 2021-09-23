@@ -176,21 +176,18 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
        g.scale.set(scale,scale,scale);
        g.rotation.x = -Math.PI / 2;
 
+
+
+
       scene.add(g);
 
-
-      // const geometry = new THREE.BoxGeometry( 10, 10, 10 );
-      // const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-      // const cube = new THREE.Mesh( geometry, material );
-      // const cube2 = new THREE.Mesh( geometry, material );
-      // scene.add( cube );
-      // scene.add( cube2 );
-      // cube.position.set( viewPort.right * scale,0,-viewPort.top* scale);
-      // cube2.position.set( viewPort.left * scale,0,-viewPort.bottom* scale);
-
-      g.position.set(viewPort.left * scale,0,-viewPort.bottom* scale);
-
-
+      //位置歸正
+      g.position.set(0,0,0);
+    const aabb = new THREE.Box3();
+    aabb.setFromObject( g );
+    var dis_x =  aabb.max.x - aabb.min.x ;
+    var dis_z =  aabb.max.z - aabb.min.z ;
+    g.position.set((g.position.x-dis_x/2),0,-(g.position.z-dis_z/2) );
 
   function drawEntity(entity, data) {
     var mesh;

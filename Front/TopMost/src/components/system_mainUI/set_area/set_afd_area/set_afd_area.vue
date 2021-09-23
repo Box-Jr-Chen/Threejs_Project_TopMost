@@ -10,31 +10,33 @@
            <div class="title_block">左上角</div>
            <div class="english">X:</div>
            <input  
-            oninput="value=value.replace(/^\D*(\d*(?:\.\d{0,3})?).*$/g, '$1')" 
-            @change="changepos(3,getAdd_Ins.geometry.attributes.position.array[3])" 
+            @change="changeinput(0,9,3)"
+           @updated="true"
             type="text"  
-            v-model="getAdd_Ins.geometry.attributes.position.array[3]">
+            v-model="$store.state.addIns_pos.left.x">
+
+
            <div  class="english"  style="margin-left:0.5rem">Y:</div>
             <input  
-            oninput="value=value.replace(/^\D*(\d*(?:\.\d{0,3})?).*$/g, '$1')" 
-           onchange="value=value.replace(/\D/g,''); value=value.replace(/^0+/,'');" 
+            @change="changeinput(11,14,5)"
            type="text"  
-           v-model="getAdd_Ins.geometry.attributes.position.array[5]" >
+           v-model="$store.state.addIns_pos.left.z" >
+           
        </div>
        <div class="set_block">
            <div class="title_block">右下角</div>
            <div  class="english">X:</div>
             <input  
-           oninput="value=value.replace(/^\D*(\d*(?:\.\d{0,3})?).*$/g, '$1')" 
-           onchange="value=value.replace(/\D/g,''); value=value.replace(/^0+/,'');" 
            type="text"  
-           v-model="getAdd_Ins.geometry.attributes.position.array[15]">
+            @change="changeinput(6,12,15)"
+           v-model="$store.state.addIns_pos.right.x">
+
            <div  class="english" style="margin-left:0.5rem">Y:</div>
             <input  
-           oninput="value=value.replace(/^\D*(\d*(?:\.\d{0,3})?).*$/g, '$1')" 
            onchange="value=value.replace(/\D/g,''); value=value.replace(/^0+/,'');" 
            type="text"  
-            v-model="getAdd_Ins.geometry.attributes.position.array[17]">
+            @change="changeinput(2,8,17)"
+            v-model="$store.state.addIns_pos.right.z">
        </div>
        <div class="btn_block">
                 <div class="btn btn_enter" @click="add_project"  v-if="add==true">確認</div>
