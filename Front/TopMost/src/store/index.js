@@ -230,7 +230,7 @@ export default  new Vuex.Store({
         async A_PostArea(state, areadata) {
           var self= this;
           var data = {
-            'path': self.state.data_area_Api+"?id="+self.state.id_getWavehouse,
+            'path': self.state.data_area_Api,
             'form': areadata
           };
           state
@@ -454,6 +454,9 @@ export default  new Vuex.Store({
             'path': self.state.setting_json_DXF_Api+'?name='+name,
           };
           state
+
+          console.log(data);
+
           return await store
               .dispatch('AxiosGet', data)
               .then(response => {

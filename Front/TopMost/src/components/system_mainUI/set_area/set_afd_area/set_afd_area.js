@@ -28,7 +28,31 @@ export default {
             this.$store.state.threejs.CreateArea_Delete_01();
         },
         add_project:function(){
-            
+            var self =this;
+
+            var borders ='['+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.left.z  +'],'+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.right.z +'],'+
+            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.right.z+'],'+
+            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.left.z +']'+']';
+
+            var data={
+                'id_warehouse' : self.$store.state.factory_id,
+                'title' : "",
+                'borders' : borders
+            }
+
+            self.$store.dispatch('A_PostArea',data).then(response =>{
+                response
+                // if(response.result !=='error')
+                //   {
+                //   }
+                //   else
+                //   {
+                //     //self.error_msg(response.msg);
+                //   }
+              });
+
         },
         fix_project:function(){
 

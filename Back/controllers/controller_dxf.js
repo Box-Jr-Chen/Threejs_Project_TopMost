@@ -40,6 +40,7 @@ async function GetFileNames(req, res) {
 }
 
 async function   f_read(path,action_finish,action_error) {
+    console.log(path);
     const fsPromises = require('fs').promises;
     const data = await fsPromises.readFile(path);
                     //    .catch((err) => {

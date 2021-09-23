@@ -39,6 +39,8 @@ export default {
             self.$store.dispatch('A_GetJson', self.$store.state.factories[index]).then(response =>{
                 if(response.result !=='error')
                     {
+                        console.log(response);
+
                         if(response.meg ==='no Json')
                                 return;
                         
