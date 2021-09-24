@@ -26,6 +26,7 @@ class wh_frameless {
 
         this.line_WH =[];
         this.line_AREA =[];
+        this.line_GROUP =[];
         this.line_project =[];
         this.axes = 'xzy';
         this.planeAxes = this.axes.substr( 0, 2 );
@@ -353,6 +354,21 @@ createWaveHouse(WH_borders)
     self.scene.add( lineWH );
 
 }
+
+deleteAreaInstance()
+{
+    //清除線段
+    var self = this;
+    self.line_AREA.forEach(element =>{
+        self.scene.remove(element);
+    });
+
+    //清除Mesh
+    self.line_GROUP.forEach(element =>{
+        self.scene.remove(element);
+    });
+}
+
 createAreaLine(borders)
 {
     var self = this;
@@ -377,6 +393,9 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     const tGroup = new THREE.Group();
     tGroup.add(grid[0]);
     tGroup.add(grid[1]);
+
+    self.line_GROUP.push(tGroup);
+
     self.scene.add( tGroup );
 }
 //創造貨物平面

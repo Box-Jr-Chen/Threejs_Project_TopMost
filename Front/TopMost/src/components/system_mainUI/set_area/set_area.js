@@ -1,12 +1,13 @@
 import rightside from '@/components/system_mainUI/set_area/rightside/rightside.vue'
 
+import panel_deletearea from '@/components/system_mainUI/set_area/panel_deletearea/panel_deletearea.vue'
 
 export default {
     name: 'setting_pallet',
     components: {
         rightside,
         // panel_addpallet,
-        // panel_deletepallet
+        panel_deletearea
       },
       computed:{
             rightpanel_pos:function (){

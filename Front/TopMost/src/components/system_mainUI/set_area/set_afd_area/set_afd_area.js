@@ -44,11 +44,9 @@ export default {
                   if(response.result !=='error')
                   {
                     self.hide_addpanel();
-                    self.LoadAreas();
+                    self.$store.commit('LoadAreas');
                   }
-                  else
-                  {
-                  }
+                
               });
         },
         fix_project:function(){
@@ -111,17 +109,7 @@ export default {
 
 
         },
-        LoadAreas:function(){
-            var self =this;
-            self.$store.dispatch('A_GetArea').then(response =>{
-                if(response.result !=='error')
-                  {
-                    self.$store.state.areas =response;
-                  }
-
-              });
-        }
-
+ 
 
     }
 }

@@ -14,7 +14,7 @@ export default {
       },
       mounted(){
           var self= this;
-          const contain = document.getElementById('panel_deleteproject');
+          const contain = document.getElementById('panel_delete');
           contain.addEventListener('mouseenter',()=>{
             self.$store.state.threejs.UnActive_controls();
           });

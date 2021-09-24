@@ -10,6 +10,7 @@ Vue.use(Vuex)
 
 export default  new Vuex.Store({
   state: {  
+    //Api
     baseUrlApi: process.env.VUE_APP_baseUrl,
     data_warehouse_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_warehouse,
     data_area_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area,
@@ -19,6 +20,8 @@ export default  new Vuex.Store({
     setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
     setting_files_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getfiles_dxf,
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
+
+    //Main
     width_main:0,
     height_main:0,
     border_main:0,
@@ -29,6 +32,7 @@ export default  new Vuex.Store({
     panel_show_deletePallet_inSetting_Pallet:false,
     panel_show_addPallet_inSetting_Project:false,
     panel_show_deletePallet_inSetting_Project:false,
+    panel_show_deleteArea_inSet_Area:false,
     init_loadFactory:false,
     leftbtns:[
       {
@@ -49,18 +53,18 @@ export default  new Vuex.Store({
       },
     ],
    //位置資訊
-   WH_borders:{
-     id :-1,
-     title:"",
-     borders:[]
-   },
-   Areas_borders: 
-   {
-    id_warehouse :-1,
-     title_wavehouse:"",
-     areas:   
-     []
-   },
+  //  WH_borders:{
+  //    id :-1,
+  //    title:"",
+  //    borders:[]
+  //  },
+  //  Areas_borders: 
+  //  {
+  //   id_warehouse :-1,
+  //    title_wavehouse:"",
+  //    areas:   
+  //    []
+  //  },
    
    //棧板設定
    pillets:[],
@@ -106,8 +110,10 @@ export default  new Vuex.Store({
       'x':0,
       'z':0
     }
-  }
-
+  },
+  areas_delete:{
+    id:0
+   },
   },
 
   mutations: {
@@ -117,6 +123,8 @@ export default  new Vuex.Store({
       self.state.threejs.camera.aspect = window.innerWidth / window.innerHeight;
       self.state.threejs.camera.updateProjectionMatrix();
     },
+
+    //Pallet
     Show_Panel_addPallet(){
       this.state.panel_show_addPallet_inSetting_Pallet= true;
     },
@@ -130,6 +138,7 @@ export default  new Vuex.Store({
       this.state.panel_show_deletePallet_inSetting_Pallet= false;
     },
 
+     //Project
     Show_Panel_addProject(){
       this.state.panel_show_addPallet_inSetting_Project= true;
     },
@@ -142,12 +151,24 @@ export default  new Vuex.Store({
     Hide_Panel_deleteProject(){
       this.state.panel_show_deletePallet_inSetting_Project= false;
     },
+
+    //adfPallet
     Show_Panel_adfPallet(){
       this.state.area_show_afd= true;
     },
     Hide_Panel_adfPallet(){
       this.state.area_show_afd= false;
     },
+
+
+    //Area
+    Show_Panel_deleteArea(){
+      this.state.panel_show_deleteArea_inSet_Area= true;
+    },
+    Hide_Panel_deleteArea(){
+      this.state.panel_show_deleteArea_inSet_Area= false;
+    },
+
     Create_Ins_AddArea(){
       this.state.threejs.CreateArea_Add_01();
 
@@ -161,7 +182,103 @@ export default  new Vuex.Store({
         this.state.addIns_pos.right.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[17];
       }
 
+    },
+    LoadAreas(){
+      var self =this;
+
+      //清除區域
+      if(self.state.areas.length>0)
+      {
+          for(var i=0;i<self.state.areas.length;i++)
+          {
+            self.state.areas[i] =null;
+          }
+      }
+      self.state.areas = [];
+      //清除區域視覺實體化
+      self.state.threejs.WH_FrameLess.deleteAreaInstance();
+
+
+      //API 讀取資料
+      store.dispatch('A_GetArea').then(response =>{
+          if(response.result !=='error')
+            {
+              self.state.areas =response;
+
+
+              //創建視覺化區域
+              self.state.areas.forEach(
+                function(element) {
+                    if(element.borders !=="")
+                    {
+                        element.borders      =  JSON.parse(element.borders);
+
+                       // console.log(element.borders);
+
+                         //演算法 格子計算
+                         var algs_grid = self.state.threejs.WH_FrameLess.Algs_grid(element.borders);
+                         //演算法 方格中心計算
+                         var algs_rectcenter = self.state.threejs.WH_FrameLess.Algs_RectCenter(algs_grid[0]);
+                         
+                        //判斷Area 是否需要重新計算
+                        // if(element.width ===0 || element.length ===0|| element.pos_init ==="" ||element.interval!==self.state.threejs.WH_FrameLess.interval)
+                         {
+                            //找到長高與初始位置 重新上傳資料庫
+                               element.width = algs_rectcenter.length;
+                               element.length = algs_rectcenter[0].length;
+
+                               var pos = algs_rectcenter[0][0];
+
+                              element.pos_init ="["+pos[0]+","+pos[1]+"]";
+                              element.rect = algs_rectcenter;
+                              var borderstr = JSON.stringify(element.borders);
+                      
+                              //更新area資料
+                              var data={
+                                  id:element.id,
+                                  id_warehouse:element.id_warehouse,
+                                  title:element.title,
+                                  borders:borderstr,
+                                  width:element.width,
+                                  length:element.length,
+                                  pos_init:element.pos_init,
+                                  interval:self.state.threejs.WH_FrameLess.interval
+                              };
+
+
+                              //區域更新
+                                store.dispatch('A_UpdateArea',data).then(response =>{
+                                      if(response.result !==undefined)
+                                      {
+                                          console.log("success :"+element.id);
+                                      }
+                              });
+                              console.log(self.state.threejs.WH_FrameLess.line_GROUP);
+                 
+
+                             //創建區域視覺
+                             self.state.threejs.WH_FrameLess.createAreaLine(element.borders);
+                             self.state.threejs.WH_FrameLess.CreateAreaGrid(algs_grid[0],algs_grid[1]);
+
+
+                             console.log(self.state.threejs.WH_FrameLess.line_GROUP);
+
+                        }
+
+                    }
+
+
+                    
+
+                }
+              );
+
+
+            }
+
+        });
     }
+
   },
   actions: {
         async AxiosGet(state, data) {
@@ -210,7 +327,6 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-
         async A_Postsorting_project(state) {
           var self= this;
 
@@ -295,6 +411,22 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        async A_DeleteArea(state, id) {
+          var self= this;
+          var data = {
+            'path': self.state.data_area_Api+"?id="+id,
+          };
+          state
+          return await store
+              .dispatch('AxiosDelete', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
         //Pallets Data
         async A_GetPallets(state) {
           var self= this;
@@ -386,7 +518,7 @@ export default  new Vuex.Store({
           return await store
               .dispatch('AxiosPost', data)
               .then(response => {
-                console.log(response);
+               // console.log(response);
                 return  response;
               }
               ).catch(error => {
@@ -427,8 +559,6 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-
-
         //Factory
         async A_GetFactories(state){
           var self= this;
@@ -453,7 +583,7 @@ export default  new Vuex.Store({
           };
           state
 
-          console.log(data);
+        //  console.log(data);
 
           return await store
               .dispatch('AxiosGet', data)

@@ -14,7 +14,7 @@ export default {
       },
       mounted(){
           var self= this;
-          const contain = document.getElementById('panel_delete');
+          const contain = document.getElementById('panel_deletepallet');
           contain.addEventListener('mouseenter',()=>{
             self.$store.state.threejs.UnActive_controls();
           });
@@ -26,13 +26,13 @@ export default {
       },
       methods:{
             hide_deletepanel(){
-              this.$store.commit('Hide_Panel_deletePallet');
-              this.$store.state.threejs.Active_controls();
-          },
-            delete_pillet(){
+                this.$store.commit('Hide_Panel_deleteArea');
+                this.$store.state.threejs.Active_controls();
+            },
+            delete_Area(){
                 var self = this;
 
-                self.$store.dispatch('A_DeletePallets',self.$store.state.pillet_delete.id).then(response =>{
+                self.$store.dispatch('A_DeletePallets',self.$store.state.this.$store.state.areas_delete.id).then(response =>{
                   if(response.result !=='error')
                     {
                       //更新

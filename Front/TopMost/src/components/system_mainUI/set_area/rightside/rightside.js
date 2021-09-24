@@ -12,6 +12,7 @@ export default {
           }
       },
       mounted(){
+
       },
       methods:{
             show_addpanel(){
@@ -21,18 +22,12 @@ export default {
 
                 this.$store.commit('Create_Ins_AddArea');
             },
-            show_fixpanel(item){
+            show_fixpanel(){
                 this.$store.commit('Show_Panel_addPallet');
-
-                this.$store.state.pillet_add_fix.id =item.id;
-                this.$store.state.pillet_add_fix.width =item.width;
-                this.$store.state.pillet_add_fix.length =item.length;
-                this.$store.state.pillet_add_fix.height =item.height;
             },
             show_deletepanel(index){
-                this.$store.commit('Show_Panel_deletePallet');
-                this.$store.state.pillet_delete.id =index;
-
+                this.$store.commit('Show_Panel_deleteArea');
+                this.$store.state.areas_delete.id =index;
             },
       }
 }

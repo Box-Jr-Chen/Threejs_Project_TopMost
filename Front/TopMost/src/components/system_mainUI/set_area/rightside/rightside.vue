@@ -20,7 +20,7 @@
             <div class="pallet_cell"  v-for="(item,index) in $store.state.areas"  :key="index">
                 <img src="@/assets/img/pallet.png" alt="">
                 <div class="context">
-                    <font color="#FF0000">{{item.width}}</font><font color="#2E8B57">x</font><font color="#FF0000">{{item.length}}</font><font color="#2E8B57">x</font><font color="#FF0000">{{item.height}}</font>(mm)
+                    <font color="#FF0000">區域{{index+1}}</font>
                 </div> 
 
                 <div class="btn_fix_panel_pallet">

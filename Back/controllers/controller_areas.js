@@ -24,8 +24,6 @@ async function list(req, res) {
       .then((areas) => res.status(200).send(areas))
       .catch((error) => { res.status(400).send(error); })}
   
-
-  
 async function add(req, res) { 
          var id_warehouse = req.body.id_warehouse;
          var title = req.body.title;
@@ -79,15 +77,15 @@ async function update(req, res){
     .catch((error) => { res.status(400).send(error); })}
   
 
-  async function deleted(req, res){
-    var p_id = req.query.id;
-      return await
-      area
-      .destroy({
-        where: {
-          id: p_id
-         }})
-      .then((area) => res.status(200).send(p_id))
-      .catch((error) => { res.status(400).send(error); })}
-  
+async function deleted(req, res){
+  var p_id = req.query.id;
+    return await
+    area
+    .destroy({
+      where: {
+        id: p_id
+        }})
+    .then((area) => res.status(200).send(p_id))
+    .catch((error) => { res.status(400).send(error); })}
+
 module.exports = { list,add,update,deleted};

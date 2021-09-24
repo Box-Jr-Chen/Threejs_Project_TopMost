@@ -62,8 +62,6 @@ class ThreeJs_3D {
 
         this.scene.add(this.grid);
 
-
-
         //         初始化相机
          var  value_ = 2 ;
         this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
@@ -95,14 +93,6 @@ class ThreeJs_3D {
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.gammaFactor = 2.2;
         this.container.appendChild(this.renderer.domElement);
-
-       //this.animated =  this.animate();
-       // this.loader = new GLTFLoader();
-
-    //    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    //    const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    //    const cube = new THREE.Mesh( geometry, material );
-    //    this.scene.add( cube );
 
         this.mouse     = new THREE.Vector2(); // create once
 
@@ -214,7 +204,6 @@ class ThreeJs_3D {
         //this.AddElementListener('pointerup',this.mapDesign.onPointerUp_move);
     }
 
-
     //Mouse
     MouseUp(){
         this.mapDesign.mouseup();
@@ -277,7 +266,19 @@ class ThreeJs_3D {
             this.areas_ins_add =[];
     }
 
+    Areas_DeleteAll()
+    {
+        for(var i=0;i<this.areas_ins.length;i++)
+        {
+            this.scene.remove(this.areas_ins[i]);
+            this.areas_ins[i] =null;
+        }
 
+        this.areas_ins =[];
+
+    }
+
+    
 }
 
 export default {ThreeJs :new ThreeJs_3D()}
