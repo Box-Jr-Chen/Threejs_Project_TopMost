@@ -14,7 +14,7 @@ export default {
       },
       mounted(){
           var self= this;
-          const contain = document.getElementById('panel_deletepallet');
+          const contain = document.getElementById('panel_delete');
           contain.addEventListener('mouseenter',()=>{
             self.$store.state.threejs.UnActive_controls();
           });
@@ -32,7 +32,7 @@ export default {
             delete_Area(){
                 var self = this;
 
-                self.$store.dispatch('A_DeletePallets',self.$store.state.this.$store.state.areas_delete.id).then(response =>{
+                self.$store.dispatch('A_DeleteArea',self.$store.state.areas_delete.id).then(response =>{
                   if(response.result !=='error')
                     {
                       //更新
@@ -43,13 +43,13 @@ export default {
             },
             update_pillets(){
                   var self = this;
-                  self.$store.dispatch('A_GetPallets').then(response =>{
-                    if(response.result !=='error')
-                      {
-                          self.$store.state.pillets = response;
-                          self.$store.commit('Hide_Panel_deletePallet');
-                      }
-                  });
+
+                  //讀取工廠區域
+                  self.$store.commit('LoadAreas');
+                  setTimeout(()=>{
+                    self.$store.commit('Hide_Panel_deleteArea');
+                  },1000);
+                  
             }
 
       }
