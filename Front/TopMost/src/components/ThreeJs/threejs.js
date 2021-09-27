@@ -27,7 +27,7 @@ class ThreeJs_3D {
         this.grid = null;
         this.grid_color = null;
         this.otherender =[];
-        this.areas_ins =[];
+        // this.areas_ins =[];
         this.areas_ins_add =[];
 
         this.mapDesign = MapDesign.MapDesign;
@@ -265,6 +265,52 @@ class ThreeJs_3D {
             this.areas_ins_add[0] =null;
             this.areas_ins_add =[];
     }
+
+    ModifyArea_01(L_X,L_Z,R_X,R_Z)
+    {
+        this.areas_ins_add =[];
+
+        for(var i=0;i<this.WH_FrameLess.line_AREA.length;i++)
+        {
+            this.WH_FrameLess.line_AREA[i].visible = false ;
+            this.WH_FrameLess.line_GROUP[i].visible = false ;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+
+        const vertices = new Float32Array( [
+            L_X, 5.0,  R_Z,
+            L_X, 5.0,   L_Z,
+            R_X, 5.0,  R_Z,
+
+
+            L_X, 5.0,  L_Z,
+            R_X, 5.0,  L_Z,
+            R_X, 5.0,  R_Z,
+        ] );
+
+        // itemSize = 3 because there are 3 values (components) per vertex
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        const material = this.add_ins_mat;
+        const mesh = new THREE.Mesh( geometry, material );
+        this.areas_ins_add.push(mesh);
+        mesh.scale.set(1,-1,1);
+        mesh.position.set(mesh.position.x,10,mesh.position.z);
+        mesh.geometry.attributes.position.dynamic =true;
+        this.scene.add(mesh);
+
+
+    }
+
+    ModifyArea_cancel_01()
+    {
+        for(var i=0;i<this.WH_FrameLess.line_AREA.length;i++)
+        {
+            this.WH_FrameLess.line_AREA[i].visible = true ;
+            this.WH_FrameLess.line_GROUP[i].visible = true ;
+        }
+    }
+
 
     Areas_DeleteAll()
     {

@@ -37,6 +37,7 @@ export default {
                     {
                       //更新
                       self.update_pillets();
+                      self.$store.state.threejs.Active_controls();
                     }
                 });
 

@@ -19,7 +19,7 @@ class wh_frameless {
             color: new THREE.Color("rgb(255, 255, 255)")
         });
         this.material_line_area = new THREE.LineBasicMaterial({
-            color: new THREE.Color("rgb(255, 0, 0)")
+            color: new THREE.Color("rgb(255, 255, 0)")
         });
 
         this.pointInPolygon  = require('point-in-polygon'); //判断点是否在多边形内

@@ -1,8 +1,8 @@
 const db = require('../models/index');
 const pallets = db['pallets'];
 const setting_system = db['setting_system'];
-
-
+const { Op } = require("sequelize");
+//未排列
 async function list(req, res) { 
 
     var id_Warehouse = req.query.id;
@@ -22,12 +22,87 @@ async function list(req, res) {
 
     return await
     pallets
-      .findAll({ offset: (id_Warehouse-1)*sort_amount, limit: sort_amount })
+      .findAll(
+        { offset: (id_Warehouse-1)*sort_amount, 
+          limit: sort_amount ,
+          where:{id_areas:0}})
       .then((areas) => res.status(200).send(areas))
       .catch((error) => { res.status(400).send(error); })}
   
 
-  
+
+//已排列
+async function list_Exit(req, res) { 
+
+  var id_Warehouse = req.query.id;
+
+  var setting_interval = await  setting_system.findOne({
+      attributes: ['sort_amount']
+  });
+  var sort_amount = setting_interval.sort_amount;
+  if(sort_amount <=0)
+  {
+      result_error.cause ="sort_amount less 0";
+      return res_reuslt.send(result_error);
+  }
+
+ const parsed_id = parseInt(id_Warehouse);
+  if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
+
+  return await
+  pallets
+    .findAll(
+      { offset: (id_Warehouse-1)*sort_amount, 
+        limit: sort_amount ,
+        where:{id_areas:{
+          [Op.not]: 0
+        } }})
+    .then((areas) => res.status(200).send(areas))
+    .catch((error) => { res.status(400).send(error); })}
+
+//算出已排列棧板需要幾次讀取
+async function list_ExitExeCount(req, res) { 
+
+  var id_Warehouse = req.query.id;
+
+  var setting_interval = await  setting_system.findOne({
+      attributes: ['sort_amount']
+  });
+  var sort_amount = setting_interval.sort_amount;
+  if(sort_amount <=0)
+  {
+      result_error.cause ="sort_amount less 0";
+      return res_reuslt.send(result_error);
+  }
+
+ const parsed_id = parseInt(id_Warehouse);
+  if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
+
+  return await
+  pallets
+    .count(
+      {
+        where:{id_areas:{
+          [Op.not]: 0
+        } }})
+    .then((count) =>{
+
+      var result= Math.floor(count/sort_amount);
+      if( count%sort_amount >0)
+            result++;
+
+      res.status(200).send(
+        {
+          "count":result
+        }
+        )
+
+    })
+    .catch((error) => { res.status(400).send(error); })}
+ 
+
+
+
 async function add(req, res) { 
          var id_warehouse = req.body.id_warehouse;
          var id_areas = 0;
@@ -125,4 +200,4 @@ async function update(req, res){
       .then((area) => res.status(200).send(p_id))
       .catch((error) => { res.status(400).send(error); })}
   
-module.exports = { list,add,update,deleted};
+module.exports = { list,list_Exit,list_ExitExeCount,add,update,deleted};

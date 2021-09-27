@@ -62,6 +62,7 @@ async function update(req, res){
     var length = req.body.length;
     var pos_init = req.body.pos_init;
     var  interval= req.body.interval;
+
     return await
     area
     .update({

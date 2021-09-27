@@ -22,8 +22,13 @@
     margin-left: 2rem;
     border-radius: 5px;
     text-align: center;
+}
+.btn_left_cursor{
+
     cursor: pointer;
 }
+
+
 .btn_left_active{
     background: rgb(117, 117, 117);
     color: white;

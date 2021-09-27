@@ -20,7 +20,8 @@ export default  new Vuex.Store({
     setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
     setting_files_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getfiles_dxf,
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
-
+    pallet_sort_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet,
+    pallet_exit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit,
     //Main
     width_main:0,
     height_main:0,
@@ -52,19 +53,7 @@ export default  new Vuex.Store({
         'title':'貨物設定'
       },
     ],
-   //位置資訊
-  //  WH_borders:{
-  //    id :-1,
-  //    title:"",
-  //    borders:[]
-  //  },
-  //  Areas_borders: 
-  //  {
-  //   id_warehouse :-1,
-  //    title_wavehouse:"",
-  //    areas:   
-  //    []
-  //  },
+
    
    //棧板設定
    pillets:[],
@@ -101,7 +90,9 @@ export default  new Vuex.Store({
   areas:[],
   area_show_afd: false,
   show_afd:false,
+  afd_isAdd:false,
   addIns_pos:{
+    'index':-1,
     'left':{
       'x':0,
       'z':0
@@ -113,8 +104,15 @@ export default  new Vuex.Store({
   },
   areas_delete:{
     id:0
-   },
   },
+  //需要排列棧板
+  pallet_sort:[],
+  //已排列棧板
+  pallet_exit:[]
+
+  },
+
+
 
   mutations: {
     onWindowResize() {
@@ -152,11 +150,11 @@ export default  new Vuex.Store({
       this.state.panel_show_deletePallet_inSetting_Project= false;
     },
 
-    //adfPallet
-    Show_Panel_adfPallet(){
+    //adfArea
+    Show_Panel_adfArea(){
       this.state.area_show_afd= true;
     },
-    Hide_Panel_adfPallet(){
+    Hide_Panel_adfArea(){
       this.state.area_show_afd= false;
     },
 
@@ -175,7 +173,7 @@ export default  new Vuex.Store({
       if(this.state.threejs.areas_ins_add.length >0)
       {
         //z 要轉負
-
+        this.state.addIns_pos.index = -1;
         this.state.addIns_pos.left.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
         this.state.addIns_pos.left.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
         this.state.addIns_pos.right.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
@@ -233,7 +231,7 @@ export default  new Vuex.Store({
                               element.rect = algs_rectcenter;
                               var borderstr = JSON.stringify(element.borders);
                       
-                              //更新area資料
+                              //更新area資料 因為width和lengh 需要更新
                               var data={
                                   id:element.id,
                                   id_warehouse:element.id_warehouse,
@@ -247,7 +245,7 @@ export default  new Vuex.Store({
 
 
                               //區域更新
-                                store.dispatch('A_UpdateArea',data).then(response =>{
+                              store.dispatch('A_UpdateArea',data).then(response =>{
                                       if(response.result !==undefined)
                                       {
                                           console.log("success :"+element.id);
@@ -593,8 +591,47 @@ export default  new Vuex.Store({
               ).catch(error => {
                 return error;
               });
-        }
+        },
 
+        //Pallet_needsort
+        async A_GetPallet_Sort(state){
+          var self= this;
+          var data = {
+            'path': self.state.pallet_sort_Api+'?id='+self.state.factory_id,
+          };
+          state
+
+        //  console.log(data);
+
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
+        //Pallet_exit
+        async A_GetPallet_Exit(state){
+          var self= this;
+          var data = {
+            'path': self.state.pallet_exit_Api+'?id='+self.state.factory_id,
+          };
+          state
+
+        //  console.log(data);
+
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        }
   },
   modules: {
 

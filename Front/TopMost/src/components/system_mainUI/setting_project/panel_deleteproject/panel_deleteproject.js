@@ -13,14 +13,14 @@ export default {
           }
       },
       mounted(){
-          var self= this;
-          const contain = document.getElementById('panel_delete');
-          contain.addEventListener('mouseenter',()=>{
-            self.$store.state.threejs.UnActive_controls();
-          });
-          contain.addEventListener('mouseleave',()=>{
-            self.$store.state.threejs.Active_controls();
-          });
+          // var self= this;
+          // const contain = document.getElementById('panel_delete');
+          // contain.addEventListener('mouseenter',()=>{
+          //   self.$store.state.threejs.UnActive_controls();
+          // });
+          // contain.addEventListener('mouseleave',()=>{
+          //   self.$store.state.threejs.Active_controls();
+          // });
         //   var list =  window.getEventListeners(contain);
         //   console.log(list);
       },
@@ -38,6 +38,7 @@ export default {
                     
                       //更新
                       self.update_projects();
+                      self.$store.state.threejs.Active_controls();
                     }
                 });
 

@@ -4,8 +4,8 @@
        set_afd_area_color_hide:!$store.state.area_show_afd}"
   >
   <div v-if="$store.state.area_show_afd">
-       <div class="areatitle" v-if="add==true">新增區域</div>
-        <div class="areatitle" v-if="add==false">修改區域</div>
+       <div class="areatitle" v-if="$store.state.afd_isAdd==true">新增區域</div>
+        <div class="areatitle" v-if="$store.state.afd_isAdd==false">修改區域</div>
        <div class="set_block">
            <div class="title_block">左上角</div>
            <div class="english">X:</div>
@@ -39,9 +39,8 @@
             v-model="$store.state.addIns_pos.right.z">
        </div>
        <div class="btn_block">
-                <div class="btn btn_enter" @click="add_project"  v-if="add==true">確認</div>
-                <div class="btn btn_enter" @click="fix_project"  v-if="add==false">修改</div>
-                <div class="btn btn_delete" @click="delete_project"  v-if="add==false">刪除</div>
+                <div class="btn btn_enter" @click="add_area"  v-if="$store.state.afd_isAdd==true">確認</div>
+                <div class="btn btn_enter" @click="fix_area"  v-if="$store.state.afd_isAdd==false">修改</div>
                 <div class="btn btn_cancel" @click="hide_addpanel">取消</div>
         </div>
   </div>

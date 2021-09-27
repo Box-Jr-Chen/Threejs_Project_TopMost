@@ -42,6 +42,7 @@ export default {
                   {
                     //更新
                     self.update_projects();
+                    self.$store.state.threejs.Active_controls();
                   }
                   else 
                   {

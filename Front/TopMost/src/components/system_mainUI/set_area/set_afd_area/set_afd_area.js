@@ -24,15 +24,17 @@ export default {
             this.$store.state.area_show_afd = false;
             this.$store.state.show_afd = false;
             this.$store.state.threejs.CreateArea_Delete_01();
+            this.$store.state.threejs.ModifyArea_cancel_01();
         },
-        add_project:function(){
+        add_area:function(){
             var self =this;
 
             var borders ='['+
             '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.left.z  +'],'+
             '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.right.z +'],'+
             '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.right.z+'],'+
-            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.left.z +']'+']';
+            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.left.z +'],'+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.left.z  +']'+']';
 
             var data={
                 'id_warehouse' : self.$store.state.factory_id,
@@ -49,11 +51,33 @@ export default {
                 
               });
         },
-        fix_project:function(){
+        fix_area:function(){
+            var self =this;
+            var borders ='['+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.left.z  +'],'+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.right.z +'],'+
+            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.right.z+'],'+
+            '['+self.$store.state.addIns_pos.right.x+','+self.$store.state.addIns_pos.left.z +'],'+
+            '['+self.$store.state.addIns_pos.left.x+','+self.$store.state.addIns_pos.left.z  +']'+']';
 
-        },
-        delete_project:function(){
 
+            var data={
+                'id': self.$store.state.areas[self.$store.state.addIns_pos.index].id,
+                'id_warehouse' : self.$store.state.factory_id,
+                'title' : "",
+                'borders' : borders
+            }
+
+            console.log(data);
+
+            self.$store.dispatch('A_UpdateArea',data).then(response =>{
+                if(response.result !=='error')
+                {
+                  self.hide_addpanel();
+                  self.$store.commit('LoadAreas');
+                }
+              
+            });
         },
         changeinput:function(index,index_2,index_set){
             var result = 0;

@@ -1,8 +1,6 @@
-import set_area from '@/components/system_mainUI/set_area/set_afd_area/set_afd_area.vue'
 export default {
     name: 'rightside',
     components: {
-        set_area
       },
       computed:{
 

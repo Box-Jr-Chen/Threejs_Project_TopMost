@@ -8,6 +8,13 @@ router.get('/',async (req,res)=>{
        await con_pallet.list(req,res) ;
 });
 
+router.get('/exit',async (req,res)=>{
+   await con_pallet.list_Exit(req,res) ;
+});
+
+router.get('/exit_count',async (req,res)=>{
+   await con_pallet.list_ExitExeCount(req,res) ;
+});
 
 router.post('/',async (req,res)=>{
    await con_pallet.add(req,res) ;
