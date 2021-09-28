@@ -74,7 +74,7 @@ export default {
                            self.$store.state.pallet_sort_finish.forEach(function(project){
                                  var init_pos = JSON.parse(project.init);
                         //     // console.log(project.pos);
-                                 self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos);
+                                 self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos,'sort');
 
                            });
                            self.$store.state.isstart_sort = 2;

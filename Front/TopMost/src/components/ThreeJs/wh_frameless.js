@@ -22,6 +22,14 @@ class wh_frameless {
             color: new THREE.Color("rgb(255, 255, 0)")
         });
 
+        var material_project_sort = new THREE.MeshBasicMaterial({
+            color: new THREE.Color("rgb(0, 255, 255)"),
+        });
+
+        var material_project_exit = new THREE.MeshBasicMaterial({
+            color: new THREE.Color("rgb(255, 0, 0)"),
+        });
+        
         this.pointInPolygon  = require('point-in-polygon'); //判断点是否在多边形内
 
         this.line_WH =[];
@@ -400,7 +408,7 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     self.scene.add( tGroup );
 }
 //創造貨物平面
-CreateProject(name,pos,posArr){
+CreateProject(name,pos,posArr,type){
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
@@ -480,17 +488,25 @@ CreateProject(name,pos,posArr){
          0,  1,  2,   3,  4,  5]);  // front
 
 
-    //@0210928 TODO 分兩種
-    var material = new THREE.MeshBasicMaterial({
-        color: new THREE.Color("rgb(0, 255, 255)"),
-    });
+    //分排列種類還是已存在種類
+    if(type==='sort')
+    {    
+        var mesh = new THREE.Mesh(geometry,material_project_sort);
+        mesh.scale.set(1,1,1);
+        mesh.name = name;
+    
+        this.line_project_sort.push(mesh);
+    }
+    else if(type==='exit')
+    {
+        var mesh = new THREE.Mesh(geometry,material_project_exit);
+        mesh.scale.set(1,1,1);
+        mesh.name = name;
+    
+    
+        this.line_project_exit.push(mesh);
+    }
 
-    var mesh = new THREE.Mesh(geometry,material);
-    mesh.scale.set(1,1,1);
-    mesh.name = name;
-
-
-    this.line_project_sort.push(mesh);
 
     self.scene.add(mesh);
 }
