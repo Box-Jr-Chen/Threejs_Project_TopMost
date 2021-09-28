@@ -1,15 +1,15 @@
 import navbar from '@/components/navbar/navbar.vue'
 import Leftbar from '@/components/system_mainUI/Leftbar/Leftbar.vue'
-import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
-import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
+// import system_drawMap from '@/components/system_drawMap/system_DrawMap.vue'
+// import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 
 import json_factory from "@/assets/dxf/20210526_3.json"
 export default {
     name: 'System_Main',
     components: {
-      system_drawMap,
-      system_WH_FrameLess,
+      // system_drawMap,
+      // system_WH_FrameLess,
       navbar,
       system_mainUI,
       Leftbar,

@@ -27,7 +27,8 @@ class wh_frameless {
         this.line_WH =[];
         this.line_AREA =[];
         this.line_GROUP =[];
-        this.line_project =[];
+        this.line_project_exit =[];
+        this.line_project_sort =[];
         this.axes = 'xzy';
         this.planeAxes = this.axes.substr( 0, 2 );
         this.material_grid = new THREE.ShaderMaterial( {
@@ -478,6 +479,8 @@ CreateProject(name,pos,posArr){
     geometry.setIndex([
          0,  1,  2,   3,  4,  5]);  // front
 
+
+    //@0210928 TODO 分兩種
     var material = new THREE.MeshBasicMaterial({
         color: new THREE.Color("rgb(0, 255, 255)"),
     });
@@ -486,24 +489,37 @@ CreateProject(name,pos,posArr){
     mesh.scale.set(1,1,1);
     mesh.name = name;
 
-    this.line_project.push(mesh);
+
+    this.line_project_sort.push(mesh);
 
     self.scene.add(mesh);
 }
 
-DeleteProject()
+DeleteProject_sort()
 {
-    if(this.line_project.length >0)
+    if(this.line_project_sort.length >0)
      {
-        this.line_project.forEach(element=>{
+        this.line_project_sort.forEach(element=>{
             this.scene.remove(element);
         });
 
-        this.line_project.splice(0, this.line_project.length);
-        this.line_project =[];
+        this.line_project_sort.splice(0, this.line_project_sort.length);
+        this.line_project_sort =[];
      }
 }
 
+DeleteProject_exit()
+{
+    if(this.line_project_exit.length >0)
+     {
+        this.line_project_exit.forEach(element=>{
+            this.scene.remove(element);
+        });
+
+        this.line_project_exit.splice(0, this.line_project_exit.length);
+        this.line_project_exit =[];
+     }
+}
 ///比對大小
 compareDecimals(a, b) {
     if (a === b) 

@@ -15,7 +15,6 @@ const con_areas = require('../controllers/controller_areas');
     }
  });
 
-
  router.post('/',async (req,res)=>{
     await con_areas.add(req,res) ;
  });

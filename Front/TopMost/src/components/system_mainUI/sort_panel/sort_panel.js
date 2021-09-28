@@ -26,8 +26,27 @@ export default {
       mounted(){
             this.$store.state.contain_rightpanel = document.getElementById("rightside_sort");
 
+            //Load Pallet need Sort
+            this.LoadPallet();
+
+
       },
       methods:{
+        LoadPallet()
+        {
+            var self =this;
+            if(self.$store.state.select_Factory)
+            {
+                self.$store.dispatch('A_GetPallet_Sort').then(response =>{
+                   if(response.result !=='error')
+                    {
+                        self.$store.state.pallet_sort = response;
+                    }
+                });
+            }
+
+        },
+
 
   
       }

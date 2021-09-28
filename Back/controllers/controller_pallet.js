@@ -189,6 +189,43 @@ async function update(req, res){
     .catch((error) => { res.status(400).send(error); })}
   
 
+//棧板多重更新
+async function update_Area_Muliti(req, res){
+
+  var pallet = req.body.pallet;
+  var data = [];
+  try{
+    data = JSON.parse(pallet);
+  }
+  catch
+  {
+    return res.status(204).send({'result':'parse error'})
+  }
+
+  if(data.length <=0)
+    return res.status(204).send({'result':'data empty'})
+
+  var error = false;
+
+  await data.forEach(async element => {
+        pallets.update({
+          id_areas:element.area,
+          layout:element.layout,
+          pos:element.pos
+        },{where:{id:element.pallet}})
+        .then((area) => {})
+        .catch((error) => { error=true;  return; });
+  });
+
+  if(error)
+     return res.status(400).send({'result':'update error'}); 
+
+
+  return res.status(200).send({'result':'update success'});
+}
+
+
+
   async function deleted(req, res){
     var p_id = req.query.id;
       return await
@@ -200,4 +237,4 @@ async function update(req, res){
       .then((area) => res.status(200).send(p_id))
       .catch((error) => { res.status(400).send(error); })}
   
-module.exports = { list,list_Exit,list_ExitExeCount,add,update,deleted};
+module.exports = { list,list_Exit,list_ExitExeCount,update_Area_Muliti,add,update,deleted};

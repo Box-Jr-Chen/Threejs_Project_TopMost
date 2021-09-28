@@ -76,7 +76,8 @@ async function update(req, res){
     },{where:{id:id}})
     .then((area) => res.status(200).send({'result':'success'}))
     .catch((error) => { res.status(400).send(error); })}
-  
+
+
 
 async function deleted(req, res){
   var p_id = req.query.id;

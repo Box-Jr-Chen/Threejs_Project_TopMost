@@ -22,6 +22,8 @@ export default  new Vuex.Store({
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
     pallet_sort_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet,
     pallet_exit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit,
+    pallet_muliupdate_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_update,
+
     //Main
     width_main:0,
     height_main:0,
@@ -79,8 +81,7 @@ export default  new Vuex.Store({
     id:0
    },
    project_error:'',
-  //排列後的棧板
-  pillet_sort:null,
+
   //工廠設定
   factories:[],
   factory_id:0, //回傳的工廠ID 數字
@@ -108,8 +109,11 @@ export default  new Vuex.Store({
   //需要排列棧板
   pallet_sort:[],
   //已排列棧板
-  pallet_exit:[]
-
+  pallet_exit:[],
+  //排列後的棧板
+  pallet_sort_finish:[],
+  isstart_sort: 0,   //0-未排列,1-排列中,2-排列完成
+  select_Factory:false
   },
 
 
@@ -626,6 +630,30 @@ export default  new Vuex.Store({
           return await store
               .dispatch('AxiosGet', data)
               .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
+        //Pallet_exit
+        async A_UpdatePallet_muliti(state,data_muli){
+          var self= this;
+
+
+
+
+          var data = {
+            'path':  self.state.pallet_muliupdate_Api,
+            'form': data_muli
+          };
+          state
+          console.log(data);
+          return await store
+              .dispatch('AxiosPatch', data)
+              .then(response => {
+                console.log(response);
                 return  response;
               }
               ).catch(error => {

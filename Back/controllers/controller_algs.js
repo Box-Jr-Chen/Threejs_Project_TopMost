@@ -257,11 +257,11 @@ async function Sorting_prject(req, res) {
                         remove:0,
                     }
                   });
-
                     if(pallets_inarea !== null ||pallets_inarea.length >0)
                     {
                         array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
 
+                        
                         //這裡生成多層區域
                         var layout_max =0;
                         pallets_inarea.forEach(pallet_area =>{

@@ -77,6 +77,17 @@ export default {
                         setTimeout(()=>{
                             self.isloading = false;
                             self.$store.state.init_loadFactory =true;
+
+
+                            //讀取需要排列托盤的資料
+                            self.$store.dispatch('A_GetPallet_Sort').then(response =>{
+                                if(response.result !=='error')
+                                {
+                                    self.$store.state.pallet_sort = response;
+                                }
+                            });
+
+
                         },1000);
 
                     }
