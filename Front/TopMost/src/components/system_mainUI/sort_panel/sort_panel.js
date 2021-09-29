@@ -37,7 +37,7 @@ export default {
             var self =this;
             if(self.$store.state.select_Factory)
             {
-                self.$store.dispatch('A_GetPallet_Sort').then(response =>{
+                self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                    if(response.result !=='error')
                     {
                         self.$store.state.pallet_sort = response;

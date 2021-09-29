@@ -4,16 +4,17 @@ const router = express.Router();
 const con_areas = require('../controllers/controller_areas');
 
  router.get('/',async (req,res)=>{
-     //console.log(req.query.id);
     if(req.query.id === undefined||req.query.id === ""){
-
         return res.status(404).send({"error":"id is wrong"})
     }
-    else
-    {
+    else{
         await con_areas.list(req,res) ;
     }
  });
+
+ router.get('/posinit',async (req,res)=>{
+       await con_areas.getPosInit(req,res) ;
+});
 
  router.post('/',async (req,res)=>{
     await con_areas.add(req,res) ;

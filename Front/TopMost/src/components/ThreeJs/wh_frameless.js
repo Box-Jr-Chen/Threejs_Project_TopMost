@@ -22,11 +22,11 @@ class wh_frameless {
             color: new THREE.Color("rgb(255, 255, 0)")
         });
 
-        var material_project_sort = new THREE.MeshBasicMaterial({
+        this.material_project_sort = new THREE.MeshBasicMaterial({
             color: new THREE.Color("rgb(0, 255, 255)"),
         });
 
-        var material_project_exit = new THREE.MeshBasicMaterial({
+        this.material_project_exit = new THREE.MeshBasicMaterial({
             color: new THREE.Color("rgb(255, 0, 0)"),
         });
         
@@ -226,7 +226,6 @@ findRectCenter(posArr)
         posArr.forEach(function(vertice,index) {
 
             var index_getx = index % 3;
-            //console.log(index_getx);
 
             if(index_getx ===0)
             {
@@ -289,11 +288,6 @@ findRectCenter(posArr)
 
               }
         })
-
-        // console.log("step_y:");
-        // console.log(step_y);
-        // console.log("result:");
-        // console.log(result);
 
         return result;
 }
@@ -488,10 +482,12 @@ CreateProject(name,pos,posArr,type){
          0,  1,  2,   3,  4,  5]);  // front
 
 
+    var mesh =null;
+
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
-        var mesh = new THREE.Mesh(geometry,material_project_sort);
+        mesh = new THREE.Mesh(geometry,this.material_project_sort);
         mesh.scale.set(1,1,1);
         mesh.name = name;
     
@@ -499,7 +495,7 @@ CreateProject(name,pos,posArr,type){
     }
     else if(type==='exit')
     {
-        var mesh = new THREE.Mesh(geometry,material_project_exit);
+        mesh = new THREE.Mesh(geometry,this.material_project_exit);
         mesh.scale.set(1,1,1);
         mesh.name = name;
     
@@ -509,6 +505,18 @@ CreateProject(name,pos,posArr,type){
 
 
     self.scene.add(mesh);
+}
+//將排列完的結果轉成已上架
+PutSortToExit()
+{
+    this.line_project_sort.map((e)=>{
+            e.material =this.material_project_exit;
+            return e;
+    });
+    this.line_project_exit.push(...this.line_project_sort);
+
+    this.line_project_sort.splice(0, this.line_project_sort.length);
+    this.line_project_sort =[];
 }
 
 DeleteProject_sort()

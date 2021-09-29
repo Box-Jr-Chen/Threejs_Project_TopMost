@@ -62,7 +62,6 @@ export default {
                         if(response.meg ==='no Json')
                                 return;
             
-
                         self.$store.state.factory_id = response.index;
                         var dxf_json = JSON.parse(response.meg);
 
@@ -74,21 +73,44 @@ export default {
                         //讀取工廠區域
                         self.$store.commit('LoadAreas');
 
-                        setTimeout(()=>{
-                            self.isloading = false;
-                            self.$store.state.init_loadFactory =true;
-
-
-                            //讀取需要排列托盤的資料
-                            self.$store.dispatch('A_GetPallet_Sort').then(response =>{
+                         setTimeout(()=>{
+                             self.isloading = false;
+                             self.$store.state.init_loadFactory =true;
+                        //     //讀取需要排列棧板的資料
+                            self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                 if(response.result !=='error')
                                 {
                                     self.$store.state.pallet_sort = response;
                                 }
                             });
+                      
+                            //讀取已有的棧板的資料
+                            self.$store.dispatch('A_GetPallet_Exit_page').then(res_count =>{ 
+                                var count = res_count.count;
+                                console.log(count);
+                                //頁面
+                                 for(var i=0;i<count;i++)
+                                 {
+                                    self.$store.dispatch('A_GetPallet_Exit',i+1).then(response =>{
+                                        if(response.result !=='error')
+                                        {
+                                            self.$store.state.pallet_exit = response;
+                                            self.$store.state.pallet_exit.forEach(function(project){
+        
+                                                self.$store.dispatch('A_GetAreas_Posinit',project.id_areas).then(response2 =>{
+                                                    var init_pos = JSON.parse(response2[0].pos_init);
+                                                    var pos  =JSON.parse(project.pos);
+                                                    self.$store.state.threejs.WH_FrameLess.CreateProject(project.id,init_pos,pos,'exit');
+                                                });
+                                          });
+                                         
+                                        }
+                                    });
+                                 }
+                                 self.$store.commit('WaitToPallet_needSort');
+                            });
 
-
-                        },1000);
+                            },1000);
 
                     }
             });

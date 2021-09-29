@@ -38,7 +38,7 @@ export default {
                 };
 
                 self.$store.dispatch('A_PostPallets',data).then(response =>{
-                  console.log(response);
+                //  console.log(response);
                   if(response.result !=='error')
                     {
                       //更新
@@ -88,7 +88,7 @@ export default {
 
               self.$store.state.pallet_error =msg;
               
-              console.log(self.$store.state.pallet_error);
+            //  console.log(self.$store.state.pallet_error);
 
               if( self.showMsgTime !==null)
                   clearTimeout(self.showMsgTime);

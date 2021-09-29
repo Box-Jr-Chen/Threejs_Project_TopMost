@@ -23,7 +23,9 @@ async function list(req, res) {
     return await
     pallets
       .findAll(
-        { offset: (id_Warehouse-1)*sort_amount, 
+        { 
+          attributes: ['id', 'pos','id_areas' ,'layout', 'remove','id_pallet','id_project'],
+          offset: (id_Warehouse-1)*sort_amount, 
           limit: sort_amount ,
           where:{id_areas:0}})
       .then((areas) => res.status(200).send(areas))
@@ -34,7 +36,14 @@ async function list(req, res) {
 //已排列
 async function list_Exit(req, res) { 
 
-  var id_Warehouse = req.query.id;
+  var id_Warehouse =  parseInt(req.query.id);
+  var page = parseInt(req.query.page);
+
+  if(id_Warehouse <=0|| page <=0)
+  {
+    return res.status(204).send({'result':'parameter less 0'});
+  }
+
 
   var setting_interval = await  setting_system.findOne({
       attributes: ['sort_amount']
@@ -42,8 +51,7 @@ async function list_Exit(req, res) {
   var sort_amount = setting_interval.sort_amount;
   if(sort_amount <=0)
   {
-      result_error.cause ="sort_amount less 0";
-      return res_reuslt.send(result_error);
+      return res.status(204).send({'result':'sort_amount less 0'});
   }
 
  const parsed_id = parseInt(id_Warehouse);
@@ -52,12 +60,19 @@ async function list_Exit(req, res) {
   return await
   pallets
     .findAll(
-      { offset: (id_Warehouse-1)*sort_amount, 
+      {
+        attributes: ['id', 'pos','id_areas' ,'layout','id_pallet','id_project'],
+        offset: (id_Warehouse-1)*sort_amount, 
         limit: sort_amount ,
+        offset:sort_amount*(page-1),
         where:{id_areas:{
           [Op.not]: 0
         } }})
-    .then((areas) => res.status(200).send(areas))
+    .then((pallet) =>{
+          res.status(200).send(
+            pallet
+          );
+    })
     .catch((error) => { res.status(400).send(error); })}
 
 //算出已排列棧板需要幾次讀取
@@ -209,7 +224,7 @@ async function update_Area_Muliti(req, res){
 
   await data.forEach(async element => {
         pallets.update({
-          id_areas:element.area,
+          id_areas:element.id_areas,
           layout:element.layout,
           pos:element.pos
         },{where:{id:element.pallet}})

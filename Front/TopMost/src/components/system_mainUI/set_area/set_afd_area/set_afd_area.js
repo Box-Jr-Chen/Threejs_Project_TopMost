@@ -68,7 +68,7 @@ export default {
                 'borders' : borders
             }
 
-            console.log(data);
+           // console.log(data);
 
             self.$store.dispatch('A_UpdateArea',data).then(response =>{
                 if(response.result !=='error')

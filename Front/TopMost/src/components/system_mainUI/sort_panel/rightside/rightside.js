@@ -50,7 +50,7 @@ export default {
               if(!self.$store.state.isstart_sort)
               {     
                   self.$store.state.isstart_sort = true;
-                  self.$store.state.threejs.WH_FrameLess.DeleteProject();
+  //                self.$store.state.threejs.WH_FrameLess.DeleteProject_sort();
       
                   self.sortPRoject_recommand();
                   //排列
@@ -59,6 +59,10 @@ export default {
             sortPRoject_recommand()
             {
                   var self= this;
+
+                  //停止計時器
+                  clearInterval(self.$store.state.t_getpallet); 
+
                   self.$store.state.isstart_sort = 1;
                   self.$store.dispatch('A_Postsorting_project').then(response =>{
                       if(response.result ===undefined)
@@ -69,7 +73,6 @@ export default {
 
                       if(response.result==="success")
                       {
-                          //console.log(response);
                            self.$store.state.pallet_sort_finish = response.cause;
                            self.$store.state.pallet_sort_finish.forEach(function(project){
                                  var init_pos = JSON.parse(project.init);
@@ -87,29 +90,47 @@ export default {
                 var self =this;
                 if(self.$store.state.pallet_sort_finish.length >0)
                 {
-                    const updatePallet =  self.$store.state.pallet_sort_finish.map(e =>{
+
+                    var updatePallet =  self.$store.state.pallet_sort_finish.map(e =>{
                             delete e['init'];
                             delete e['type'];
+                            e.id_areas = e['area'];
+                            delete e['area'];
                             e['pos']=JSON.stringify(e['pos']);
                             return e;
                     });
 
-                    const  PalletData ={
+
+
+
+                    var  PalletData ={
                         'pallet':JSON.stringify(updatePallet)
                     }; 
 
+                    //將棧板位置跟新棧板資料庫
                     self.$store.dispatch('A_UpdatePallet_muliti',PalletData).then(response =>{
                         if(response.result ==='update success')
                          {
                             self.$store.state.pallet_sort =[];
 
                             self.$store.state.pallet_sort_finish=[];
-                            self.$store.state.isstart_sort = 0;
+                            self.$store.state.pallet_exit.push(...updatePallet);
+                            self.$store.state.threejs.WH_FrameLess.PutSortToExit();
+                            updatePallet =null;
+                            PalletData =null;
 
-                            self.$store.dispatch('A_GetPallet_Sort').then(response =>{
+
+                            //重新找需要排列的棧板
+                            self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                 if(response.result !=='error')
                                  {
                                      self.$store.state.pallet_sort = response;
+                                     self.$store.commit('WaitToPallet_needSort');
+                                     
+                                    if(self.$store.state.pallet_sort.length >0)
+                                            self.$store.state.isstart_sort = 0;
+                                    else
+                                            self.$store.state.isstart_sort = 3;
                                  }
                              });
                          }

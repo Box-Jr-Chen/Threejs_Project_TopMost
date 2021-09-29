@@ -22,8 +22,9 @@ export default  new Vuex.Store({
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
     pallet_sort_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet,
     pallet_exit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit,
+    pallet_exit_pagemax_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit_count,
     pallet_muliupdate_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_update,
-
+    pallet_getPosinit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area_posinit,
     //Main
     width_main:0,
     height_main:0,
@@ -113,7 +114,10 @@ export default  new Vuex.Store({
   //排列後的棧板
   pallet_sort_finish:[],
   isstart_sort: 0,   //0-未排列,1-排列中,2-排列完成
-  select_Factory:false
+  select_Factory:false,
+
+  //偵測棧板的計時器
+  t_getpallet:null
   },
 
 
@@ -161,8 +165,6 @@ export default  new Vuex.Store({
     Hide_Panel_adfArea(){
       this.state.area_show_afd= false;
     },
-
-
     //Area
     Show_Panel_deleteArea(){
       this.state.panel_show_deleteArea_inSet_Area= true;
@@ -170,7 +172,6 @@ export default  new Vuex.Store({
     Hide_Panel_deleteArea(){
       this.state.panel_show_deleteArea_inSet_Area= false;
     },
-
     Create_Ins_AddArea(){
       this.state.threejs.CreateArea_Add_01();
 
@@ -252,10 +253,9 @@ export default  new Vuex.Store({
                               store.dispatch('A_UpdateArea',data).then(response =>{
                                       if(response.result !==undefined)
                                       {
-                                          console.log("success :"+element.id);
+                                         // console.log("success :"+element.id);
                                       }
                               });
-                              console.log(self.state.threejs.WH_FrameLess.line_GROUP);
                  
 
                              //創建區域視覺
@@ -263,15 +263,11 @@ export default  new Vuex.Store({
                              self.state.threejs.WH_FrameLess.CreateAreaGrid(algs_grid[0],algs_grid[1]);
 
 
-                             console.log(self.state.threejs.WH_FrameLess.line_GROUP);
+                           //  console.log(self.state.threejs.WH_FrameLess.line_GROUP);
 
                         }
 
                     }
-
-
-                    
-
                 }
               );
 
@@ -279,6 +275,35 @@ export default  new Vuex.Store({
             }
 
         });
+    },
+    //判斷當沒有棧板需要排列時啟動偵測器等待幾秒讀取有沒有棧板要放，有停止偵測器
+    WaitToPallet_needSort()
+    {
+      var self =this;
+
+      if(self.state.pallet_sort <=0)
+      {
+        self.state.t_getpallet =setInterval(()=>{
+
+                //API 讀取資料
+            store.dispatch('A_GetPallet_needSort').then(response =>{
+              if(response.result !=='error')
+              {
+                  store.state.pallet_sort = response;
+
+                  if(store.state.pallet_sort.length >0)
+                  {
+                    self.$store.state.isstart_sort = 0;
+                  }
+                  if(store.state.pallet_sort.length >10)
+                  {
+                    clearInterval(self.state.t_getpallet); 
+                  }
+              }
+            });
+         },3000);
+      }
+
     }
 
   },
@@ -598,7 +623,7 @@ export default  new Vuex.Store({
         },
 
         //Pallet_needsort
-        async A_GetPallet_Sort(state){
+        async A_GetPallet_needSort(state){
           var self= this;
           var data = {
             'path': self.state.pallet_sort_Api+'?id='+self.state.factory_id,
@@ -618,14 +643,13 @@ export default  new Vuex.Store({
         },
 
         //Pallet_exit
-        async A_GetPallet_Exit(state){
+        async A_GetPallet_Exit(state,page){
           var self= this;
           var data = {
-            'path': self.state.pallet_exit_Api+'?id='+self.state.factory_id,
+            'path': self.state.pallet_exit_Api+'?id='+self.state.factory_id+'&page='+page,
           };
           state
 
-        //  console.log(data);
 
           return await store
               .dispatch('AxiosGet', data)
@@ -636,24 +660,53 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //Pallet_exit_page
+        async A_GetPallet_Exit_page(state){
+          var self= this;
+          var data = {
+            'path': self.state.pallet_exit_pagemax_Api+'?id='+self.state.factory_id,
+          };
+          state
 
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
         //Pallet_exit
         async A_UpdatePallet_muliti(state,data_muli){
           var self= this;
-
-
-
 
           var data = {
             'path':  self.state.pallet_muliupdate_Api,
             'form': data_muli
           };
           state
-          console.log(data);
           return await store
               .dispatch('AxiosPatch', data)
               .then(response => {
-                console.log(response);
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
+
+        //GetAreas Posinit
+        async A_GetAreas_Posinit(state,id){
+          var self= this;
+
+          var data = {
+            'path':  self.state.pallet_getPosinit_Api+"?id="+id,
+          };
+          state
+          return await store
+              .dispatch('AxiosGet', data)
+              .then(response => {
                 return  response;
               }
               ).catch(error => {

@@ -23,7 +23,23 @@ async function list(req, res) {
             })
       .then((areas) => res.status(200).send(areas))
       .catch((error) => { res.status(400).send(error); })}
-  
+
+async function getPosInit(req, res){
+
+  const parsed_id = parseInt(req.query.id);
+
+  if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
+
+  return await
+  area
+    .findAll({
+        attributes: ['pos_init'],
+        where: {id: parsed_id},
+          })
+    .then((areas) => res.status(200).send(areas))
+    .catch((error) => { res.status(400).send(error); })}
+
+
 async function add(req, res) { 
          var id_warehouse = req.body.id_warehouse;
          var title = req.body.title;
@@ -77,8 +93,6 @@ async function update(req, res){
     .then((area) => res.status(200).send({'result':'success'}))
     .catch((error) => { res.status(400).send(error); })}
 
-
-
 async function deleted(req, res){
   var p_id = req.query.id;
     return await
@@ -90,4 +104,7 @@ async function deleted(req, res){
     .then((area) => res.status(200).send(p_id))
     .catch((error) => { res.status(400).send(error); })}
 
-module.exports = { list,add,update,deleted};
+
+
+
+module.exports = { list,getPosInit,add,update,deleted};

@@ -4,7 +4,7 @@ const router = express.Router();
 const con_warehouse = require('../controllers/controller_warehouse');
 
  router.get('/',async (req,res)=>{
-     console.log(req.query.id);
+    // console.log(req.query.id);
     if(req.query.id === undefined||req.query.id === ""){
         await con_warehouse.list(req,res) ;
     }

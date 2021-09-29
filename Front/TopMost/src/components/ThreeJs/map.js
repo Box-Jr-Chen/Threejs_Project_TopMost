@@ -146,7 +146,6 @@ class MapDesign {
 
             const object = intersects[0].object;
 
-            console.log(object);
 
             self.splineHelperObjects.forEach(element => {
                 // console.log(element);
