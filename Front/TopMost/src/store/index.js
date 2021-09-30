@@ -40,6 +40,10 @@ export default  new Vuex.Store({
     init_loadFactory:false,
     leftbtns:[
       {
+        'img':'project_edit_icon',
+        'title':'貨物管理'
+      },
+      {
         'img':'sort_icon',
         'title':'貨物排列'
       },
