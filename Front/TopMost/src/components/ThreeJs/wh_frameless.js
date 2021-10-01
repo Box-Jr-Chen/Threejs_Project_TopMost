@@ -402,7 +402,7 @@ CreateAreaGrid(polygonPointsArr,usefulIndexArr)
     self.scene.add( tGroup );
 }
 //創造貨物平面
-CreateProject(name,pos,posArr,type){
+CreateProject(name,pos,posArr,type,area){
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
@@ -410,7 +410,10 @@ CreateProject(name,pos,posArr,type){
     var y_arrow = [];
 
 
-
+    if(posArr ===null)
+    {
+        return;
+    }
     posArr.forEach(e=>{
         x_arraw.push(e[0]);
         y_arrow.push(e[1]);
@@ -477,35 +480,35 @@ CreateProject(name,pos,posArr,type){
       'uv',
       new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
 
-
     geometry.setIndex([
          0,  1,  2,   3,  4,  5]);  // front
-
 
     var mesh =null;
 
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
-        mesh = new THREE.Mesh(geometry,this.material_project_sort);
-        mesh.scale.set(1,1,1);
-        mesh.name = name;
-    
+        mesh = this.mesh_set(name,area,geometry,this.material_project_sort);
+        mesh.position.set(mesh.position.x,mesh.position.y+2,mesh.position.z);
         this.line_project_sort.push(mesh);
     }
     else if(type==='exit')
     {
-        mesh = new THREE.Mesh(geometry,this.material_project_exit);
-        mesh.scale.set(1,1,1);
-        mesh.name = name;
-    
-    
+        mesh = this.mesh_set(name,area,geometry,this.material_project_exit);
         this.line_project_exit.push(mesh);
     }
 
-
     self.scene.add(mesh);
 }
+mesh_set(name,area,geometry,material)
+{
+    var mesh = new THREE.Mesh(geometry,material);
+    mesh.scale.set(1,1,1);
+    mesh.name = name;
+    mesh.area = area;
+    return mesh;
+}
+
 //將排列完的結果轉成已上架
 PutSortToExit()
 {

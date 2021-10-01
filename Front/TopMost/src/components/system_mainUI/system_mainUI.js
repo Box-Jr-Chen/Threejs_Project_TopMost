@@ -4,7 +4,7 @@ import setting_project from '@/components/system_mainUI/setting_project/setting_
 import set_area from '@/components/system_mainUI/set_area/set_area.vue'
 import sort_panel from '@/components/system_mainUI/sort_panel/sort_panel.vue'
 import system_readDXFMap from '@/components/system_readDXFMap/system_readDXFMap.vue'
-
+import ProEdit from '@/components/system_mainUI/ProEdit/ProEdit.vue'
 
 export default {
     name: 'system_mainUI',
@@ -13,7 +13,8 @@ export default {
         setting_project,
         set_area,
         sort_panel,
-        system_readDXFMap
+        system_readDXFMap,
+        ProEdit
       },
       computed:{
 

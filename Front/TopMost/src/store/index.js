@@ -40,10 +40,6 @@ export default  new Vuex.Store({
     init_loadFactory:false,
     leftbtns:[
       {
-        'img':'project_edit_icon',
-        'title':'貨物管理'
-      },
-      {
         'img':'sort_icon',
         'title':'貨物排列'
       },
@@ -58,6 +54,10 @@ export default  new Vuex.Store({
       {
         'img':'project_icon',
         'title':'貨物設定'
+      },
+      {
+        'img':'project_edit_icon',
+        'title':'貨物管理'
       },
     ],
 
@@ -121,7 +121,11 @@ export default  new Vuex.Store({
   select_Factory:false,
 
   //偵測棧板的計時器
-  t_getpallet:null
+  t_getpallet:null,
+
+  //3d area
+  is_3d_area:false
+
   },
 
 

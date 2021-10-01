@@ -37,21 +37,7 @@ export default {
           event
           self.mouseup();
         }, true);
-
-
-        // self.waitSysInit =  setInterval(() => {
-        //     if(self.$store.state.threejs.sysInit==false) return;
-        //     clearInterval(self.waitSysInit);
-        //     self.$store.state.threejs.DXFReader(json_factory);
-
-        // }, 500);
-
-        
-        // document.body.onmouseup = function() {
-        //   self.mouseup();
-        // }
-        //document.addEventListener( 'pointerdown', self.onPointerDown );
-        //document.addEventListener( 'pointerup', self.onPointerUp );
+ 
       },
       methods:{
         animate() {

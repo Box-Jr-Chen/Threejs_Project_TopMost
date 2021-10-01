@@ -87,7 +87,6 @@ export default {
                             //讀取已有的棧板的資料
                             self.$store.dispatch('A_GetPallet_Exit_page').then(res_count =>{ 
                                 var count = res_count.count;
-                                console.log(count);
                                 //頁面
                                  for(var i=0;i<count;i++)
                                  {
@@ -97,10 +96,11 @@ export default {
                                             self.$store.state.pallet_exit = response;
                                             self.$store.state.pallet_exit.forEach(function(project){
         
+                                                //獲得area 的pos init
                                                 self.$store.dispatch('A_GetAreas_Posinit',project.id_areas).then(response2 =>{
                                                     var init_pos = JSON.parse(response2[0].pos_init);
                                                     var pos  =JSON.parse(project.pos);
-                                                    self.$store.state.threejs.WH_FrameLess.CreateProject(project.id,init_pos,pos,'exit');
+                                                    self.$store.state.threejs.WH_FrameLess.CreateProject(project.id,init_pos,pos,'exit',project.id_areas);
                                                 });
                                           });
                                          
@@ -109,6 +109,31 @@ export default {
                                  }
                                  self.$store.commit('WaitToPallet_needSort');
                             });
+
+                            //讀取貨物設定資訊
+                            self.$store.dispatch('A_GetProjects').then(response =>{
+                              if(response.result !=='error')
+                                {
+                                    self.$store.state.projects = response;
+                                }
+                            });
+
+
+                            //讀取貨物設定資訊
+                            self.$store.dispatch('A_GetProjects').then(response =>{
+                                if(response.result !=='error')
+                                  {
+                                      self.$store.state.projects = response;
+                                  }
+                              });
+
+                            //讀取棧板設定資訊
+                              self.$store.dispatch('A_GetPallets').then(response =>{
+                                if(response.result !=='error')
+                                 {
+                                     self.$store.state.pillets = response;
+                                 }
+                             });
 
                             },1000);
 

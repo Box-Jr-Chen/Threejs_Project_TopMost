@@ -1,13 +1,8 @@
 import * as THREE from "three";
-import "./InfiniteGridHelper";
-import MapDesign from './map.js';  // 地圖設計系統
-import WH_FrameLess from './wh_frameless.js';  // 地圖設計系統
-import Threejs_Area from './threejs_area.js';  // 地圖設計系統
-import {Viewer} from './three-dxf/three-dxf.js';  // dxf匯入
 const OrbitControls = require('three-orbit-controls')(THREE);
 
 
-class ThreeJs_3D {
+class ThreeJs_Area {
     constructor(){
         this.fov = 60;
         this.container = null; //web id container
@@ -28,29 +23,26 @@ class ThreeJs_3D {
         this.grid = null;
         this.grid_color = null;
         this.otherender =[];
-        // this.areas_ins =[];
-        this.areas_ins_add =[];
+        this.areaInit = false;
 
-        this.mapDesign = MapDesign.MapDesign;
-        this.WH_FrameLess = WH_FrameLess.wh_frameless;
-        this.Threejs_Area = Threejs_Area.ThreeJs_Area;
-      //  this.threeDxf  = ThreeDxf;
-        this.sysInit = false;
-
-
-        this.add_ins_mat = new THREE.MeshBasicMaterial( { color: "rgb(255, 255, 0)" } );
+       // this.add_ins_mat = new THREE.MeshBasicMaterial( { color: "rgb(255, 255, 0)" } );
     }
 
-    init(container) //id = container
+    init(container,action_init) //id = container
     {
-     
-        this.sysInit = false;
+
+        if(this.container !==null)
+        {
+            console.log(this.renderer.domElement);
+        }
+
+        if( this.areaInit) return;
+
+        this.areaInit = false;
         this.container = container;
-        // console.log(this.container);
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color("rgb(80, 80, 80)"); //#F0FFF0
-        // this.scene.fog = new THREE.Fog( '#F0FFF0', 200, 1000 );
         this.scene.add(new THREE.AmbientLight(0x404040));
 
         this.light = new THREE.DirectionalLight(0xdfebff, 0.5);//从正上方（不是位置）照射过来的平行光，0.45的强度
@@ -59,10 +51,6 @@ class ThreeJs_3D {
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-      //  this.grid = new THREE.InfiniteGridHelper(10, 100,new THREE.Color("rgb(130, 130, 130)"));
-
-
-        this.scene.add(this.grid);
 
         //         初始化相机
         // var  value_ = 2 ;
@@ -74,24 +62,28 @@ class ThreeJs_3D {
 
         //         初始化控制器
         this.controls = new OrbitControls(this.camera,this.container);
-        // this.controls.touches.ONE = THREE.TOUCH.PAN;
         this.controls.target.set(0, 0, 0);
-        this.controls.rotateSpeed *= -1;
+        this.controls.rotateSpeed *= 1;
         this.controls.minDistance = 10;
         this.controls.maxDistance = 1000;
         this.controls.maxPolarAngle = Math.PI / 2.3;
-         this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
+        //BOX
+        const geometry = new THREE.BoxGeometry( 100, 100, 100 );
+        const material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
+        const cube = new THREE.Mesh( geometry, material );
+        this.scene.add( cube );
 
-        //         渲染
+
+        // 渲染
         this.renderer = new THREE.WebGLRenderer({
           alpha: true,
           sortobjects:false
         });//会在body里面生成一个canvas标签,
         this.renderer.setPixelRatio(window.devicePixelRatio);//为了兼容高清屏幕
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.gammaFactor = 2.2;
         this.container.appendChild(this.renderer.domElement);
@@ -102,33 +94,13 @@ class ThreeJs_3D {
         setTimeout(()=>{
             this.width  = this.container.offsetWidth;
             this.height = this.container.offsetHeight;
-            this.width_inner = window.innerWidth;
-            this.height_inner = window.innerHeight;
+            this.width_inner =  this.width;
+            this.height_inner = this.height;
 
+
+           this.areaInit = true;
            this.animate();
-
-
-           this.mapDesign.init(
-            this.width,
-            this.height,
-            this.camera,
-            this.scene
-          );
-
-          this.WH_FrameLess.init(
-            this.width,
-            this.height,
-            this.camera,
-            this.scene
-          );
-
-       
-
-          this.otherender.push(this.mapDesign);
-          this.otherender.push(this.WH_FrameLess);
-          this.otherender.push(this.Threejs_Area);
-
-          this.sysInit = true;
+           action_init();
 
         },1000);
 
@@ -140,18 +112,9 @@ class ThreeJs_3D {
     }
    
     render() {
+
+            if(!this.areaInit) return;
             this.renderer.render(this.scene, this.camera);
-
-            if(this.otherender.length >0)
-            {
-                this.otherender.forEach(
-                    element =>
-                    {
-                        element.render();
-                    }
-                )
-            }
-
 
             this.width  = this.container.clientWidth;
             this.height = this.container.clientHeight;
@@ -160,35 +123,11 @@ class ThreeJs_3D {
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(this.width, this.height);
             this.renderer.render(this.scene, this.camera);
-
     }
 
     animate()
     {
         this.render();
-    }
-
-    async Load_Model_Data(path,action_sucess,action_loding,action_error)
-    {
-        await this.loader.load(path,
-        function (obj) {
-
-           // console.log(this.fov);
-           // this.scene.add(obj);
-
-            if(action_sucess !=null)
-                action_sucess(obj);
-        },
-        function (xhr) {
-            if(action_loding !=null)
-                action_loding(xhr);
-           // console.log((xhr.loaded / xhr.total * 100) + "% loaded")
-        },
-        function (error) {
-            if(action_error !=null)
-                    action_error(error);
-            //console.error(error, "load error!")
-        });
     }
 
     AddElementListener(stat_act,Action){
@@ -208,11 +147,6 @@ class ThreeJs_3D {
         //this.AddElementListener('pointerup',this.mapDesign.onPointerUp_move);
     }
 
-    //Mouse
-    MouseUp(){
-        this.mapDesign.mouseup();
-    }
-
     //Active Control
     Active_controls()
     {
@@ -225,16 +159,8 @@ class ThreeJs_3D {
         this.controls.enabled = false;
     }
 
-    WH_FrameLesscreateMap()
-    {
-        this.WH_FrameLess.createMap();
-    }
 
-    DXFReader(data)
-    {
-        //data
-        Viewer(this.scene,this.camera,this.controls,this.container,this.width,this.height,data);
-    }
+
 
     CreateArea_Add_01()
     {
@@ -331,4 +257,4 @@ class ThreeJs_3D {
     
 }
 
-export default {ThreeJs :new ThreeJs_3D()}
+export default {ThreeJs_Area :new ThreeJs_Area()}

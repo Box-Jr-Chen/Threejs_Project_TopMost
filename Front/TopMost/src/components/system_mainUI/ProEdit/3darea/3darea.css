@@ -1,0 +1,38 @@
+.container_area_BG{
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 50%;
+    top:50%;
+    background: rgba(0, 0, 0, 0.459);
+    
+}
+
+.container_area_outline{
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 50%;
+    top:50%;
+    width: 85%;
+    height:95%;
+    background: rgb(153, 153, 153);
+    border-radius: 5px;
+}
+#container_area{
+    position: absolute;
+    transform:translate(-50%,-50%);
+    left: 50%;
+    top:50%;
+    width: 97.5%;
+    height:95%;
+    background: rgb(122, 122, 122);
+}
+.area_cancel{
+    transform:translate(-50%,-50%);
+    left: 98%;
+    top: 2.5%;
+    font-size: 1.5rem;
+    color: white;
+    text-align: right;
+    position: absolute;
+    cursor: pointer;
+}
