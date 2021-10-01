@@ -33,6 +33,8 @@ class ThreeJs_Area {
 
         if(this.container !==null)
         {
+            this.renderer.domElement.width =100;
+            this.renderer.domElement.height =100;
             console.log(this.renderer.domElement);
         }
 
