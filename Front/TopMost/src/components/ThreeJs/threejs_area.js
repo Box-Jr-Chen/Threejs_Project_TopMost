@@ -33,9 +33,24 @@ class ThreeJs_Area {
 
         if(this.container !==null)
         {
-            this.renderer.domElement.width =100;
-            this.renderer.domElement.height =100;
-            console.log(this.renderer.domElement);
+            this.container = null;
+            this.container = container;
+           
+            this.container.appendChild(this.renderer.domElement);
+ 
+            this.camera.position.set(0, 750, 350 );
+            this.controls =null;
+            this.controls = new OrbitControls(this.camera,this.container);
+            this.controls.target.set(0, 0, 0);
+            this.controls.rotateSpeed *= 1;
+            this.controls.minDistance = 10;
+            this.controls.maxDistance = 1000;
+            this.controls.maxPolarAngle = Math.PI / 2.3;
+            this.controls.update();
+            this.controls.enabled = true;
+
+
+           // console.log(this.controls);
         }
 
         if( this.areaInit) return;
@@ -58,7 +73,7 @@ class ThreeJs_Area {
         // var  value_ = 2 ;
        // this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
         this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
-         this.camera.position.set(0, 500, 0 );
+         this.camera.position.set(0, 750, 350 );
          this.camera.lookAt(this.scene.position);
 
 

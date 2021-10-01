@@ -2,7 +2,7 @@
   <div  id="rightside_area">
       <div class="rightside_area">
         <div class="title">
-                <p>區域設定</p>
+                <p>區域選擇</p>
                
             </div>
             <div class="inner_outline">
