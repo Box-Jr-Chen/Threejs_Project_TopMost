@@ -65,9 +65,9 @@ class ThreeJs_3D {
         this.scene.add(this.grid);
 
         //         初始化相机
-        // var  value_ = 2 ;
-       // this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
-        this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000);
+         var  value_ = 2 ;
+         this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
+       // this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000); //看物件用
          this.camera.position.set(0, 500, 0 );
          this.camera.lookAt(this.scene.position);
 
@@ -80,7 +80,7 @@ class ThreeJs_3D {
         this.controls.minDistance = 10;
         this.controls.maxDistance = 1000;
         this.controls.maxPolarAngle = Math.PI / 2.3;
-         this.controls.enableRotate =false;
+        this.controls.enableRotate =false;
         this.controls.update();
         this.controls.enabled = true;
 
@@ -121,8 +121,6 @@ class ThreeJs_3D {
             this.camera,
             this.scene
           );
-
-       
 
           this.otherender.push(this.mapDesign);
           this.otherender.push(this.WH_FrameLess);

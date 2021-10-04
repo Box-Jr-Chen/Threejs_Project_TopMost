@@ -25,11 +25,10 @@ export default {
       },
       mounted(){
             var self =this;
-            console.log(" init !!!!!!!!");
             const container = document.getElementById('container_area');
             self.$store.state.threejs.Threejs_Area.init(container,()=>{
-            console.log("area init !!!!!!!!");
-
+           // console.log("area init !!!!!!!!");
+            self.$store.state.threejs.Threejs_Area.CreateAreaIns();
 
             self.$store.state.threejs.UnActive_controls();
             });
