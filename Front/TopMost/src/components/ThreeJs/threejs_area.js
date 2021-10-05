@@ -25,9 +25,9 @@ class ThreeJs_Area {
         this.otherender =[];
         this.areaInit = false;
         this.id_area =0; //id
-        this.border_area =null; //數值
-        this.area_ins = null; //模型
-        this.pro_ins = null;  //產品
+        this.border_area = null; //數值
+        this.area_ins    = null; //模型
+        this.pro_ins     = null;  //產品
         this.area_height =5;
         this.Material_area        = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(50, 50, 50)")} );
         this.Material_project     = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(120, 120, 120)")} );

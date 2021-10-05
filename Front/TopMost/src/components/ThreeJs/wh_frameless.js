@@ -611,14 +611,25 @@ DeleteProject_exit()
      }
 }
 
-ResetProject_exit(area)
+ResetProject_exit(area,area_pro)
 {
-    var result = this.line_project_exit.filter(e=>{
+    this.line_project_exit = this.line_project_exit.filter(e=>{
          if(e.area ===area)
-            return e;
+         {
+            var item  =  area_pro.findIndex(p=>{
+                if(p.name === e.name)
+                {
+                    return p;
+                }
+            });
+
+            if(item >=0)
+                return e;
+         }
+
     });
 
-    result.forEach(e=>{
+    this.line_project_exit.forEach(e=>{
         e.material = this.material_project_exit ;
         e.position.set(0,0,0);
         this.scene.add(e);

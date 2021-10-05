@@ -39,6 +39,9 @@ export default {
               });
 
               //沒辦法透過在物件上做改變  轉換介面改變
+              console.log(self.$store.state.area_pro_data.length);
+              console.log(self.$store.state.pallet_exit.length);
+
               self.$store.state.area_pro_data = self.$store.state.pallet_exit.filter(e =>{
                 if(e.id_areas ===self.$store.state.threejs.Threejs_Area.id_area)
                 {
@@ -57,7 +60,7 @@ export default {
         cancel_3d_area()
         {
             this.$store.state.threejs.Threejs_Area.DeleteProject();
-            this.$store.state.threejs.WH_FrameLess.ResetProject_exit(this.$store.state.threejs.Threejs_Area.id_area);
+            this.$store.state.threejs.WH_FrameLess.ResetProject_exit(this.$store.state.threejs.Threejs_Area.id_area,this.$store.state.threejs.Threejs_Area.pro_ins);
 
             this.$store.state.is_3d_area = false;
             this.$store.state.threejs.Active_controls();
@@ -93,9 +96,62 @@ export default {
           self.$store.dispatch('A_RemovePallet_muliti',PalletData).then(response =>{
             if(response.result ==='update success')
               {
-                console.log("remove success");
+               // console.log("remove success");
+
+                //刪除成功將資料刪除 in area_pro_data
+                self.$store.state.area_pro_data= self.$store.state.area_pro_data.filter(e=>{
+                  var check = false;
+
+                  for(var i=0;i<pallet.length;i++)
+                  {
+                    if(pallet[i].pallet===e.id)
+                    {
+                      check = true;
+                      break;
+                    }
+                  }
+                  if(!check)
+                      return e;
+                });
+              //刪除成功將資料刪除 in pallet_exit
+                self.$store.state.pallet_exit= self.$store.state.pallet_exit.filter(e=>{
+                  var check = false;
+
+                  for(var i=0;i<pallet.length;i++)
+                  {
+                    if(pallet[i].pallet===e.id)
+                    {
+                      check = true;
+                      break;
+                    }
+                  }
+                  if(!check)
+                      return e;
+                });
+
+
+                //刪除模型
+                self.$store.state.threejs.Threejs_Area.pro_ins = self.$store.state.threejs.Threejs_Area.pro_ins.filter(e=>{
+                  var check = false;
+
+                  for(var i=0;i<pallet.length;i++)
+                  {
+                    if(pallet[i].pallet===e.name)
+                    {
+                      check = true;
+                      break;
+                    }
+                  }
+
+                  if(!check)
+                    return e;
+                  else
+                    self.$store.state.threejs.Threejs_Area.scene.remove(e);
+
+                });
               }
-              console.log(response);
+              else
+                console.log(response);
           });
         }
       }
