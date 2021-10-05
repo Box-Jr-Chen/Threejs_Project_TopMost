@@ -54,7 +54,6 @@ export default {
 
             var index =  this.$store.state.factory_select ;
 
-  
 
             self.$store.dispatch('A_GetJson', self.$store.state.factories[index]).then(response =>{
                 if(response.result !=='error')
@@ -80,33 +79,41 @@ export default {
                             self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                 if(response.result !=='error')
                                 {
-                                    self.$store.state.pallet_sort = response;
+                                    self.$store.state.pallet_needsort = response;
                                 }
                             });
                       
                             //讀取已有的棧板的資料
                             self.$store.dispatch('A_GetPallet_Exit_page').then(res_count =>{ 
+
+
                                 var count = res_count.count;
                                 //頁面
+                                self.$store.state.pallet_exit=[];
+
                                  for(var i=0;i<count;i++)
                                  {
                                     self.$store.dispatch('A_GetPallet_Exit',i+1).then(response =>{
                                         if(response.result !=='error')
-                                        {
-                                            self.$store.state.pallet_exit = response;
-                                            self.$store.state.pallet_exit.forEach(function(project){
-        
-                                                //獲得area 的pos init
-                                                self.$store.dispatch('A_GetAreas_Posinit',project.id_areas).then(response2 =>{
-                                                    var init_pos = JSON.parse(response2[0].pos_init);
-                                                    var pos  =JSON.parse(project.pos);
-                                                    self.$store.state.threejs.WH_FrameLess.CreateProject(project.id,init_pos,pos,'exit',project.id_areas);
-                                                });
-                                          });
-                                         
+                                        {   
+      
+                                                response.forEach(e=>{
+                                                        self.$store.state.pallet_exit.push(e);
+
+                                                        //獲得area 的pos init
+                                                        self.$store.dispatch('A_GetAreas_Posinit',e.id_areas).then(response2 =>{
+                                                            var init_pos = JSON.parse(response2[0].pos_init);
+                                                            var pos  =JSON.parse(e.pos);
+
+                                                            self.$store.state.threejs.WH_FrameLess.CreateProject(e.id,init_pos,pos,'exit',e.id_areas,e.layout);
+                                                        });
+                                                });              
                                         }
                                     });
                                  }
+                                
+
+
                                  self.$store.commit('WaitToPallet_needSort');
                             });
 

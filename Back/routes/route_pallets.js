@@ -27,7 +27,9 @@ router.patch('/',async (req,res)=>{
 router.patch('/muli',async (req,res)=>{
    await con_pallet.update_Area_Muliti(req,res) ;
 });
-
+router.patch('/muli_remove',async (req,res)=>{
+   await con_pallet.remove_Area_Muliti(req,res) ;
+});
 router.delete('/',async (req,res)=>{
    await con_pallet.deleted(req,res) ;
 });

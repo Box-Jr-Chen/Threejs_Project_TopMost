@@ -389,7 +389,6 @@ createAreaLine(borders)
 }
 CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
 {
-    console.log(area_id);
     var self = this;
     //區域格線
     var grid = self.m_createAreaGrid(polygonPointsArr,usefulIndexArr);
@@ -420,7 +419,7 @@ CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
     //console.log( self.line_GROUP);
 }
 //創造貨物平面
-CreateProject(name,pos,posArr,type,area){
+CreateProject(name,pos,posArr,type,area,layout){
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
@@ -458,55 +457,58 @@ CreateProject(name,pos,posArr,type,area){
     
 
    var offset =1;
-   var height =10;
+   var height_max =10 *(layout+1) ;
+   var height_min =10 *(layout) ;
+
+  // console.log(height_max+";"+height_min);
 
     const vertices = [
-        { pos: [project_zeropoint[0] +offset, height,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [0, 0],},  //左下
-        { pos: [project_border_x -offset, height,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [1, 0],},      //右下
-        { pos: [project_zeropoint[0] +offset, height,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 0],},       //左上
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [0, 0],},  //左下
+        { pos: [project_border_x -offset, height_max,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [1, 0],},      //右下
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 0],},       //左上
 
-        { pos: [project_border_x -offset, height,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [0, 1],},      //右下
-        { pos: [project_border_x -offset, height,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 1],},          //右上
-        { pos: [project_zeropoint[0] +offset, height,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 0],},      //左上
+        { pos: [project_border_x -offset, height_max,  -project_zeropoint[1] -offset], norm: [ 0,  1,  0], uv: [0, 1],},      //右下
+        { pos: [project_border_x -offset, height_max,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 1],},          //右上
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_border_y +offset], norm: [ 0,  1,  0], uv: [1, 0],},      //左上
 
        
         //前方上三角
-        { pos: [project_zeropoint[0] +offset, height,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [0, 1],}, 
-        { pos: [project_border_x -offset, height,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 1],},       
-        { pos: [project_border_x -offset, 0,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [0, 1],}, 
+        { pos: [project_border_x -offset, height_max,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 1],},       
+        { pos: [project_border_x -offset, height_min,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 0],},
         //前方下三角
-        { pos: [project_zeropoint[0] +offset, height,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [0, 1],}, 
-        { pos:  [project_border_x -offset, 0,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 1],},       
-        { pos: [project_zeropoint[0] +offset, 0,  -project_border_y +offset],norm: [ 0,  0, 1], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [0, 1],}, 
+        { pos:  [project_border_x -offset, height_min,  -project_border_y +offset], norm: [ 0,  0,  1], uv: [1, 1],},       
+        { pos: [project_zeropoint[0] +offset, height_min,  -project_border_y +offset],norm: [ 0,  0, 1], uv: [1, 0],},
 
         //左方上三角
-        { pos: [project_zeropoint[0] +offset, height,  -project_border_y +offset], norm: [ -1,   0,  0], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +offset, 0,  -project_border_y +offset] , norm: [ -1,   0,  0], uv: [1, 0],},
-        { pos: [project_zeropoint[0] +offset, height,  -project_zeropoint[1] -offset], norm: [ -1,   0,  0], uv: [1, 1],},       
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_border_y +offset], norm: [ -1,   0,  0], uv: [0, 1],}, 
+        { pos: [project_zeropoint[0] +offset, height_min,  -project_border_y +offset] , norm: [ -1,   0,  0], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_zeropoint[1] -offset], norm: [ -1,   0,  0], uv: [1, 1],},       
         //左方下三角
-        { pos: [project_zeropoint[0] +offset, 0,  -project_border_y +offset], norm: [ -1,  0,  0], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +offset, 0,  -project_zeropoint[1] -offset], norm: [ -1,  0,  0], uv: [1, 1],},       
-        { pos: [project_zeropoint[0] +offset, height,  -project_zeropoint[1] -offset], norm: [ -1, 0,  0], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +offset, height_min,  -project_border_y +offset], norm: [ -1,  0,  0], uv: [0, 1],}, 
+        { pos: [project_zeropoint[0] +offset, height_min,  -project_zeropoint[1] -offset], norm: [ -1,  0,  0], uv: [1, 1],},       
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_zeropoint[1] -offset], norm: [ -1, 0,  0], uv: [1, 0],},
 
         //右方上三角
-        { pos: [project_border_x -offset , height,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [0, 1],}, 
-        { pos: [project_border_x -offset, height,  -project_zeropoint[1] -offset] , norm: [ 1,  0,  0], uv: [1, 0],},
-        { pos: [project_border_x -offset , 0,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [1, 1],},       
+        { pos: [project_border_x -offset , height_max,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [0, 1],}, 
+        { pos: [project_border_x -offset, height_max,  -project_zeropoint[1] -offset] , norm: [ 1,  0,  0], uv: [1, 0],},
+        { pos: [project_border_x -offset , height_min,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [1, 1],},       
         //右方下三角
-        { pos: [project_border_x -offset, height,  -project_zeropoint[1] -offset], norm: [ 1,  0,  0], uv: [0, 1],}, 
-        { pos: [project_border_x -offset, 0,  -project_zeropoint[1] -offset], norm: [ 1,  0,  0], uv: [1, 1],},       
-        { pos: [project_border_x -offset , 0,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [1, 0],}, 
+        { pos: [project_border_x -offset, height_max,  -project_zeropoint[1] -offset], norm: [ 1,  0,  0], uv: [0, 1],}, 
+        { pos: [project_border_x -offset, height_min,  -project_zeropoint[1] -offset], norm: [ 1,  0,  0], uv: [1, 1],},       
+        { pos: [project_border_x -offset ,height_min,  -project_border_y +offset], norm: [ 1,  0,  0], uv: [1, 0],}, 
             
             
         //後方上三角
-        { pos: [project_zeropoint[0] +offset, height,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [0, 1],},
-        { pos: [project_border_x -offset, 0,  -project_zeropoint[1] -offset], norm: [ 0,  0, -1], uv: [1, 1],},    
-        { pos: [project_border_x -offset, height,  -project_zeropoint[1] -offset] , norm: [ 0,  0,  -1], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [0, 1],},
+        { pos: [project_border_x -offset, height_min,  -project_zeropoint[1] -offset], norm: [ 0,  0, -1], uv: [1, 1],},    
+        { pos: [project_border_x -offset, height_max,  -project_zeropoint[1] -offset] , norm: [ 0,  0,  -1], uv: [1, 0],},
           
         //後方下三角
-        { pos: [project_zeropoint[0] +offset, height,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +offset, 0,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [1, 1],},       
-        { pos: [project_border_x -offset, 0,  -project_zeropoint[1] -offset], norm: [ 0,  0, -1], uv: [1, 0],}  
+        { pos: [project_zeropoint[0] +offset, height_max,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [0, 1],}, 
+        { pos: [project_zeropoint[0] +offset, height_min,  -project_zeropoint[1] -offset], norm: [ 0,  0,  -1], uv: [1, 1],},       
+        { pos: [project_border_x -offset, height_min,  -project_zeropoint[1] -offset], norm: [ 0,  0, -1], uv: [1, 0],}  
 
     ]; //顶点坐标
 
@@ -553,6 +555,7 @@ CreateProject(name,pos,posArr,type,area){
     {
         mesh = this.mesh_set(name,area,geometry,this.material_project_exit);
         this.line_project_exit.push(mesh);
+
     }
 
     self.scene.add(mesh);
@@ -567,12 +570,15 @@ mesh_set(name,area,geometry,material)
 }
 
 //將排列完的結果轉成已上架
-PutSortToExit()
+PutSortToExit(area)
 {
     this.line_project_sort.map((e)=>{
             e.material =this.material_project_exit;
+            e.area = area;
             return e;
     });
+
+
     this.line_project_exit.push(...this.line_project_sort);
 
     this.line_project_sort.splice(0, this.line_project_sort.length);
@@ -604,6 +610,21 @@ DeleteProject_exit()
         this.line_project_exit =[];
      }
 }
+
+ResetProject_exit(area)
+{
+    var result = this.line_project_exit.filter(e=>{
+         if(e.area ===area)
+            return e;
+    });
+
+    result.forEach(e=>{
+        e.material = this.material_project_exit ;
+        e.position.set(0,0,0);
+        this.scene.add(e);
+    });
+}
+
 ///比對大小
 compareDecimals(a, b) {
     if (a === b) 

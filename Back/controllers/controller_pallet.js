@@ -53,7 +53,6 @@ async function list_Exit(req, res) {
   {
       return res.status(204).send({'result':'sort_amount less 0'});
   }
-
  const parsed_id = parseInt(id_Warehouse);
   if (isNaN(parsed_id)|| parsed_id<1) { res.status(404).send({"error":"id is wrong"}) }
 
@@ -65,9 +64,15 @@ async function list_Exit(req, res) {
         offset: (id_Warehouse-1)*sort_amount, 
         limit: sort_amount ,
         offset:sort_amount*(page-1),
-        where:{id_areas:{
-          [Op.not]: 0
-        } }})
+        where:
+        {
+          id_areas:
+          {
+            [Op.not]: 0
+          },
+          remove:0
+        }
+      })
     .then((pallet) =>{
           res.status(200).send(
             pallet
@@ -235,9 +240,44 @@ async function update_Area_Muliti(req, res){
   if(error)
      return res.status(400).send({'result':'update error'}); 
 
+  return res.status(200).send({'result':'update success'});
+}
+
+
+
+//棧板移走  remove =1
+async function remove_Area_Muliti(req, res){
+
+  var pallet = req.body.pallet;
+  var data = [];
+  try{
+    data = JSON.parse(pallet);
+  }
+  catch
+  {
+    return res.status(204).send({'result':'parse error'})
+  }
+
+  if(data.length <=0)
+    return res.status(204).send({'result':'data empty'})
+
+  var error = false;
+
+  await data.forEach(async element => {
+        pallets.update({
+          remove:1,
+        },{where:{id:element.pallet}})
+        .then((area) => {})
+        .catch((error) => { error=true;  return; });
+  });
+
+  if(error)
+     return res.status(400).send({'result':'update error'}); 
+
 
   return res.status(200).send({'result':'update success'});
 }
+
 
 
 
@@ -252,4 +292,4 @@ async function update_Area_Muliti(req, res){
       .then((area) => res.status(200).send(p_id))
       .catch((error) => { res.status(400).send(error); })}
   
-module.exports = { list,list_Exit,list_ExitExeCount,update_Area_Muliti,add,update,deleted};
+module.exports = { list,list_Exit,list_ExitExeCount,update_Area_Muliti,remove_Area_Muliti,add,update,deleted};

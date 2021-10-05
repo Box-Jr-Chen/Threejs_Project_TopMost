@@ -40,7 +40,7 @@ export default {
                 self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                    if(response.result !=='error')
                     {
-                        self.$store.state.pallet_sort = response;
+                        self.$store.state.pallet_needsort = response;
                     }
                 });
             }

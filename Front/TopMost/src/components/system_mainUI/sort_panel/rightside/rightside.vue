@@ -7,7 +7,7 @@
                 <div class="add_block" >
                     <div @click="startAlgs" v-if="
                     ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)&& 
-                    ($store.state.pallet_sort.length>0 && $store.state.projects.length >0 && $store.state.pillets.length >0 && $store.state.areas.length >0)
+                    ($store.state.pallet_needsort.length>0 && $store.state.projects.length >0 && $store.state.pillets.length >0 && $store.state.areas.length >0)
                     "  v-bind:class="[
                         $store.state.isstart_sort !==0? 'btn_active_panel_pallet_startsort':'btn_active_panel_pallet']">
                             <div class="word"  
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="inner_outline">
-                <div class="pallet_cell"  v-for="(item,index) in $store.state.pallet_sort"  :key="index">
+                <div class="pallet_cell"  v-for="(item,index) in $store.state.pallet_needsort"  :key="index">
                     <img src="@/assets/img/pallet.png" alt="">
                     <div class="context">
                         <div class="inner"><font color="black" class="inner">需排列棧板-{{index+1}}</font></div>

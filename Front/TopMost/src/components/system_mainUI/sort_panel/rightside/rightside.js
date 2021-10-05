@@ -65,6 +65,7 @@ export default {
 
                   self.$store.state.isstart_sort = 1;
                   self.$store.dispatch('A_Postsorting_project').then(response =>{
+
                       if(response.result ===undefined)
                       {
                         self.$store.state.isstart_sort = 0;
@@ -75,12 +76,17 @@ export default {
                       {
                            self.$store.state.pallet_sort_finish = response.cause;
                            self.$store.state.pallet_sort_finish.forEach(function(project){
-                                 var init_pos = JSON.parse(project.init);
-                        //     // console.log(project.pos);
-                                 self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos,'sort',project.id_areas);
+                           var init_pos = JSON.parse(project.init);
+                           
+                           self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
 
                            });
                            self.$store.state.isstart_sort = 2;
+                      }
+                      else if(response.result==="error")
+                      {
+                        self.$store.state.isstart_sort = 0;
+                        return;
                       }
                   });
             },
@@ -90,18 +96,15 @@ export default {
                 var self =this;
                 if(self.$store.state.pallet_sort_finish.length >0)
                 {
-
                     var updatePallet =  self.$store.state.pallet_sort_finish.map(e =>{
                             delete e['init'];
                             delete e['type'];
                             e.id_areas = e['area'];
-                            delete e['area'];
                             e['pos']=JSON.stringify(e['pos']);
                             return e;
                     });
 
-
-
+                    var area = updatePallet[0].area;
 
                     var  PalletData ={
                         'pallet':JSON.stringify(updatePallet)
@@ -111,23 +114,23 @@ export default {
                     self.$store.dispatch('A_UpdatePallet_muliti',PalletData).then(response =>{
                         if(response.result ==='update success')
                          {
-                            self.$store.state.pallet_sort =[];
+                            self.$store.state.pallet_needsort =[];
 
                             self.$store.state.pallet_sort_finish=[];
                             self.$store.state.pallet_exit.push(...updatePallet);
-                            self.$store.state.threejs.WH_FrameLess.PutSortToExit();
+                            self.$store.state.threejs.WH_FrameLess.PutSortToExit(area);
                             updatePallet =null;
                             PalletData =null;
-
+                            //console.log(self.$store.state.pallet_exit);
 
                             //重新找需要排列的棧板
                             self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                 if(response.result !=='error')
                                  {
-                                     self.$store.state.pallet_sort = response;
+                                     self.$store.state.pallet_needsort = response;
                                      self.$store.commit('WaitToPallet_needSort');
                                      
-                                    if(self.$store.state.pallet_sort.length >0)
+                                    if(self.$store.state.pallet_needsort.length >0)
                                             self.$store.state.isstart_sort = 0;
                                     else
                                             self.$store.state.isstart_sort = 3;

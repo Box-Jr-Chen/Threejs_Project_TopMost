@@ -17,6 +17,7 @@ export default {
 
                 return "left:0px; top:0px;";
             }
+
       },
       data(){
           return{
@@ -27,9 +28,27 @@ export default {
             var self =this;
             const container = document.getElementById('container_area');
             self.$store.state.threejs.Threejs_Area.init(container,()=>{
-           // console.log("area init !!!!!!!!");
             self.$store.state.threejs.Threejs_Area.CreateAreaIns();
+            if(self.$store.state.threejs.Threejs_Area.id_area !==0)
+            {
+              var result = self.$store.state.threejs.WH_FrameLess.line_project_exit.filter(e =>{
+                    if(e.area ===self.$store.state.threejs.Threejs_Area.id_area)
+                    {
+                      return e ;
+                    }
+              });
 
+              //沒辦法透過在物件上做改變  轉換介面改變
+              self.$store.state.area_pro_data = self.$store.state.pallet_exit.filter(e =>{
+                if(e.id_areas ===self.$store.state.threejs.Threejs_Area.id_area)
+                {
+                  e.select_delete = false;
+                  return e;
+                }
+              })
+
+              self.$store.state.threejs.Threejs_Area.GetProject(result);
+            }
             self.$store.state.threejs.UnActive_controls();
             });
   
@@ -37,9 +56,47 @@ export default {
       methods:{
         cancel_3d_area()
         {
-                this.$store.state.is_3d_area = false;
-                this.$store.state.threejs.Active_controls();
+            this.$store.state.threejs.Threejs_Area.DeleteProject();
+            this.$store.state.threejs.WH_FrameLess.ResetProject_exit(this.$store.state.threejs.Threejs_Area.id_area);
+
+            this.$store.state.is_3d_area = false;
+            this.$store.state.threejs.Active_controls();
+        },
+        select_ToDelete:function (index){
+          return this.$store.state.area_pro_data[index].select_delete ;
+        },
+        select_deleteFun(index)
+        {
+          this.$store.commit("selectPro_delete", index);
+        },
+        deletePallet()
+        {
+
+          var self = this;
+          var pallet =[];
+          self.$store.state.area_pro_data.forEach(element => {
+                if(element.select_delete==true)
+                {
+                  var d={
+                        'pallet':element.id
+                    };
+                    pallet.push(d);
+                }
+          });
+
+          var  PalletData ={
+            'pallet':JSON.stringify(pallet)
+          }; 
+          
+
+          //將棧板位置跟新棧板資料庫
+          self.$store.dispatch('A_RemovePallet_muliti',PalletData).then(response =>{
+            if(response.result ==='update success')
+              {
+                console.log("remove success");
+              }
+              console.log(response);
+          });
         }
-  
       }
 }

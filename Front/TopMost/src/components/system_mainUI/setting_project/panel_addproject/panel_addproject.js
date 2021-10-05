@@ -37,7 +37,6 @@ export default {
                 "length":self.$store.state.project_add_fix.length
               };
               self.$store.dispatch('A_PostProjects',data).then(response =>{
-                console.log(response);
                 if(response.result !=='error')
                   {
                     //更新

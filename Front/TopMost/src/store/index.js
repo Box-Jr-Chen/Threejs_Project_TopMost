@@ -24,7 +24,9 @@ export default  new Vuex.Store({
     pallet_exit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit,
     pallet_exit_pagemax_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit_count,
     pallet_muliupdate_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_update,
+    pallet_muliremove_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_remove,
     pallet_getPosinit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area_posinit,
+    
     //Main
     width_main:0,
     height_main:0,
@@ -112,7 +114,7 @@ export default  new Vuex.Store({
     id:0
   },
   //需要排列棧板
-  pallet_sort:[],
+  pallet_needsort:[],
   //已排列棧板
   pallet_exit:[],
   //排列後的棧板
@@ -124,7 +126,10 @@ export default  new Vuex.Store({
   t_getpallet:null,
 
   //3d area
-  is_3d_area:false
+  is_3d_area:false,
+  area_pro_data:[]
+
+
 
   },
 
@@ -187,9 +192,9 @@ export default  new Vuex.Store({
       {
         //z 要轉負
         this.state.addIns_pos.index = -1;
-        this.state.addIns_pos.left.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
-        this.state.addIns_pos.left.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
-        this.state.addIns_pos.right.x = this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
+        this.state.addIns_pos.left.x  =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
+        this.state.addIns_pos.left.z  = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
+        this.state.addIns_pos.right.x =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
         this.state.addIns_pos.right.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[17];
       }
 
@@ -285,7 +290,7 @@ export default  new Vuex.Store({
     {
       var self =this;
 
-      if(self.state.pallet_sort <=0)
+      if(self.state.pallet_needsort <=0)
       {
         self.state.t_getpallet =setInterval(()=>{
 
@@ -293,13 +298,13 @@ export default  new Vuex.Store({
             store.dispatch('A_GetPallet_needSort').then(response =>{
               if(response.result !=='error')
               {
-                  store.state.pallet_sort = response;
+                  store.state.pallet_needsort = response;
 
-                  if(store.state.pallet_sort.length >0)
+                  if(store.state.pallet_needsort.length >0)
                   {
                     self.$store.state.isstart_sort = 0;
                   }
-                  if(store.state.pallet_sort.length >10)
+                  if(store.state.pallet_needsort.length >10)
                   {
                     clearInterval(self.state.t_getpallet); 
                   }
@@ -308,8 +313,28 @@ export default  new Vuex.Store({
          },3000);
       }
 
-    }
+    },
+    selectPro_delete(state, index)
+    {
+      var self =this;
+      self.state.area_pro_data[index].select_delete = !self.state.area_pro_data[index].select_delete;
+      Vue.set(self.state.area_pro_data, index,self.state.area_pro_data[index]);
+    
 
+      self.state.threejs.Threejs_Area.pro_ins.forEach(e=>{
+          if(e.name ==self.state.area_pro_data[index].id)
+          {
+            if(self.state.area_pro_data[index].select_delete)
+                  self.state.threejs.Threejs_Area.SetProject_Select(e);
+            else
+                  self.state.threejs.Threejs_Area.SetProject_UnSelect(e);
+
+
+            return;
+          }
+      });
+
+    }
   },
   actions: {
         async AxiosGet(state, data) {
@@ -699,7 +724,24 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //Pallet_remove
+        async A_RemovePallet_muliti(state,data_muli){
+          var self= this;
 
+          var data = {
+            'path':  self.state.pallet_muliremove_Api,
+            'form': data_muli
+          };
+          state
+          return await store
+              .dispatch('AxiosPatch', data)
+              .then(response => {
+                return  response;
+              }
+              ).catch(error => {
+                return error;
+              });
+        },
         //GetAreas Posinit
         async A_GetAreas_Posinit(state,id){
           var self= this;

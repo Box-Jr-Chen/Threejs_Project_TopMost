@@ -24,9 +24,14 @@ class ThreeJs_Area {
         this.grid_color = null;
         this.otherender =[];
         this.areaInit = false;
+        this.id_area =0; //id
         this.border_area =null; //數值
         this.area_ins = null; //模型
-        this.Material_area = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(0, 155, 155)")} );
+        this.pro_ins = null;  //產品
+        this.area_height =5;
+        this.Material_area        = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(50, 50, 50)")} );
+        this.Material_project     = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(120, 120, 120)")} );
+        this.Material_project_select     = new THREE.MeshPhongMaterial( {color: new THREE.Color("rgb(190, 0, 0)")} );
         this.camera_init=[0, 106, 190];
         this.x_off =0;
         this.z_off =0;
@@ -50,7 +55,7 @@ class ThreeJs_Area {
             this.controls = new OrbitControls(this.camera,this.container);
             this.controls.target.set(0, 0, 0);
             this.controls.rotateSpeed *= 1;
-            this.controls.minDistance = 10;
+            this.controls.minDistance = 100;
             this.controls.maxDistance = 250;
             this.controls.maxPolarAngle = Math.PI / 2.3;
             this.controls.update();
@@ -87,17 +92,11 @@ class ThreeJs_Area {
         this.controls = new OrbitControls(this.camera,this.container);
         this.controls.target.set(0, 0, 0);
         this.controls.rotateSpeed *= 1;
-        this.controls.minDistance = 10;
-        this.controls.maxDistance = 200;
+        this.controls.minDistance = 100;
+        this.controls.maxDistance = 250;
         this.controls.maxPolarAngle = Math.PI / 2.3;
         this.controls.update();
         this.controls.enabled = true;
-
-        //BOX
-        // const geometry = new THREE.BoxGeometry( 2, 100, 2 );
-        // const material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
-        // const cube = new THREE.Mesh( geometry, material );
-        // this.scene.add( cube );
 
 
         // 渲染
@@ -185,64 +184,66 @@ class ThreeJs_Area {
     }
 
     //Save Area First
-    WaitAreaBorders(border)
+    WaitAreaBorders(id,border)
     {
         var self = this;
         self.border_area = border;
-
+        self.id_area = 0;
         //清除之前的模型
         if(self.area_ins !==null)
                 self.scene.remove(self.area_ins);
+
+
+        self.id_area = id;
     }
     
     //Create Area
     CreateAreaIns()
     {
         if(this.border_area ===null) return;
-        var height =5
         const vertices = [
             //上方左三角
-            { pos: [this.border_area[0], height,   -this.border_area[2]], norm: [ 0,  1,  0], uv: [0, 0],},
-            { pos: [this.border_area[1] , height,  -this.border_area[2]], norm: [ 0,  1,  0], uv: [1, 0],}, 
-            { pos: [this.border_area[0] , height,  -this.border_area[3]], norm: [ 0,  1,  0], uv: [1, 0],},  
+            { pos: [this.border_area[0],  this.area_height,   -this.border_area[2]], norm: [ 0,  1,  0], uv: [0, 0],},
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[2]], norm: [ 0,  1,  0], uv: [1, 0],}, 
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[3]], norm: [ 0,  1,  0], uv: [1, 0],},  
             //上方右三角
-            { pos: [this.border_area[1] , height,  -this.border_area[2]], norm: [ 0,  1,  0], uv: [0, 1],}, 
-            { pos: [this.border_area[1] , height,  -this.border_area[3]], norm: [ 0,  1,  0], uv: [1, 1],},       
-            { pos: [this.border_area[0] , height,  -this.border_area[3] ], norm: [ 0,  1,  0], uv: [1, 0],},   
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[2]], norm: [ 0,  1,  0], uv: [0, 1],}, 
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[3]], norm: [ 0,  1,  0], uv: [1, 1],},       
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[3] ], norm: [ 0,  1,  0], uv: [1, 0],},   
             //前方上三角
-            { pos: [this.border_area[0] , height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [0, 1],}, 
-            { pos: [this.border_area[1] , height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [1, 1],},       
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [0, 1],}, 
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [1, 1],},       
             { pos: [this.border_area[1] , 0,   -this.border_area[3] ], norm: [ 0,  0,  1], uv: [1, 0],},
              //前方下三角
-             { pos: [this.border_area[0] , height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [0, 1],}, 
+             { pos: [this.border_area[0] , this.area_height,  -this.border_area[3]], norm: [ 0,  0,  1], uv: [0, 1],}, 
              { pos: [this.border_area[1] , 0,   -this.border_area[3]], norm: [ 0,  0,  1], uv: [1, 1],},       
              { pos: [this.border_area[0] , 0,   -this.border_area[3] ],norm: [ 0,  0, 1], uv: [1, 0],},
 
             //左方上三角
-            { pos: [this.border_area[0] , height,  -this.border_area[3]], norm: [ -1,   0,  0], uv: [0, 1],}, 
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[3]], norm: [ -1,   0,  0], uv: [0, 1],}, 
             { pos: [this.border_area[0] , 0,   -this.border_area[3]], norm: [ -1,   0,  0], uv: [1, 1],},       
-            { pos: [this.border_area[0] , height,  -this.border_area[2]] , norm: [ -1,   0,  0], uv: [1, 0],},
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[2]] , norm: [ -1,   0,  0], uv: [1, 0],},
              //左方下三角
              { pos: [this.border_area[0] , 0,   -this.border_area[2]], norm: [ -1,  0,  0], uv: [0, 1],}, 
-             { pos: [this.border_area[0] , height,  -this.border_area[2]], norm: [ -1,  0,  0], uv: [1, 1],},       
+             { pos: [this.border_area[0] , this.area_height,  -this.border_area[2]], norm: [ -1,  0,  0], uv: [1, 1],},       
              { pos: [this.border_area[0] , 0,   -this.border_area[3] ], norm: [ -1, 0,  0], uv: [1, 0],},
 
             //右方上三角
-            { pos: [this.border_area[1] , height,  -this.border_area[2]], norm: [ 1,  0,  0], uv: [0, 1],}, 
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[2]], norm: [ 1,  0,  0], uv: [0, 1],}, 
             { pos: [this.border_area[1] , 0,   -this.border_area[2]], norm: [ 1,  0,  0], uv: [1, 1],},       
-            { pos: [this.border_area[1] , height,  -this.border_area[3]] , norm: [ 1,  0,  0], uv: [1, 0],},
+            { pos: [this.border_area[1] , this.area_height,  -this.border_area[3]] , norm: [ 1,  0,  0], uv: [1, 0],},
              //右方下三角
              { pos: [this.border_area[1] , 0,   -this.border_area[2]], norm: [ 1,  0,  0], uv: [0, 1],}, 
              { pos: [this.border_area[1] , 0,  -this.border_area[3]], norm: [ 1,  0,  0], uv: [1, 1],},       
-             { pos: [this.border_area[1] , height,   -this.border_area[3] ], norm: [ 1,  0,  0], uv: [1, 0],}, 
+             { pos: [this.border_area[1] , this.area_height,   -this.border_area[3] ], norm: [ 1,  0,  0], uv: [1, 0],}, 
              
              
             //後方上三角
-            { pos: [this.border_area[0] , height,  -this.border_area[2]], norm: [ 0,  0,  -1], uv: [0, 1],}, 
+            { pos: [this.border_area[0] , this.area_height,  -this.border_area[2]], norm: [ 0,  0,  -1], uv: [0, 1],}, 
             { pos: [this.border_area[1] , 0,  -this.border_area[2]] , norm: [ 0,  0,  -1], uv: [1, 0],},
-            { pos: [this.border_area[1] , height,   -this.border_area[2]], norm: [ 0,  0, -1], uv: [1, 1],},       
+            { pos: [this.border_area[1] , this.area_height,   -this.border_area[2]], norm: [ 0,  0, -1], uv: [1, 1],},       
              //後方下三角
-             { pos: [this.border_area[0] , height,   -this.border_area[2]], norm: [ 0,  0,  -1], uv: [0, 1],}, 
+             { pos: [this.border_area[0] , this.area_height,   -this.border_area[2]], norm: [ 0,  0,  -1], uv: [0, 1],}, 
              { pos: [this.border_area[0] , 0,  -this.border_area[2]], norm: [ 0,  0,  -1], uv: [1, 1],},       
              { pos: [this.border_area[1] , 0,   -this.border_area[2] ], norm: [ 0,  0, -1], uv: [1, 0],}  
 
@@ -289,6 +290,32 @@ class ThreeJs_Area {
         mesh.position.set(this.x_off,0,this.z_off);
 
         this.scene.add(mesh);
+    }
+
+    //Get Project
+    GetProject(projects){
+
+        this.pro_ins = projects;
+
+        this.pro_ins.forEach(element => {
+            element.select_delect = false;
+            element.material = this.Material_project;
+            element.position.set(this.x_off,this.area_height,-this.z_off);
+
+            this.scene.add(element);
+        });
+    }
+
+    SetProject_Select(e){
+            e.material = this.Material_project_select;
+    }
+    SetProject_UnSelect(e){
+        e.material = this.Material_project;
+    }
+    DeleteProject(){
+        this.pro_ins.forEach(element => {
+            this.scene.remove(element);
+        });
     }
 }
 
