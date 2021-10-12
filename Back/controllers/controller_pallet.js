@@ -66,10 +66,7 @@ async function list_Exit(req, res) {
         offset:sort_amount*(page-1),
         where:
         {
-          id_areas:
-          {
-            [Op.not]: 0
-          },
+          id_areas:id_Warehouse,
           remove:0
         }
       })

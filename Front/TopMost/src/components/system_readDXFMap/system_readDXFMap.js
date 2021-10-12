@@ -96,7 +96,6 @@ export default {
                                     self.$store.dispatch('A_GetPallet_Exit',i+1).then(response =>{
                                         if(response.result !=='error')
                                         {   
-      
                                                 response.forEach(e=>{
                                                         self.$store.state.pallet_exit.push(e);
 

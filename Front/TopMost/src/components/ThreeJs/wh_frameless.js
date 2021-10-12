@@ -401,10 +401,15 @@ CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
           if(index %3 ===0)
               return e;
     }).sort();
+    
+
+
+
     var filter_Z= grid[0].geometry.attributes.position.array.filter(function(e,index){
         if(index %3 ===2)
-            return e;
+        return true ;
     }).sort();
+
     tGroup.borders = 
     [
         filter_X[0],  //X_min
@@ -416,7 +421,11 @@ CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
     self.line_GROUP.push(tGroup);
     self.scene.add( tGroup );
 
-    //console.log( self.line_GROUP);
+
+  // self.CreateDemoPlane(0,15,0,15);
+
+
+
 }
 //創造貨物平面
 CreateProject(name,pos,posArr,type,area,layout){
@@ -440,12 +449,10 @@ CreateProject(name,pos,posArr,type,area,layout){
     x_arraw.sort(this.compareDecimals);
 
     var x_grid = (x_arraw[x_arraw.length-1] -x_arraw[0]) +1 ; 
-   // var x_center = (x_arraw[x_arraw.length-1] -x_arraw[0])/2 ;
     
     //找出X 範圍
     y_arrow.sort(this.compareDecimals);
     var y_grid = (y_arrow[y_arrow.length-1] -y_arrow[0]) +1 ; 
-   // var y_center = (y_arrow[y_arrow.length-1] -y_arrow[0])/2 ;
 
     //找出棧板的左下角點
     var project_zeropoint =[area_zeropoint[0]+this.interval*x_arraw[0],area_zeropoint[1]+this.interval*y_arrow[0]]
@@ -513,7 +520,6 @@ CreateProject(name,pos,posArr,type,area,layout){
     ]; //顶点坐标
 
 
-
     var positions = [];
     var normals = [];
     var uvs = [];
@@ -559,7 +565,68 @@ CreateProject(name,pos,posArr,type,area,layout){
     }
 
     self.scene.add(mesh);
+
+
+
 }
+
+CreateDemoPlane(X_min,X_max,Y_min,Y_max)
+{
+    Y_max
+    const vertices = [
+        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 0],},  //左下
+        { pos: [X_min, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 0],},      //右下
+        { pos: [X_max, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 0],},       //左上
+
+        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 1],},      //右下
+        { pos: [X_max, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 1],},          //右上
+        { pos: [X_max, 20,  Y_min], norm: [ 0,  1,  0], uv: [1, 0],},      //左上
+
+
+    ]; //顶点坐标
+
+
+    var positions = [];
+    var normals = [];
+    var uvs = [];
+    for (var vertex of vertices) {
+        positions.push(...vertex.pos);
+        normals.push(...vertex.norm);
+        uvs.push(...vertex.uv);
+    }
+
+    var geometry = new  THREE.BufferGeometry();
+    var positionNumComponents = 3;
+    var normalNumComponents = 3;
+    const uvNumComponents = 2;
+
+    geometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+    geometry.setAttribute(
+        'normal',
+        new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+    geometry.setAttribute(
+      'uv',
+      new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+
+    geometry.setIndex([
+         0,1,2,3,4,5,6]);  
+    
+    var material = new THREE.LineBasicMaterial({
+    color: new THREE.Color("rgba(0, 255, 0,0.5)")
+    });
+    material.transparent = true;
+    material.opacity =0.5;
+
+    var mesh = new THREE.Mesh(geometry,material);
+    mesh.scale.set(1,1,1);
+    mesh.position.set(11,0,-82.45);
+    this.scene.add(mesh);         
+}
+
+
+
 mesh_set(name,area,geometry,material)
 {
     var mesh = new THREE.Mesh(geometry,material);
@@ -613,7 +680,10 @@ DeleteProject_exit()
 
 ResetProject_exit(area,area_pro)
 {
-    this.line_project_exit = this.line_project_exit.filter(e=>{
+    console.log(area);
+    console.log(area_pro);
+    console.log(this.line_project_exit );
+    var project_exit = this.line_project_exit.filter(e=>{
          if(e.area ===area)
          {
             var item  =  area_pro.findIndex(p=>{
@@ -629,7 +699,7 @@ ResetProject_exit(area,area_pro)
 
     });
 
-    this.line_project_exit.forEach(e=>{
+    project_exit.forEach(e=>{
         e.material = this.material_project_exit ;
         e.position.set(0,0,0);
         this.scene.add(e);

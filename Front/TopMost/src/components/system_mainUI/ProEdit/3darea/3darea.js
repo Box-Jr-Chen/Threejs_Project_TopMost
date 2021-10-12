@@ -39,8 +39,9 @@ export default {
               });
 
               //沒辦法透過在物件上做改變  轉換介面改變
-              console.log(self.$store.state.area_pro_data.length);
-              console.log(self.$store.state.pallet_exit.length);
+              console.log(self.$store.state.threejs.WH_FrameLess.line_project_exit);
+              // console.log(self.$store.state.area_pro_data.length);
+              // console.log(self.$store.state.pallet_exit.length);
 
               self.$store.state.area_pro_data = self.$store.state.pallet_exit.filter(e =>{
                 if(e.id_areas ===self.$store.state.threejs.Threejs_Area.id_area)
