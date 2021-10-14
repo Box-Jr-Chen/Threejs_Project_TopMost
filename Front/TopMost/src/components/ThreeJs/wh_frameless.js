@@ -680,9 +680,6 @@ DeleteProject_exit()
 
 ResetProject_exit(area,area_pro)
 {
-    console.log(area);
-    console.log(area_pro);
-    console.log(this.line_project_exit );
     var project_exit = this.line_project_exit.filter(e=>{
          if(e.area ===area)
          {

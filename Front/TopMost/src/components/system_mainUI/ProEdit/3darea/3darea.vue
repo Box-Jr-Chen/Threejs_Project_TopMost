@@ -10,7 +10,9 @@
                               @click="select_deleteFun(index)">
                                   <img v-if="select_ToDelete(index)===true "  class="img" :src="require('@/assets/img/chekbox.png')"/>
                                   <img v-if="select_ToDelete(index)===false"  class="img" :src="require('@/assets/img/chekbox_e.png')"/>
+                                  <div>
                                     棧板  {{index+1}}
+                                  </div>
                               </div>
                           </div>
 

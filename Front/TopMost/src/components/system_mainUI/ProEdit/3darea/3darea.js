@@ -39,10 +39,7 @@ export default {
               });
 
               //沒辦法透過在物件上做改變  轉換介面改變
-              console.log(self.$store.state.threejs.WH_FrameLess.line_project_exit);
-              // console.log(self.$store.state.area_pro_data.length);
-              // console.log(self.$store.state.pallet_exit.length);
-
+              //console.log(self.$store.state.pallet_exit);
               self.$store.state.area_pro_data = self.$store.state.pallet_exit.filter(e =>{
                 if(e.id_areas ===self.$store.state.threejs.Threejs_Area.id_area)
                 {
@@ -97,9 +94,7 @@ export default {
           self.$store.dispatch('A_RemovePallet_muliti',PalletData).then(response =>{
             if(response.result ==='update success')
               {
-               // console.log("remove success");
-
-                //刪除成功將資料刪除 in area_pro_data
+                //將資料刪除 in area_pro_data
                 self.$store.state.area_pro_data= self.$store.state.area_pro_data.filter(e=>{
                   var check = false;
 
@@ -114,7 +109,9 @@ export default {
                   if(!check)
                       return e;
                 });
-              //刪除成功將資料刪除 in pallet_exit
+
+
+                //將資料刪除 in pallet_exit
                 self.$store.state.pallet_exit= self.$store.state.pallet_exit.filter(e=>{
                   var check = false;
 
@@ -129,7 +126,6 @@ export default {
                   if(!check)
                       return e;
                 });
-
 
                 //刪除模型
                 self.$store.state.threejs.Threejs_Area.pro_ins = self.$store.state.threejs.Threejs_Area.pro_ins.filter(e=>{
@@ -148,7 +144,24 @@ export default {
                     return e;
                   else
                     self.$store.state.threejs.Threejs_Area.scene.remove(e);
+                });
 
+                self.$store.state.threejs.WH_FrameLess.line_project_exit = self.$store.state.threejs.WH_FrameLess.line_project_exit.filter(e=>{
+                  var check = false;
+
+                  for(var i=0;i<pallet.length;i++)
+                  {
+                    if(pallet[i].pallet===e.name)
+                    {
+                      check = true;
+                      break;
+                    }
+                  }
+
+                  if(!check)
+                    return e;
+                  else
+                    self.$store.state.threejs.Threejs_Area.scene.remove(e);
                 });
               }
               else

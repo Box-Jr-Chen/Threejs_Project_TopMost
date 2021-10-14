@@ -320,7 +320,6 @@ export default  new Vuex.Store({
       self.state.area_pro_data[index].select_delete = !self.state.area_pro_data[index].select_delete;
       Vue.set(self.state.area_pro_data, index,self.state.area_pro_data[index]);
     
-
       self.state.threejs.Threejs_Area.pro_ins.forEach(e=>{
           if(e.name ==self.state.area_pro_data[index].id)
           {
@@ -398,6 +397,9 @@ export default  new Vuex.Store({
           return await store
             .dispatch('AxiosPost', data)
             .then(response => {
+
+              console.log(response);
+
               return  response;
             }
             ).catch(error => {
@@ -679,7 +681,6 @@ export default  new Vuex.Store({
           };
           state
 
-          console.log(data.path);
 
           return await store
               .dispatch('AxiosGet', data)

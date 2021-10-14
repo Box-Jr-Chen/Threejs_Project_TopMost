@@ -5,7 +5,7 @@ const setting_system = db['setting_system'];
 const setting_pallet = db['setting_pallet'];
 const setting_project = db['setting_project'];
 const pallets = db['pallets'];
-
+const { Op } = require("sequelize");
 function JsonisEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
@@ -152,14 +152,14 @@ async function Sorting_prject(req, res) {
         where: {
             id_warehouse: id_warehouse,
             id_areas:0,
-            remove:0,
-            layout:0
+            id_pallet:{[Op.gt]:0},
+            id_project:{[Op.gt]:0}
         }
       });
 
       if(palletss.length <=0)
       {
-          result_error.cause ='no pallets_sort';
+          result_error.cause = 'warehoue:'+id_warehouse+ ' has  no pallets_sort';
           return res_reuslt.send(result_error);
       }
       //return res_reuslt.send(palletss);
@@ -192,9 +192,8 @@ async function Sorting_prject(req, res) {
             var setting_pallet_id =    palletss[i].id_pallet ;
             var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
         
-        
             //人工設定棧板尺寸轉為系統尺吋
-            if(pallet_data !==null )
+            if(pallet_data !==null && pallet_data !==undefined)
             {
                  var pallet_width =   pallet_data.width/100;
                  var pallet_length =  pallet_data.length/100;
@@ -329,6 +328,7 @@ async function Sorting_prject(req, res) {
                             //是否排列成功
                             if(JsonisEmpty(result) ===false)
                             {
+                                result_pallet.id     = palletss[i].id,
                                 result_pallet.init = areas[j].pos_init;
                                 result_pallet.area = areas[j].id;
                                 result_pallet.layout = result.layout;
@@ -347,6 +347,7 @@ async function Sorting_prject(req, res) {
                     //是否排列成功
                     if(JsonisEmpty(result) ===false)
                     {
+                        result_pallet.id     = palletss[i].id,
                         result_pallet.init = areas[j].pos_init;
                         result_pallet.area = areas[j].id;
                         result_pallet.layout = result.layout;
@@ -371,10 +372,11 @@ async function Sorting_prject(req, res) {
                     //是否排列成功
                     if(JsonisEmpty(result) ===false)
                     {
-                        result_pallet.init = areas[j].pos_init;
-                        result_pallet.area = areas[j].id;
+                        result_pallet.id     = palletss[i].id,
+                        result_pallet.init   = areas[j].pos_init;
+                        result_pallet.area   = areas[j].id;
                         result_pallet.layout = result.layout;
-                        result_pallet.pos = result.pos;
+                        result_pallet.pos    = result.pos;
 
                         start_sort = true;
                         break;

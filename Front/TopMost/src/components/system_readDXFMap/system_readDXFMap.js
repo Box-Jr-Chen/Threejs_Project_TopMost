@@ -86,7 +86,6 @@ export default {
                             //讀取已有的棧板的資料
                             self.$store.dispatch('A_GetPallet_Exit_page').then(res_count =>{ 
 
-
                                 var count = res_count.count;
                                 //頁面
                                 self.$store.state.pallet_exit=[];
