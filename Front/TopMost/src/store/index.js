@@ -49,14 +49,14 @@ export default  new Vuex.Store({
         'img':'area_icon',
         'title':'區域設定'
       },
-      {
-        'img':'pallet_icon',
-        'title':'棧板設定'
-      },
-      {
-        'img':'project_icon',
-        'title':'貨物設定'
-      },
+      // {
+      //   'img':'pallet_icon',
+      //   'title':'棧板設定'
+      // },
+      // {
+      //   'img':'project_icon',
+      //   'title':'貨物設定'
+      // },
       {
         'img':'project_edit_icon',
         'title':'貨物管理'

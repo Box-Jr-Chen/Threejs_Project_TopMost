@@ -152,6 +152,7 @@ async function Sorting_prject(req, res) {
         where: {
             id_warehouse: id_warehouse,
             id_areas:0,
+            remove:0,
             id_pallet:{[Op.gt]:0},
             id_project:{[Op.gt]:0}
         }
@@ -162,7 +163,6 @@ async function Sorting_prject(req, res) {
           result_error.cause = 'warehoue:'+id_warehouse+ ' has  no pallets_sort';
           return res_reuslt.send(result_error);
       }
-      //return res_reuslt.send(palletss);
 
     //用來放置實體化地圖的矩陣
     //放置方式：
@@ -247,7 +247,7 @@ async function Sorting_prject(req, res) {
                 }    
 
 
-                //判斷是否有貨物在區域內
+                //判斷是否有貨物在區域內(TODO 貨物未存到資料庫裡)
                 var pallets_inarea = await  pallets.findAll({
                     attributes: ['id','id_areas','id_pallet','id_project','pos','layout'],
                     where: {
@@ -256,6 +256,10 @@ async function Sorting_prject(req, res) {
                         remove:0,
                     }
                   });
+                
+                if(i ===1)
+                     return res_reuslt.send(result_sortpallet);
+
                     if(pallets_inarea !== null ||pallets_inarea.length >0)
                     {
                         array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );

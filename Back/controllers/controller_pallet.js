@@ -27,7 +27,13 @@ async function list(req, res) {
           attributes: ['id', 'pos','id_areas' ,'layout', 'remove','id_pallet','id_project'],
           offset: (id_Warehouse-1)*sort_amount, 
           limit: sort_amount ,
-          where:{id_areas:0}})
+          where:{
+            id_areas:0,
+            remove:0,
+            id_pallet:{[Op.gt]:0},
+            id_project:{[Op.gt]:0}
+          }
+        })
       .then((areas) => res.status(200).send(areas))
       .catch((error) => { res.status(400).send(error); })}
   

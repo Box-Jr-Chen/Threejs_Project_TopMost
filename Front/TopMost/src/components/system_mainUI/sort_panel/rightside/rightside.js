@@ -74,6 +74,8 @@ export default {
 
                       if(response.result==="success")
                       {
+                           //console.log(response);
+
                            self.$store.state.pallet_sort_finish = response.cause;
                            self.$store.state.pallet_sort_finish.forEach(function(project){
                            var init_pos = JSON.parse(project.init);
