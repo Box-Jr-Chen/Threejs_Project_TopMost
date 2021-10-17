@@ -43,8 +43,7 @@ export default {
                 this.$store.commit('Show_Panel_deleteArea');
                 this.$store.state.areas_delete.id =index;
             },
-            //開始演算法
-            startAlgs()
+            btn_algs() //點擊開始演算法
             {
               var self = this;
               if(!self.$store.state.isstart_sort)
@@ -77,10 +76,15 @@ export default {
                            //console.log(response);
 
                            self.$store.state.pallet_sort_finish = response.cause;
-                           self.$store.state.pallet_sort_finish.forEach(function(project){
+
+                           //生成演算法出來的各棧板
+                           self.$store.state.pallet_sort_finish.forEach(function(project,index){
+
+                           index;
+
                            var init_pos = JSON.parse(project.init);
                            
-                           self.$store.state.threejs.WH_FrameLess.CreateProject(project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
+                           self.$store.state.threejs.WH_FrameLess.CreateProject(index,project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
 
                            });
                            self.$store.state.isstart_sort = 2;

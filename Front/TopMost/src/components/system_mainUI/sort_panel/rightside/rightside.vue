@@ -5,7 +5,7 @@
                 <p>棧板排列</p>
                 
                 <div class="add_block" >
-                    <div @click="startAlgs" v-if="
+                    <div @click="btn_algs" v-if="
                     ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)&& 
                     ($store.state.pallet_needsort.length>0 && $store.state.projects.length >0 && $store.state.pillets.length >0 && $store.state.areas.length >0)
                     "  v-bind:class="[

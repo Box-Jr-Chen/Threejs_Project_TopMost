@@ -96,9 +96,9 @@ export default {
                                     self.$store.dispatch('A_GetPallet_Exit',i+1).then(response =>{
                                         if(response.result !=='error')
                                         {   
-                                                console.log(response);
+                                               // console.log(response);
 
-                                                response.forEach(e=>{
+                                                response.forEach( function(e,index){
                                                         self.$store.state.pallet_exit.push(e);
 
                                                         //獲得area 的pos init
@@ -106,7 +106,7 @@ export default {
                                                             var init_pos = JSON.parse(response2[0].pos_init);
                                                             var pos  =JSON.parse(e.pos);
 
-                                                            self.$store.state.threejs.WH_FrameLess.CreateProject(e.id,init_pos,pos,'exit',e.id_areas,e.layout);
+                                                            self.$store.state.threejs.WH_FrameLess.CreateProject(index,e.id,init_pos,pos,'exit',e.id_areas,e.layout);
                                                         });
                                                 });              
                                         }

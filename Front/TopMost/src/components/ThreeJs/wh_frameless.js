@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { FontLoader } from 'three';
 import Delaunator from 'delaunator'; //三角剖分
 
 class wh_frameless {
@@ -12,7 +13,7 @@ class wh_frameless {
         this.interval = 10;  //間隔
         this.camera= null;
         this.scene = null;
-
+        this.loader_text =  new FontLoader();
 
         this.geometry_box= new THREE.PlaneGeometry( 8, 8 );
         this.material_line = new THREE.LineBasicMaterial({
@@ -122,6 +123,22 @@ class wh_frameless {
             }
     
         } );
+
+        ///文字實體參數
+        this.color_text = 0x006699;
+
+        this.matDark = new THREE.LineBasicMaterial( {
+            color:  this.color_text,
+            side: THREE.DoubleSide
+        } );
+
+        this.matLite = new THREE.MeshBasicMaterial( {
+            color: this.color_text,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        } );
+
     }
     init(width,height,camera,scene){
         var self = this;
@@ -428,7 +445,8 @@ CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
 
 }
 //創造貨物平面
-CreateProject(name,pos,posArr,type,area,layout){
+//index是為了演算法棧板生成實體時顯示數字
+CreateProject(index,name,pos,posArr,type,area,layout){
 
     var self = this;
     var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
@@ -553,8 +571,79 @@ CreateProject(name,pos,posArr,type,area,layout){
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
+        index;
+
+
         mesh = this.mesh_set(name,area,geometry,this.material_project_sort);
         mesh.position.set(mesh.position.x,mesh.position.y+100,mesh.position.z);
+
+        console.log("0001");
+        this.loader_text.load( "/helvetiker_regular.typeface.json", function ( font ) {
+
+            console.log("0002");
+            const message = "teest";
+
+            const shapes = font.generateShapes( message, 100 );
+
+            const geometry = new THREE.ShapeGeometry( shapes );
+
+            geometry.computeBoundingBox();
+
+            const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+
+            geometry.translate( xMid, 0, 0 );
+
+            // make shape ( N.B. edge view not visible )
+
+            const text = new THREE.Mesh( geometry, this.matLite );
+            text.position.z = - 150;
+            this.scene.add( text );
+
+            // make line shape ( N.B. edge view remains visible )
+
+            const holeShapes = [];
+
+            for ( let i = 0; i < shapes.length; i ++ ) {
+
+                const shape = shapes[ i ];
+
+                if ( shape.holes && shape.holes.length > 0 ) {
+
+                    for ( let j = 0; j < shape.holes.length; j ++ ) {
+
+                        const hole = shape.holes[ j ];
+                        holeShapes.push( hole );
+
+                    }
+
+                }
+
+            }
+
+            shapes.push.apply( shapes, holeShapes );
+
+            const lineText = new THREE.Object3D();
+
+            for ( let i = 0; i < shapes.length; i ++ ) {
+
+                const shape = shapes[ i ];
+
+                const points = shape.getPoints();
+                const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+                geometry.translate( xMid, 0, 0 );
+
+                const lineMesh = new THREE.Line( geometry, this.matDark );
+                lineText.add( lineMesh );
+
+            }
+
+            this.scene.add( lineText );
+
+        } );
+
+
+
         this.line_project_sort.push(mesh);
     }
     else if(type==='exit')
@@ -566,21 +655,19 @@ CreateProject(name,pos,posArr,type,area,layout){
 
     self.scene.add(mesh);
 
-
-
 }
 
 CreateDemoPlane(X_min,X_max,Y_min,Y_max)
 {
     Y_max
     const vertices = [
-        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 0],},  //左下
-        { pos: [X_min, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 0],},      //右下
+        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 0],},       //左下
+        { pos: [X_min, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 0],},       //右下
         { pos: [X_max, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 0],},       //左上
 
-        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 1],},      //右下
-        { pos: [X_max, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 1],},          //右上
-        { pos: [X_max, 20,  Y_min], norm: [ 0,  1,  0], uv: [1, 0],},      //左上
+        { pos: [X_min, 20,  Y_min], norm: [ 0,  1,  0], uv: [0, 1],},       //右下
+        { pos: [X_max, 20,  Y_max], norm: [ 0,  1,  0], uv: [1, 1],},       //右上
+        { pos: [X_max, 20,  Y_min], norm: [ 0,  1,  0], uv: [1, 0],},       //左上
 
 
     ]; //顶点坐标
