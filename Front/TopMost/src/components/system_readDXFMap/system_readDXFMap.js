@@ -92,9 +92,12 @@ export default {
 
                                  for(var i=0;i<count;i++)
                                  {
+                                     //已有貨物資料讀取
                                     self.$store.dispatch('A_GetPallet_Exit',i+1).then(response =>{
                                         if(response.result !=='error')
                                         {   
+                                                console.log(response);
+
                                                 response.forEach(e=>{
                                                         self.$store.state.pallet_exit.push(e);
 

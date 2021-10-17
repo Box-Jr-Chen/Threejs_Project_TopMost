@@ -67,12 +67,12 @@ async function list_Exit(req, res) {
     .findAll(
       {
         attributes: ['id', 'pos','id_areas' ,'layout','id_pallet','id_project'],
-        offset: (id_Warehouse-1)*sort_amount, 
+        //offset: (id_Warehouse-1)*sort_amount, 
         limit: sort_amount ,
         offset:sort_amount*(page-1),
         where:
         {
-          id_areas:id_Warehouse,
+          id_warehouse:id_Warehouse,
           remove:0
         }
       })

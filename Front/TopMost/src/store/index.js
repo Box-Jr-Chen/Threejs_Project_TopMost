@@ -681,6 +681,7 @@ export default  new Vuex.Store({
           };
           state
 
+          console.log(data.path);
 
           return await store
               .dispatch('AxiosGet', data)

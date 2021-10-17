@@ -170,6 +170,8 @@ async function Sorting_prject(req, res) {
         //id_area:0,
         //array_area_3d:array_area_3d
     //}
+
+    //生成3D地圖(所有的地圖放置這裡)
     var list_array_area_3d=[];
     //排列結果
     var result_sortpallet =[]
@@ -186,8 +188,6 @@ async function Sorting_prject(req, res) {
                 'layout':0,
                 'pos':[]
             };
-
-
             
             var setting_pallet_id =    palletss[i].id_pallet ;
             var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
@@ -241,13 +241,13 @@ async function Sorting_prject(req, res) {
                     array_area_3d.push(array_area);
 
                     list_array_area_3d.push({
-                        'id_area':areas[i].id,
+                        'id_area':areas[j].id,
                         'array_area_3d' :array_area_3d
                     });
                 }    
 
 
-                //判斷是否有貨物在區域內(TODO 貨物未存到資料庫裡)
+                //先判斷資料表裡是否有之前的貨物已經在區域內
                 var pallets_inarea = await  pallets.findAll({
                     attributes: ['id','id_areas','id_pallet','id_project','pos','layout'],
                     where: {
@@ -257,58 +257,108 @@ async function Sorting_prject(req, res) {
                     }
                   });
                 
-                if(i ===1)
-                     return res_reuslt.send(result_sortpallet);
 
-                    if(pallets_inarea !== null ||pallets_inarea.length >0)
+                //演算法內是否有排列的貨物
+                var pallets_inarea_sort = result_sortpallet.filter(e=>{
+                    if(areas[j].id === e.area)
                     {
-                        array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+                        return e;
+                    }
+                });
 
-                        
-                        //這裡生成多層區域
-                        var layout_max =0;
-                        pallets_inarea.forEach(pallet_area =>{
-                                var l = pallet_area.layout;
-                                if(l >layout_max )
-                                       layout_max = l;
-                        });
-                        if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
+
+                // if(i >0)
+                //     return res_reuslt.send(pallets_inarea_sort);
+
+                //之前貨物資料中有排放到區域內先排放裡面以免演算法錯誤
+                if(pallets_inarea !== null ||pallets_inarea.length >0 )
+                {
+                    array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                    
+                    //這裡單一區域生成多層區域
+                    var layout_max =0;
+
+                    pallets_inarea.forEach(pallet_area =>{
+                            var l = pallet_area.layout;
+                            if(l >layout_max )
+                                    layout_max = l;
+                    });
+                    if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
+                    {
+
+                        for(var f=0;f<layout_max;f++)
                         {
-
-                            for(var f=0;f<layout_max;f++)
-                            {
-                                var array_area2 = array_area.slice();
-                                list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
-                            }
+                            var array_area2 = array_area.slice();
+                            list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
                         }
-
-                        //將現有的貨物排列上去
-                        pallets_inarea.forEach(pallet_area =>{
-                                var pos = JSON.parse(pallet_area.pos);
-                                pos.forEach(cell=>{
-                                    if(cell[0] >=0 && cell[1] >=0 )
-                                    {
-                                        //需要它的id_pallet,id_project
-                                        list_array_area_3d[array_area_3dindex].array_area_3d[pallet_area.layout][cell[0]][cell[1]] ={
-                                                'id':pallet_area.id,
-                                                'pallet':pallet_area.id_pallet,
-                                                'project':pallet_area.id_project
-                                        };
-                                    }
-                                });
-                        });
-
                     }
 
-                if(pallets_inarea.length >0)
+                    //將之前已經有的貨物排列上去
+                    pallets_inarea.forEach(pallet_area =>{
+                            var pos = JSON.parse(pallet_area.pos);
+                            pos.forEach(cell=>{
+                                if(cell[0] >=0 && cell[1] >=0 )
+                                {
+                                    //需要它的id_pallet,id_project
+                                    list_array_area_3d[array_area_3dindex].array_area_3d[pallet_area.layout][cell[0]][cell[1]] ={
+                                            'id':pallet_area.id,
+                                            'pallet':pallet_area.id_pallet,
+                                            'project':pallet_area.id_project
+                                    };
+                                }
+                            });
+                    });
+
+      
+
+                }
+
+                //區域有東西2
+                if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
                 {
                     //判斷區域內貨物大部分是否跟自己相同
                     var same_pallet  =0;
                     var other_pallet =0;
+
                     pallets_inarea.forEach(pallet_check=>{
-                        if(pallet_check.id_pallet ==palletss[i].id_pallet)
+
+                        // var types = pallet_check.type.split('-');
+                        // var  id_pallet = parseInt(types[0]);
+                        // var  id_project = parseInt(types[1]);
+
+                        var  id_pallet  = pallet_check.id_pallet;
+                        var  id_project = pallet_check.id_project;
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
                         {
-                            if(pallet_check.id_project ==palletss[i].id_project)
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+
+                    pallets_inarea_sort.forEach(pallet_check=>{
+
+                        var types = pallet_check.type.split('-');
+                        var  id_pallet = parseInt(types[0]);
+                        var  id_project = parseInt(types[1]);
+
+                        console.log(id_pallet+";"+id_project);
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
                             {
                                 same_pallet++;
                             }
@@ -324,6 +374,7 @@ async function Sorting_prject(req, res) {
                     });
 
                     //主體貨物數量是否跟貨物一致
+                    //(same_pallet和 other_pallet如果都是0的話就排列此區域)
                     if(same_pallet >=other_pallet)
                     {
                         //主體一致時區域排列
