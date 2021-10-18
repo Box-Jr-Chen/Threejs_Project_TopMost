@@ -16,7 +16,7 @@
                             </div>
                     </div>
 
-                    <div  @click="pallet_HasSet"   v-if="$store.state.isstart_sort ===2"
+                    <div  @click="btn_pallet_HasSet"   v-if="$store.state.isstart_sort ===2"
                      class="btn_active_panel_pallet_move">
                             <div class="word"  
                            v-if="$store.state.isstart_sort ===2"> 
@@ -30,8 +30,11 @@
                 <div class="pallet_cell"  v-for="(item,index) in $store.state.pallet_needsort"  :key="index">
                     <img src="@/assets/img/pallet.png" alt="">
                     <div class="context">
-                        <div class="inner"><font color="black" class="inner">需排列棧板-{{index+1}}</font></div>
+                        <div class="inner"><font color="black" class="inner">{{type_sort(index,item)}}</font></div>
                     </div> 
+                    <div class="btn_custom" v-if="is_custom_enable" @click="btn_manual_set(index)">
+                        手動修改
+                    </div>
                 </div>
         </div> 
       </div>

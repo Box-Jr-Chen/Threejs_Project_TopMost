@@ -106,7 +106,7 @@ export default {
                                                             var init_pos = JSON.parse(response2[0].pos_init);
                                                             var pos  =JSON.parse(e.pos);
 
-                                                            self.$store.state.threejs.WH_FrameLess.CreateProject(index,e.id,init_pos,pos,'exit',e.id_areas,e.layout);
+                                                            self.$store.state.threejs.WH_FrameLess.CreateProject(index+1,e.id,init_pos,pos,'exit',e.id_areas,e.layout);
                                                         });
                                                 });              
                                         }

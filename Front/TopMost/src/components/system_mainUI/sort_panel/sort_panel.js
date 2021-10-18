@@ -29,7 +29,11 @@ export default {
             //Load Pallet need Sort
             this.LoadPallet();
 
+            document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
 
+      },
+      beforeDestroy() {
+        document.removeEventListener("mousedown", this.onDocumentMouseDown, false);      // Succeeds
       },
       methods:{
         LoadPallet()
@@ -46,7 +50,9 @@ export default {
             }
 
         },
-
+        onDocumentMouseDown(event){
+                this.$store.state.threejs.WH_FrameLess.add_clickEvent(event);
+        }
 
   
       }

@@ -73,6 +73,7 @@ async function list_Exit(req, res) {
         where:
         {
           id_warehouse:id_Warehouse,
+          id_areas:{[Op.not]:0},
           remove:0
         }
       })

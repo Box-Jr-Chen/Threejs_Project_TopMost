@@ -134,7 +134,7 @@
     width: 6rem;
     height: 2.5rem;
     margin-top: 0.3rem;
-    background: linear-gradient(to bottom, rgb(182, 181, 181) 0%, rgb(129, 129, 129) 100%);
+    background: linear-gradient(to bottom, rgb(197, 119, 119) 0%, rgb(231, 16, 16) 100%);
     color: white;
     border-radius: 3px;
     border: 1px rgb(112, 112, 112) solid;
@@ -176,16 +176,36 @@
     margin-left: 0.2rem;
     border: 1px rgb(112, 112, 112) solid;
 }
+.pallet_cell .btn_custom{
+    width: 6rem;
+    height: 40%;
+    text-align: center;
+    margin: auto;
+    margin-right: 0.4rem;
+    padding-top: 0.4rem;
+    background: linear-gradient(to bottom, rgb(209, 212, 216) 0%, rgb(4, 169, 211) 100%);
+    color: rgb(32, 32, 32);
+    border-radius: 3px;
+    border: 1px rgb(112, 112, 112) solid;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+.btn_custom:active{
+    background: linear-gradient(to bottom, rgb(136, 142, 151) 0%, rgb(3, 90, 112) 100%);
+    color: rgb(212, 212, 212);
+}
+
 .pallet_cell .context{
-    width: 10rem;
+    width: 15rem;
     height: 100%;
     text-align: left;
-    font-size: 1.23rem;
+    font-size: 1.1rem;
     font-weight: bold;
     padding-left: 0.5rem;
 }
 .pallet_cell .context .inner{
-    margin-top: 1.2rem;
+    margin-top: 1.1rem;
 }
 /* .pallet_cell div{
     margin: 0 auto;

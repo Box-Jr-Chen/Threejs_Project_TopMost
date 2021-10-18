@@ -273,7 +273,9 @@ export default  new Vuex.Store({
                              //創建區域視覺
                              self.state.threejs.WH_FrameLess.createAreaLine(element.borders);
                              self.state.threejs.WH_FrameLess.CreateAreaGrid(element.id,algs_grid[0],algs_grid[1]);
-                           //  console.log(self.state.threejs.WH_FrameLess.line_GROUP);
+                         
+                             self.state.threejs.WH_FrameLess.line_GROUP_rectpos.push(algs_rectcenter);
+                            // console.log( self.state.threejs.WH_FrameLess.line_GROUP_rectpos);
                         }
 
                     }

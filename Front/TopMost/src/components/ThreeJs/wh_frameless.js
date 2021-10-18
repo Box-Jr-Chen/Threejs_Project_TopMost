@@ -34,10 +34,15 @@ class wh_frameless {
         this.pointInPolygon  = require('point-in-polygon'); //判断点是否在多边形内
 
         this.line_WH =[];
-        this.line_AREA =[];
-        this.line_GROUP =[];
+        this.line_AREA =[];  //線段區域
+
+        this.line_GROUP =[];  //實體區域
+        this.line_GROUP_rectpos =[];  //實體區域_各格位位置
+
         this.line_project_exit =[];
         this.line_project_sort =[];
+        this.line_project_sort_font =[];
+
         this.axes = 'xzy';
         this.planeAxes = this.axes.substr( 0, 2 );
         this.material_grid = new THREE.ShaderMaterial( {
@@ -125,7 +130,7 @@ class wh_frameless {
         } );
 
         ///文字實體參數
-        this.color_text = 0x006699;
+        this.color_text = new THREE.Color("rgb(30, 30, 30)");
 
         this.matDark = new THREE.LineBasicMaterial( {
             color:  this.color_text,
@@ -139,6 +144,9 @@ class wh_frameless {
             side: THREE.DoubleSide
         } );
 
+
+        this.raycaster = new THREE.Raycaster(); 
+        this.mouse =null;
     }
     init(width,height,camera,scene){
         var self = this;
@@ -151,9 +159,45 @@ class wh_frameless {
 
 
 render(){
+
 }
 
+//找出滑鼠在區域的哪一個格位
+get_AreaRect_pos(num,point)
+{
+    var result = null;
+    var dis_close = this.interval; 
+    var pos = this.line_GROUP_rectpos[num];
+    var s_x = -1;
+    var s_z = -1;
+    for(var i=0;i<pos.length;i++)
+    {
+        for(var j=0;j<pos[i].length;j++)
+        {        
+            var dis =  this.distanceVector(point,pos[i][j]);
+            if(dis < dis_close)
+            {
+                dis_close = dis;
+                
+                result = pos[i][j];
+                s_x = i;
+                s_z = j;
+            }
+        }
+    }
+    return {
+       'rect': {'x':s_x,'y':s_z},
+       'pos': result
+    };
+}
 
+distanceVector( v1, v2 )
+{
+    var dx = v1.x - v2[0];
+    var dz = v1.z - (-v2[1]);
+
+    return Math.sqrt( dx * dx  + dz * dz );
+}
 //生成等距點陣
 girlPoint(polygon) {
     var lonArr = [];  //polygon所有的经度坐标
@@ -229,7 +273,6 @@ delaunay(polygonPointsArr, polygonData) {
     }
     return usefulIndexArr;
 }
-
 
 //找尋每格中心
 findRectCenter(posArr)
@@ -413,7 +456,8 @@ CreateAreaGrid(area_id,polygonPointsArr,usefulIndexArr)
     tGroup.add(grid[0]);
     tGroup.add(grid[1]);
     tGroup.areaid = area_id;
-    
+    grid[0].name ="area_"+area_id;
+    grid[1].name ="area_line_"+area_id;
     var filter_X= grid[0].geometry.attributes.position.array.filter(function(e,index){
           if(index %3 ===0)
               return e;
@@ -571,86 +615,57 @@ CreateProject(index,name,pos,posArr,type,area,layout){
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
-        index;
-
 
         mesh = this.mesh_set(name,area,geometry,this.material_project_sort);
         mesh.position.set(mesh.position.x,mesh.position.y+100,mesh.position.z);
+   
 
-        console.log("0001");
+        var x_offset = ((project_zeropoint[0] ) -(project_border_x ))/4;
+
+        //1稍微有點偏，直接手動修改
+        if(index ===1)
+        {
+            x_offset = ((project_zeropoint[0] ) -(project_border_x ))/3;
+        }
+
+        var z_offset = ((-project_zeropoint[1] ) - (-project_border_y))/3 ;
+
+
+
+        var x = ((project_zeropoint[0] ) +(project_border_x ))/2 +x_offset;
+        var y = 12*height_max;
+        var z = ((-project_zeropoint[1] ) + (-project_border_y))/2 + z_offset;
+
         this.loader_text.load( "/helvetiker_regular.typeface.json", function ( font ) {
 
-            console.log("0002");
-            const message = "teest";
+            const message = index.toString();
 
-            const shapes = font.generateShapes( message, 100 );
+            const shapes = font.generateShapes( message, 10 );
 
             const geometry = new THREE.ShapeGeometry( shapes );
 
-            geometry.computeBoundingBox();
+           geometry.computeBoundingBox();
 
-            const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+            //const xMid =  0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+            const zMid =  0.5 * ( geometry.boundingBox.max.z - geometry.boundingBox.min.z );
+            geometry.translate( 0, 0, -zMid );
 
-            geometry.translate( xMid, 0, 0 );
-
-            // make shape ( N.B. edge view not visible )
-
-            const text = new THREE.Mesh( geometry, this.matLite );
-            text.position.z = - 150;
-            this.scene.add( text );
-
-            // make line shape ( N.B. edge view remains visible )
-
-            const holeShapes = [];
-
-            for ( let i = 0; i < shapes.length; i ++ ) {
-
-                const shape = shapes[ i ];
-
-                if ( shape.holes && shape.holes.length > 0 ) {
-
-                    for ( let j = 0; j < shape.holes.length; j ++ ) {
-
-                        const hole = shape.holes[ j ];
-                        holeShapes.push( hole );
-
-                    }
-
-                }
-
-            }
-
-            shapes.push.apply( shapes, holeShapes );
-
-            const lineText = new THREE.Object3D();
-
-            for ( let i = 0; i < shapes.length; i ++ ) {
-
-                const shape = shapes[ i ];
-
-                const points = shape.getPoints();
-                const geometry = new THREE.BufferGeometry().setFromPoints( points );
-
-                geometry.translate( xMid, 0, 0 );
-
-                const lineMesh = new THREE.Line( geometry, this.matDark );
-                lineText.add( lineMesh );
-
-            }
-
-            this.scene.add( lineText );
+            const text = new THREE.Mesh( geometry, self.matLite );
+            text.rotateX(- Math.PI / 2, 0, 0);
+            text.position.set(x,y,z);
+            self.line_project_sort_font.push(text);
+            self.scene.add( text );
 
         } );
 
 
 
-        this.line_project_sort.push(mesh);
+        self.line_project_sort.push(mesh);
     }
     else if(type==='exit')
     {
         mesh = this.mesh_set(name,area,geometry,this.material_project_exit);
-        this.line_project_exit.push(mesh);
-
+        self.line_project_exit.push(mesh);
     }
 
     self.scene.add(mesh);
@@ -711,8 +726,6 @@ CreateDemoPlane(X_min,X_max,Y_min,Y_max)
     mesh.position.set(11,0,-82.45);
     this.scene.add(mesh);         
 }
-
-
 
 mesh_set(name,area,geometry,material)
 {
@@ -797,7 +810,36 @@ compareDecimals(a, b) {
 
     return a < b ? -1 : 1;
 }
+
+
+add_clickEvent(event)
+{
+
+    //var raycaster = new THREE.Raycaster(); 
+    var mouse = new THREE.Vector2();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    this.raycaster.setFromCamera( mouse, this.camera );
+
+    if(this.line_GROUP.length <=0) return;
+
+    for(var i =0 ;i<this.line_GROUP.length;i++)
+    {
+        var intersects = this.raycaster.intersectObjects( this.line_GROUP[i].children );
+
+        if ( intersects.length > 0 )
+        {
+           var result =   this.get_AreaRect_pos(i,intersects[i].point);
+        }
+    }
 }
+
+
+}
+
+
+
 
 
 export default {wh_frameless :new wh_frameless()}

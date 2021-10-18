@@ -67,7 +67,7 @@ class ThreeJs_3D {
         //         初始化相机
          var  value_ = 2 ;
          this.camera = new THREE.OrthographicCamera( window.innerWidth / - value_, window.innerWidth / value_,  window.innerHeight / value_,   window.innerHeight / -value_, 0, 1000);
-       // this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000); //看物件用
+       //  this.camera = new THREE.PerspectiveCamera(this.fov, window.innerWidth / window.innerHeight, 1, 100000000); //看物件用
          this.camera.position.set(0, 500, 0 );
          this.camera.lookAt(this.scene.position);
 

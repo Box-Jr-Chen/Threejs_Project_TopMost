@@ -3,14 +3,15 @@ export default {
     components: {
       },
       computed:{
-
       },
       data(){
           return{
+              is_custom_enable:false
           }
       },
       mounted(){
-
+          var self = this;
+          self.is_custom_enable = false;
       },
       methods:{
             show_addpanel(){
@@ -43,18 +44,6 @@ export default {
                 this.$store.commit('Show_Panel_deleteArea');
                 this.$store.state.areas_delete.id =index;
             },
-            btn_algs() //點擊開始演算法
-            {
-              var self = this;
-              if(!self.$store.state.isstart_sort)
-              {     
-                  self.$store.state.isstart_sort = true;
-  //                self.$store.state.threejs.WH_FrameLess.DeleteProject_sort();
-      
-                  self.sortPRoject_recommand();
-                  //排列
-              }
-            },
             sortPRoject_recommand()
             {
                   var self= this;
@@ -84,9 +73,11 @@ export default {
 
                            var init_pos = JSON.parse(project.init);
                            
-                           self.$store.state.threejs.WH_FrameLess.CreateProject(index,project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
+                           self.$store.state.threejs.WH_FrameLess.CreateProject(index+1,project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
 
                            });
+
+                           self.is_custom_enable = true;
                            self.$store.state.isstart_sort = 2;
                       }
                       else if(response.result==="error")
@@ -96,8 +87,28 @@ export default {
                       }
                   });
             },
+            type_sort:function(index,item)
+            {
+                var num = (index+1);
+                if(num <10)
+                    num = '0'+num;
+                    
+
+                return num+'棧板' + '  種類:'+item.id_pallet+' 產品:'+item.id_project;
+            },
+            btn_algs() //點擊開始演算法
+            {
+              var self = this;
+              if(!self.$store.state.isstart_sort)
+              {     
+                  self.$store.state.isstart_sort = true;
+      
+                  self.sortPRoject_recommand();
+                  //排列
+              }
+            },
             //托盤已放置
-            pallet_HasSet()
+            btn_pallet_HasSet()
             {
                 var self =this;
                 if(self.$store.state.pallet_sort_finish.length >0)
@@ -146,6 +157,11 @@ export default {
                      });
 
                 }
+            },
+            btn_manual_set(index)
+            {
+                console.log(index);
             }
+
       }
 }

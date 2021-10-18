@@ -354,7 +354,7 @@ async function Sorting_prject(req, res) {
                         var  id_pallet = parseInt(types[0]);
                         var  id_project = parseInt(types[1]);
 
-                        console.log(id_pallet+";"+id_project);
+                       // console.log(id_pallet+";"+id_project);
 
                         if(id_pallet ==palletss[i].id_pallet)
                         {
