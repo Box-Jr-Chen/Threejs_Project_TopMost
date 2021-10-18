@@ -96,7 +96,7 @@ export default  new Vuex.Store({
 
   //area區域
   areas:[],
-  area_show_afd: false,
+  area_show_afd: false,  //是否顯示區域編輯或新增
   show_afd:false,
   afd_isAdd:false,
   addIns_pos:{
@@ -119,8 +119,11 @@ export default  new Vuex.Store({
   pallet_exit:[],
   //排列後的棧板
   pallet_sort_finish:[],
-  isstart_sort: 0,   //0-未排列,1-排列中,2-排列完成
-  select_Factory:false,
+  isstart_sort: 0,   //0-未排列,1-排列中,2-排列完成(面板順序)
+  select_Factory:false, //是否有工廠
+  isPalletManual:false, //是否手動修改棧板
+  Manual_index :-1,
+
 
   //偵測棧板的計時器
   t_getpallet:null,
@@ -157,7 +160,7 @@ export default  new Vuex.Store({
       this.state.panel_show_deletePallet_inSetting_Pallet= false;
     },
 
-     //Project
+    //Project
     Show_Panel_addProject(){
       this.state.panel_show_addPallet_inSetting_Project= true;
     },
@@ -399,8 +402,6 @@ export default  new Vuex.Store({
           return await store
             .dispatch('AxiosPost', data)
             .then(response => {
-
-              console.log(response);
 
               return  response;
             }
@@ -682,8 +683,6 @@ export default  new Vuex.Store({
             'path': self.state.pallet_exit_Api+'?id='+self.state.factory_id+'&page='+page,
           };
           state
-
-          console.log(data.path);
 
           return await store
               .dispatch('AxiosGet', data)

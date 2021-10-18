@@ -6,6 +6,7 @@
       <setting_project  v-if="$store.state.panel_select ==3"/> -->
       <ProEdit v-if="$store.state.panel_select ==2"/>
       <system_readDXFMap v-if="$store.state.init_loadFactory ===false" />
+      
   </div>
 </template>
 

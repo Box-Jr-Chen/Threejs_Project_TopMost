@@ -1,3 +1,5 @@
+
+
 .rightside_sort{
     width: 25rem;
     height: 30rem;
@@ -196,6 +198,27 @@
     color: rgb(212, 212, 212);
 }
 
+.pallet_cell .btn_custom_cancel{
+    width: 6rem;
+    height: 40%;
+    text-align: center;
+    margin: auto;
+    margin-right: 0.4rem;
+    padding-top: 0.4rem;
+    background: linear-gradient(to bottom, rgb(201, 121, 89) 0%, rgb(211, 63, 4) 100%);
+    color: rgb(32, 32, 32);
+    border-radius: 3px;
+    border: 1px rgb(112, 112, 112) solid;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+.btn_custom_cancel:active{
+    background: linear-gradient(to bottom, rgb(211, 63, 4) 0%, rgb(150, 44, 3) 100%);
+    color: rgb(212, 212, 212);
+}
+
+
 .pallet_cell .context{
     width: 15rem;
     height: 100%;
@@ -207,17 +230,14 @@
 .pallet_cell .context .inner{
     margin-top: 1.1rem;
 }
-/* .pallet_cell div{
-    margin: 0 auto;
-    margin-top: 1rem;
-    font-size: 1.23rem;
-    font-weight: bold;
-} */
+
 .cross_container{
     padding-left: 0.3rem;
     width: 30%;
     position: relative;
 }
+
+
 
 #cross {
     width: 1.1rem;

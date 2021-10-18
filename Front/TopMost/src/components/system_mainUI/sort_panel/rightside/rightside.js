@@ -160,7 +160,21 @@ export default {
             },
             btn_manual_set(index)
             {
-                console.log(index);
+               // console.log(index);
+                this.$store.state.Manual_index   = index;
+                this.$store.state.isPalletManual = true;
+
+                document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
+            },
+            btn_manual_cancel()
+            {
+                this.$store.state.Manual_index   = -1;
+                this.$store.state.isPalletManual = false;
+
+                document.removeEventListener("mousedown", this.onDocumentMouseDown, false); 
+            },
+            onDocumentMouseDown(event){
+                this.$store.state.threejs.WH_FrameLess.add_clickEvent(event,this.$store.state.Manual_index,this.$store.state.pallet_sort_finish);
             }
 
       }

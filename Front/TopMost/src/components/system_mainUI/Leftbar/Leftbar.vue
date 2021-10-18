@@ -1,8 +1,9 @@
 <template>
       <div class="leftbar" >
           <div class="btn_left"  
-          v-bind:class="{btn_left_active:$store.state.panel_select ==index || $store.state.area_show_afd,
-          btn_left_cursor: !$store.state.area_show_afd}"
+          v-bind:class="{
+              btn_left_active:$store.state.panel_select ==index || $store.state.area_show_afd|| $store.state.isstart_sort ==2,
+              btn_left_cursor: !$store.state.area_show_afd && !$store.state.isstart_sort}"
           v-for="(item, index) in $store.state.leftbtns" 
           :key="index"
           @click="select_panel(index)">

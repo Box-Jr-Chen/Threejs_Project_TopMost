@@ -17,3 +17,17 @@
   margin: 0;
 }
 
+.tip_manual{
+  width: 25rem;
+  height: 2rem;
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform:translate(-50%,-50%);
+  background: rgba(0, 0, 0, 0.418);
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
+
+}
+

@@ -1,5 +1,6 @@
 <template>
   <div  id="rightside_sort">
+
       <div class="rightside_sort">
         <div class="title">
                 <p>棧板排列</p>
@@ -16,10 +17,10 @@
                             </div>
                     </div>
 
-                    <div  @click="btn_pallet_HasSet"   v-if="$store.state.isstart_sort ===2"
+                    <div  @click="btn_pallet_HasSet"   v-if="$store.state.isstart_sort ===2 && !$store.state.isPalletManual"
                      class="btn_active_panel_pallet_move">
                             <div class="word"  
-                           v-if="$store.state.isstart_sort ===2"> 
+                           v-if="$store.state.isstart_sort ===2 "> 
                                 棧板已放置
                             </div>
                     </div>
@@ -32,13 +33,16 @@
                     <div class="context">
                         <div class="inner"><font color="black" class="inner">{{type_sort(index,item)}}</font></div>
                     </div> 
-                    <div class="btn_custom" v-if="is_custom_enable" @click="btn_manual_set(index)">
+                    <div class="btn_custom" v-if="is_custom_enable && !$store.state.isPalletManual" @click="btn_manual_set(index)">
                         手動修改
+                    </div>
+                    <div class="btn_custom_cancel" v-if="is_custom_enable && $store.state.isPalletManual && $store.state.Manual_index ==index" @click="btn_manual_cancel">
+                        取消
                     </div>
                 </div>
         </div> 
       </div>
-   
+
   </div>
 </template>
 <script src="./rightside.js" />

@@ -1,7 +1,8 @@
 <template>
    <div id="set_afd_area"  v-bind:class="{
-       set_afd_area_color:$store.state.area_show_afd,
-       set_afd_area_color_hide:!$store.state.area_show_afd}"
+       set_afd_area_color:check_set_afd_area_color,  //修改區域面板或是棧板手動修改面板
+       set_afd_area_color_hide:check_set_afd_area_color_hide
+       }"
   >
   <div v-if="$store.state.area_show_afd">
        <div class="areatitle" v-if="$store.state.afd_isAdd==true">新增區域</div>
@@ -11,7 +12,7 @@
            <div class="english">X:</div>
            <input  
             @change="changeinput(0,9,3)"
-           @updated="true"
+            @updated="true"
             type="text"  
             v-model="$store.state.addIns_pos.left.x">
 

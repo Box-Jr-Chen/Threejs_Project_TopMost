@@ -7,6 +7,15 @@ export default {
         getAdd_Ins:function(){
             return  this.$store.state.threejs.areas_ins_add[0];
         },
+        check_set_afd_area_color:function(){
+            
+            var result = (this.$store.state.area_show_afd);
+           return result ;
+        },
+        check_set_afd_area_color_hide:function(){
+
+            return (!this.$store.state.area_show_afd) ;
+        },
     },
 
     data(){
