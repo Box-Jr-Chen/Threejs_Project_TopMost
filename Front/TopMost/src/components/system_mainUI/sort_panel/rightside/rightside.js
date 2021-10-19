@@ -172,7 +172,7 @@ export default {
                 document.removeEventListener("mousedown", this.onDocumentMouseDown, false); 
             },
             onDocumentMouseDown(event){
-                this.$store.state.threejs.WH_FrameLess.add_clickEvent(event,this.$store.state.Manual_index,this.$store.state.pallet_sort_finish);
+                this.$store.state.threejs.WH_FrameLess.add_clickEvent(event,this.$store.state.Manual_index,this.$store.state.pallet_sort_finish,this.$store.state.pallet_exit);
             }
 
       }

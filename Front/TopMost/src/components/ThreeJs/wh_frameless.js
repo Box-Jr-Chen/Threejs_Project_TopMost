@@ -952,7 +952,7 @@ compareDecimals(a, b) {
 //點擊事件
 //直接傳入pallet index  
 //直接傳入array_sort_finish
-add_clickEvent(event,index,array_sort_finish)
+add_clickEvent(event,index,array_sort_finish,pallet_exit)
 {
     var mouse = new THREE.Vector2();
 
@@ -986,9 +986,10 @@ add_clickEvent(event,index,array_sort_finish)
                 return e;
             });
            
+             console.log("pallet_exit :");
+             console.log(pallet_exit);
 
             //判斷是否超出點選區域範圍
-            
             var rect_move_outline = rect_move.filter(e=>{
                 
                 if(e[0] >this.line_GROUP_rectpos[i].length-1)
@@ -1005,6 +1006,13 @@ add_clickEvent(event,index,array_sort_finish)
             {
                 return;
             }
+
+            //判斷是否有與演算法排列的棧板重疊或是錯位
+            //如果完全重疊 同時是相同種類就疊上去
+            
+            //判斷是否有與資料表排列的棧板重疊或是錯位
+            //如果完全重疊 同時是相同種類就疊上去
+
             var init_pos_str = "["+result.init_pos[0]+","+result.init_pos[1]+"]";
              array_sort_finish[index].init =init_pos_str;
              array_sort_finish[index].pos = rect_move;

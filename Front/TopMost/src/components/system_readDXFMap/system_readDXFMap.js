@@ -105,7 +105,6 @@ export default {
                                                         self.$store.dispatch('A_GetAreas_Posinit',e.id_areas).then(response2 =>{
                                                             var init_pos = JSON.parse(response2[0].pos_init);
                                                             var pos  =JSON.parse(e.pos);
-                                                            console.log("pos:"+pos);
                                                             self.$store.state.threejs.WH_FrameLess.CreateProject(index+1,e.id,init_pos,pos,'exit',e.id_areas,e.layout);
                                                         });
                                                 });              
