@@ -89,9 +89,24 @@ export default {
                 var num = (index+1);
                 if(num <10)
                     num = '0'+num;
-                    
 
                 return num+'棧板' + '  種類:'+item.id_pallet+' 產品:'+item.id_project;
+            },
+            result_sort:function(index)
+            {
+                var  sort = this.$store.state.pallet_sort_finish;
+
+               if(sort.length <=0)
+               {
+                   return "";
+               }
+
+               if( index >= sort.length )
+               {
+                   return "";
+               }
+
+                return '(區域 :'+sort[index].area +'高度 :'+ (parseInt(sort[index].layout)+1)+")";
             },
             btn_algs() //點擊開始演算法
             {

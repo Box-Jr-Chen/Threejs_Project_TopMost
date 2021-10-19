@@ -31,7 +31,10 @@
                 <div class="pallet_cell"  v-for="(item,index) in $store.state.pallet_needsort"  :key="index">
                     <img src="@/assets/img/pallet.png" alt="">
                     <div class="context">
-                        <div class="inner"><font color="black" class="inner">{{type_sort(index,item)}}</font></div>
+                        <div class="inner">
+                            <font color="black" class="inner">{{type_sort(index,item)}}</font>
+                            <div>{{result_sort(index)}}</div>
+                        </div>
                     </div> 
                     <div class="btn_custom" v-if="$store.state.is_custom_enable && !$store.state.isPalletManual" @click="btn_manual_set(index)">
                         手動修改
