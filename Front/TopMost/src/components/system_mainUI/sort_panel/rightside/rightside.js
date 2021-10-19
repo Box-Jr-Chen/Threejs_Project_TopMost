@@ -6,12 +6,9 @@ export default {
       },
       data(){
           return{
-              is_custom_enable:false
           }
       },
       mounted(){
-          var self = this;
-          self.is_custom_enable = false;
       },
       methods:{
             show_addpanel(){
@@ -77,7 +74,7 @@ export default {
 
                            });
 
-                           self.is_custom_enable = true;
+                           self.$store.state.is_custom_enable = true;
                            self.$store.state.isstart_sort = 2;
                       }
                       else if(response.result==="error")
@@ -139,7 +136,8 @@ export default {
                             updatePallet =null;
                             PalletData =null;
                             //console.log(self.$store.state.pallet_exit);
-
+                            this.$store.state.Manual_index   = -1;
+                            this.$store.state.isPalletManual = false;
                             //重新找需要排列的棧板
                             self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                 if(response.result !=='error')

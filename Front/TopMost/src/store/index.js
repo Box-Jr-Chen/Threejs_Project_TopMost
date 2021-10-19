@@ -122,6 +122,7 @@ export default  new Vuex.Store({
   isstart_sort: 0,   //0-未排列,1-排列中,2-排列完成(面板順序)
   select_Factory:false, //是否有工廠
   isPalletManual:false, //是否手動修改棧板
+  is_custom_enable:false, //是否手動修改棧板
   Manual_index :-1,
 
 
@@ -305,14 +306,19 @@ export default  new Vuex.Store({
               {
                   store.state.pallet_needsort = response;
 
+                  //只要有就停住 以免影響排列
                   if(store.state.pallet_needsort.length >0)
                   {
-                    self.$store.state.isstart_sort = 0;
-                  }
-                  if(store.state.pallet_needsort.length >10)
-                  {
+                    self.state.isstart_sort = 0;
+                    self.state.is_custom_enable = false;
+                    self.state.isPalletManual= false; 
                     clearInterval(self.state.t_getpallet); 
                   }
+                  
+                  // if(store.state.pallet_needsort.length >10)
+                  // {
+                  //   clearInterval(self.state.t_getpallet); 
+                  // }
               }
             });
          },3000);

@@ -33,11 +33,11 @@
                     <div class="context">
                         <div class="inner"><font color="black" class="inner">{{type_sort(index,item)}}</font></div>
                     </div> 
-                    <div class="btn_custom" v-if="is_custom_enable && !$store.state.isPalletManual" @click="btn_manual_set(index)">
+                    <div class="btn_custom" v-if="$store.state.is_custom_enable && !$store.state.isPalletManual" @click="btn_manual_set(index)">
                         手動修改
                     </div>
-                    <div class="btn_custom_cancel" v-if="is_custom_enable && $store.state.isPalletManual && $store.state.Manual_index ==index" @click="btn_manual_cancel">
-                        取消
+                    <div class="btn_custom_cancel" v-if="$store.state.is_custom_enable && $store.state.isPalletManual && $store.state.Manual_index ==index" @click="btn_manual_cancel">
+                        結束
                     </div>
                 </div>
         </div> 
