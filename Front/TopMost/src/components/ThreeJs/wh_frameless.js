@@ -968,11 +968,11 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
 
         if ( intersects.length > 0 )
         {
-           var result =   this.get_AreaRect_pos(i,intersects[i].point);
+           var result =   this.get_AreaRect_pos(i,intersects[0].point);
         
            // console.log(this.line_project_sort[index]);
            // console.log(result);
-            console.log(array_sort_finish);
+           // console.log(array_sort_finish);
 
 
            //先將陣列轉換到(0,0)為初始，然後再移位
@@ -986,8 +986,6 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
                 return e;
             });
            
-             console.log("pallet_exit :");
-             console.log(pallet_exit);
 
             //判斷是否超出點選區域範圍
             var rect_move_outline = rect_move.filter(e=>{
@@ -1007,16 +1005,183 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
                 return;
             }
 
+
+            var cross_rent = false;
+            var wrong_type = false;
+            var over_layout = false;
+            var pass_overlapping = false;
+            var layout_last =0 //之前的高度
             //判斷是否有與演算法排列的棧板重疊或是錯位
             //如果完全重疊 同時是相同種類就疊上去
-            
+           
+            var  areaid =  this.line_GROUP[i].areaid;
+            array_sort_finish.forEach(e=>{
+
+                //是否同個區域
+                if(e.area !==areaid)
+                    return;
+
+                var rect_array =[];
+                
+                for(var i=0;i<e.pos.length;i++)
+                {
+                    for(var j=0;j<rect_move.length;j++)
+                    {
+                        if(e.pos[i][0] ===rect_move[j][0] &&e.pos[i][1] ===rect_move[j][1])
+                        {
+                            rect_array.push(rect_move[j]);
+                        }
+                    }
+                }
+
+                //是否有重疊
+                if(rect_array.length >0)
+                {
+                    if(rect_array.length ===rect_move.length)
+                    {
+                        if(e.pallet ===array_sort_finish[index].pallet)
+                            return;
+
+                        //是否種類一樣  
+                        if(array_sort_finish[index].type ===e.type)
+                        {
+                            //是否超出高度
+                            if(e.layout <2)
+                            {
+                                pass_overlapping = true; //通過
+
+                                if(layout_last < e.layout)
+                                        layout_last = e.layout;
+                            }
+                            else
+                            {
+                                over_layout = true;//超出高度
+                            }
+                        }
+                        else
+                        {
+                            wrong_type = true; //種類不一致
+                        }
+                    }
+                    else
+                    {
+                        cross_rent = true; //錯位
+                    }
+                }
+
+            });
+
+            if(cross_rent)
+            {
+                console.log("錯位!");
+                return;
+            }
+            if(wrong_type)
+            {
+                console.log("種類不一致!");
+                return;
+            }
+            if(over_layout)
+            {
+                console.log("超出高度!");
+                return;
+            }
+
             //判斷是否有與資料表排列的棧板重疊或是錯位
             //如果完全重疊 同時是相同種類就疊上去
+
+            layout_last =0 //之前的高度
+
+            pallet_exit.forEach(e=>{
+                    //是否同個區域
+                    if(e.id_areas !==areaid)
+                    return;
+
+                var rect_array =[];
+                
+                var pos = JSON.parse(e.pos);
+               // console.log(pos);
+                for(var i=0;i<pos.length;i++)
+                {
+                    for(var j=0;j<rect_move.length;j++)
+                    {
+                        if(pos[i][0] ===rect_move[j][0] &&pos[i][1] ===rect_move[j][1])
+                        {
+                            rect_array.push(rect_move[j]);
+                        }
+                    }
+                }
+
+                
+                //是否有重疊
+                if(rect_array.length >0)
+                {
+                    if(rect_array.length ===rect_move.length)
+                    {
+                        var type = e.id_pallet+"-"+e.id_project;
+
+                        //console.log(type);
+                        //console.log(array_sort_finish[index].type);
+                        //是否種類一樣  
+                        if(array_sort_finish[index].type ===type)
+                        {
+                            //是否超出高度
+                            if(e.layout <2)
+                            {
+                                pass_overlapping = true; //通過
+
+                                if(layout_last < e.layout)
+                                        layout_last = e.layout;
+                            }
+                            else
+                            {
+                                over_layout = true;//超出高度
+                            }
+                        }
+                        else
+                        {
+                            wrong_type = true; //種類不一致
+                        }
+                    }
+                    else
+                    {
+                        cross_rent = true; //錯位
+                    }
+                }
+            });
+
+            if(cross_rent)
+            {
+                console.log("錯位!");
+                return;
+            }
+            if(wrong_type)
+            {
+                console.log("種類不一致!");
+                return;
+            }
+            if(over_layout)
+            {
+                console.log("超出高度!");
+                return;
+            }
+
 
             var init_pos_str = "["+result.init_pos[0]+","+result.init_pos[1]+"]";
              array_sort_finish[index].init =init_pos_str;
              array_sort_finish[index].pos = rect_move;
              array_sort_finish[index].area = this.line_GROUP[i].areaid;
+
+             if(pass_overlapping)
+             {
+                array_sort_finish[index].layout = layout_last+1;
+                
+             }
+             else
+             {
+                array_sort_finish[index].layout =array_sort_finish[index].layout_init ; //回到高度
+             }
+            // console.log(array_sort_finish[index].layout);
              this.UpdateProject_sort(index,result.init_pos,rect_move,this.line_GROUP[i].areaid,0);
         }
     }

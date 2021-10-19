@@ -162,12 +162,24 @@ export default {
                 this.$store.state.Manual_index   = index;
                 this.$store.state.isPalletManual = true;
 
+                //新增參數 高度原始
+                this.$store.state.pallet_sort_finish.forEach(e=>{
+                    e.layout_init =  e.layout ;
+                });
+
+
                 document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
             },
             btn_manual_cancel()
             {
                 this.$store.state.Manual_index   = -1;
                 this.$store.state.isPalletManual = false;
+
+
+               //移除參數 高度原始
+               this.$store.state.pallet_sort_finish.forEach(e=>{
+                  delete e.layout_init ;
+            });
 
                 document.removeEventListener("mousedown", this.onDocumentMouseDown, false); 
             },
