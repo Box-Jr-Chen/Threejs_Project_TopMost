@@ -16,8 +16,15 @@ export default {
                     }
 
                 return "left:0px; top:0px;";
-            }
-
+            },
+            data_project:function(){
+              var data = this.$store.state.area_pro_data[this.$store.state.select_show_data_num];
+              return data.id_pallet+"-"+data.id_project;
+            },
+            data_layout:function(){
+              var data = this.$store.state.area_pro_data[this.$store.state.select_show_data_num];
+              return (data.layout+1)+"層";
+          }
       },
       data(){
           return{
@@ -31,6 +38,8 @@ export default {
             self.$store.state.threejs.Threejs_Area.CreateAreaIns();
             if(self.$store.state.threejs.Threejs_Area.id_area !==0)
             {
+              //vuex無法更新intan內的資料
+              //實體模型
               var result = self.$store.state.threejs.WH_FrameLess.line_project_exit.filter(e =>{
                     if(e.area ===self.$store.state.threejs.Threejs_Area.id_area)
                     {
@@ -38,8 +47,7 @@ export default {
                     }
               });
 
-              //沒辦法透過在物件上做改變  轉換介面改變
-              //console.log(self.$store.state.pallet_exit);
+              //vuex 資料表
               self.$store.state.area_pro_data = self.$store.state.pallet_exit.filter(e =>{
                 if(e.id_areas ===self.$store.state.threejs.Threejs_Area.id_area)
                 {
@@ -48,6 +56,9 @@ export default {
                 }
               })
 
+              console.log('area_pro_data');
+              console.log(self.$store.state.area_pro_data);
+
               self.$store.state.threejs.Threejs_Area.GetProject(result);
             }
             self.$store.state.threejs.UnActive_controls();
@@ -55,7 +66,7 @@ export default {
   
       },
       methods:{
-        cancel_3d_area()
+        btn_cancel_3d_area()
         {
             this.$store.state.threejs.Threejs_Area.DeleteProject();
             this.$store.state.threejs.WH_FrameLess.ResetProject_exit(this.$store.state.threejs.Threejs_Area.id_area,this.$store.state.threejs.Threejs_Area.pro_ins);
@@ -63,14 +74,7 @@ export default {
             this.$store.state.is_3d_area = false;
             this.$store.state.threejs.Active_controls();
         },
-        select_ToDelete:function (index){
-          return this.$store.state.area_pro_data[index].select_delete ;
-        },
-        select_deleteFun(index)
-        {
-          this.$store.commit("selectPro_delete", index);
-        },
-        deletePallet()
+        btn_deletePallet()
         {
 
           var self = this;
@@ -167,6 +171,21 @@ export default {
               else
                 console.log(response);
           });
+        },
+        select_ToDelete:function (index){
+          return this.$store.state.area_pro_data[index].select_delete ;
+        },
+        select_deleteFun(index)
+        {
+          this.$store.commit("selectPro_delete", index);
+        },
+        select_hidedata()
+        {
+          this.$store.state.select_show_data_num = -1;
+        },
+        select_showdata(index)
+        {
+          this.$store.state.select_show_data_num =index;
         }
       }
 }

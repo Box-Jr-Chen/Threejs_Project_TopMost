@@ -22,19 +22,38 @@
     display: flex;
     flex-direction: start;
 }
-.title p {
+.title .context {
     padding-left: 0.5rem;
-    width: 100%;
+    width: 30%;
     height: 10%;
     font-size: 1.2rem ;
     font-family:  sans-serif;
     font-weight: bold;
 }
+.title .err {
+    width: 16rem;
+    height: 10%;
+    color: red;
+}
+.err_p{
+    width:  12rem;
+    height: 100%;
+    font-size: 1.5rem;
+    font-family:  sans-serif;
+    font-weight: bold;
+ 
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .title .add_block{
-    width: 50%;
+    width: 40%;
     height: 100%;
     padding-top: 0.45rem;
-    padding-left: 3.2rem;
+    padding-left: 0.2rem;
 }
 .btn_active_panel_pallet{
     width: 6rem;

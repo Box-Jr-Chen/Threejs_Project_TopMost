@@ -3,8 +3,12 @@
 
       <div class="rightside_sort">
         <div class="title">
-                <p>棧板排列</p>
-                
+                <p class="context">
+                    棧板排列
+                </p>
+                <div class="err">
+                    <p v-if="$store.state.sort_err !==''">({{$store.state.sort_err}})</p>
+                </div>
                 <div class="add_block" >
                     <div @click="btn_algs" v-if="
                     ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)&& 
@@ -12,7 +16,7 @@
                     "  v-bind:class="[
                         $store.state.isstart_sort !==0? 'btn_active_panel_pallet_startsort':'btn_active_panel_pallet']">
                             <div class="word"  
-                           v-if="$store.state.isstart_sort ===0"> 
+                                v-if="$store.state.isstart_sort ===0"> 
                                 開始排列 
                             </div>
                     </div>
@@ -20,7 +24,7 @@
                     <div  @click="btn_pallet_HasSet"   v-if="$store.state.isstart_sort ===2 && !$store.state.isPalletManual"
                      class="btn_active_panel_pallet_move">
                             <div class="word"  
-                           v-if="$store.state.isstart_sort ===2 "> 
+                                v-if="$store.state.isstart_sort ===2 "> 
                                 棧板已放置
                             </div>
                     </div>
@@ -36,7 +40,7 @@
                             <div>{{result_sort(index)}}</div>
                         </div>
                     </div> 
-                    <div class="btn_custom" v-if="$store.state.is_custom_enable && !$store.state.isPalletManual" @click="btn_manual_set(index)">
+                    <div class="btn_custom" v-if="active_manual(index)" @click="btn_manual_set(index)">
                         手動修改
                     </div>
                     <div class="btn_custom_cancel" v-if="$store.state.is_custom_enable && $store.state.isPalletManual && $store.state.Manual_index ==index" @click="btn_manual_cancel">

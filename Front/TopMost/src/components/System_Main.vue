@@ -7,6 +7,9 @@
   
         <div class="tip_manual" v-if="$store.state.isPalletManual">
               點選區域選擇位置
+              <div v-if="$store.state.Manual_error!==''">
+                    {{$store.state.Manual_error}}
+              </div>
         </div>
 
   </div>

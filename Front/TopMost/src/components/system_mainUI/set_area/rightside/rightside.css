@@ -170,7 +170,9 @@
     width: 30%;
     position: relative;
 }
-
+.pallet_cell_btn_tip{
+    margin-top: 0.3rem;
+}
 
 
 #cross {

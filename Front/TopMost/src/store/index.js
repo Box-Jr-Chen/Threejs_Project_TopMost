@@ -123,16 +123,18 @@ export default  new Vuex.Store({
   select_Factory:false, //是否有工廠
   isPalletManual:false, //是否手動修改棧板
   is_custom_enable:false, //是否手動修改棧板
+  sort_err:"", //排列演算法是否有錯誤
   Manual_index :-1,
-
-
+  Manual_error:"",
+  setTime_manual_err:null,
+  setTime_sort_err:null,
   //偵測棧板的計時器
   t_getpallet:null,
 
   //3d area
   is_3d_area:false,
-  area_pro_data:[]
-
+  area_pro_data:[],
+  select_show_data_num:-1
 
 
   },
@@ -408,10 +410,11 @@ export default  new Vuex.Store({
           return await store
             .dispatch('AxiosPost', data)
             .then(response => {
-
+              console.log(response);
               return  response;
             }
             ).catch(error => {
+              console.log(error);
               return error;
             });
         },

@@ -50,28 +50,26 @@ export default {
 
                   self.$store.state.isstart_sort = 1;
                   self.$store.dispatch('A_Postsorting_project').then(response =>{
-
+                    //console.log(response);
                       if(response.result ===undefined)
                       {
                         self.$store.state.isstart_sort = 0;
                         return;
                       }
-
+  
                       if(response.result==="success")
                       {
-                           //console.log(response);
-
                            self.$store.state.pallet_sort_finish = response.cause;
 
                            //生成演算法出來的各棧板
                            self.$store.state.pallet_sort_finish.forEach(function(project,index){
 
-                           index;
-
-                           var init_pos = JSON.parse(project.init);
-                           
-                           self.$store.state.threejs.WH_FrameLess.CreateProject(index+1,project.pallet,init_pos,project.pos,'sort',project.id_areas,project.layout);
-
+                                if(project.pos.length >0)
+                                {
+                                    var init_pos = JSON.parse(project.init);
+                                    self.$store.state.threejs.WH_FrameLess.CreateProject(index+1,project.pallet,init_pos,project.pos,'sort',project.area,project.layout);
+                                } 
+          
                            });
 
                            self.$store.state.is_custom_enable = true;
@@ -80,6 +78,16 @@ export default {
                       else if(response.result==="error")
                       {
                         self.$store.state.isstart_sort = 0;
+                        self.$store.state.sort_err =response.cause;
+
+                        if( self.$store.state.setTime_sort_err !==null)
+                        {
+                            clearTimeout(self.$store.state.setTime_sort_err);
+                        }
+                        self.$store.state.setTime_sort_err = setTimeout(()=>{
+                            self.$store.state.sort_err ='';
+                        },1000);
+
                         return;
                       }
                   });
@@ -106,9 +114,15 @@ export default {
                    return "";
                }
 
+               if(sort[index].pos.length <=0)
+               {
+                   return "(排列失敗)";
+               }
+
                 return '(區域 :'+sort[index].area +'高度 :'+ (parseInt(sort[index].layout)+1)+")";
             },
-            btn_algs() //點擊開始演算法
+             //點擊開始演算法
+            btn_algs()
             {
               var self = this;
               if(!self.$store.state.isstart_sort)
@@ -123,17 +137,61 @@ export default {
             btn_pallet_HasSet()
             {
                 var self =this;
+                self.$store.state.isstart_sort = 3;
                 if(self.$store.state.pallet_sort_finish.length >0)
                 {
-                    var updatePallet =  self.$store.state.pallet_sort_finish.map(e =>{
+
+                    var updatePallet =  self.$store.state.pallet_sort_finish.filter(e =>{
+                        if(e !=null && e.pos !=null)
+                        {
+                            if(e.pos.length >0)
+                                     return e;
+                        }
+
+                    });
+                    
+                    updatePallet =  updatePallet.map(e =>{
                             delete e['init'];
-                            delete e['type'];
                             e.id_areas = e['area'];
+
+                            var datatype= e['type'].split('-');
+
+                            e.id_pallet =parseInt(datatype[0]);
+                            e.id_project =parseInt(datatype[1]);
+
+                            delete e['type'];
                             e['pos']=JSON.stringify(e['pos']);
                             return e;
                     });
 
-                    var area = updatePallet[0].area;
+                    //如果找不到可以更新的
+                    if(updatePallet.length <=0)
+                    {
+                        self.$store.state.pallet_needsort =[];
+                        self.$store.state.pallet_sort_finish=[];
+                        updatePallet =null;
+                        PalletData =null;
+                        this.$store.state.Manual_index   = -1;
+                        this.$store.state.isPalletManual = false;
+                        //重新找需要排列的棧板
+                        self.$store.dispatch('A_GetPallet_needSort').then(response =>{
+                            if(response.result !=='error')
+                             {
+                               // console.log(response);
+
+                                 self.$store.state.pallet_needsort = response;
+                                 self.$store.commit('WaitToPallet_needSort');
+                                 
+                                if(self.$store.state.pallet_needsort.length >0)
+                                {
+                                    self.$store.state.isstart_sort = 0;
+                                }
+                                else
+                                    self.$store.state.isstart_sort = 3;
+                             }
+                         });
+                        return;
+                    }
 
                     var  PalletData ={
                         'pallet':JSON.stringify(updatePallet)
@@ -146,31 +204,42 @@ export default {
                             self.$store.state.pallet_needsort =[];
 
                             self.$store.state.pallet_sort_finish=[];
+                            
                             self.$store.state.pallet_exit.push(...updatePallet);
-                            self.$store.state.threejs.WH_FrameLess.PutSortToExit(area);
+                            self.$store.state.threejs.WH_FrameLess.PutSortToExit();
                             updatePallet =null;
                             PalletData =null;
-                            //console.log(self.$store.state.pallet_exit);
                             this.$store.state.Manual_index   = -1;
                             this.$store.state.isPalletManual = false;
-                            //重新找需要排列的棧板
-                            self.$store.dispatch('A_GetPallet_needSort').then(response =>{
-                                if(response.result !=='error')
-                                 {
-                                     self.$store.state.pallet_needsort = response;
-                                     self.$store.commit('WaitToPallet_needSort');
-                                     
-                                    if(self.$store.state.pallet_needsort.length >0)
-                                            self.$store.state.isstart_sort = 0;
-                                    else
-                                            self.$store.state.isstart_sort = 3;
-                                 }
-                             });
+
+                            //等待一秒，以防錯誤
+                            setTimeout(()=>{
+                                    //重新找需要排列的棧板
+                                    self.$store.dispatch('A_GetPallet_needSort').then(response =>{
+                                        if(response.result !=='error')
+                                        {
+                                            console.log(response);
+
+                                            self.$store.state.pallet_needsort = response;
+                                            self.$store.commit('WaitToPallet_needSort');
+                                            
+                                            if(self.$store.state.pallet_needsort.length >0)
+                                            {
+                                                self.$store.state.isstart_sort = 0;
+                                            }
+                                            else
+                                                self.$store.state.isstart_sort = 3;
+                                        }
+                                    });
+                            },200);
+
+       
                          }
                      });
 
                 }
             },
+             //開啟手動模式
             btn_manual_set(index)
             {
                // console.log(index);
@@ -185,6 +254,7 @@ export default {
 
                 document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
             },
+            //取消手動
             btn_manual_cancel()
             {
                 this.$store.state.Manual_index   = -1;
@@ -198,8 +268,35 @@ export default {
 
                 document.removeEventListener("mousedown", this.onDocumentMouseDown, false); 
             },
+             //確認手定模式按鈕是否顯示
+            active_manual(index)
+            {
+
+                return this.$store.state.is_custom_enable 
+                        && !this.$store.state.isPalletManual 
+                        && this.$store.state.pallet_sort_finish.length         >0
+                        && this.$store.state.pallet_sort_finish[index].pos !==null
+                        && this.$store.state.pallet_sort_finish[index].pos.length >0
+            },
+
             onDocumentMouseDown(event){
-                this.$store.state.threejs.WH_FrameLess.add_clickEvent(event,this.$store.state.Manual_index,this.$store.state.pallet_sort_finish,this.$store.state.pallet_exit);
+                var self =this;
+                self.$store.state.threejs.WH_FrameLess.add_clickEvent(event,
+                    self.$store.state.Manual_index,
+                    self.$store.state.pallet_sort_finish,
+                    self.$store.state.pallet_exit,
+                    (e)=>{
+                            console.log(e);
+
+                            if( self.$store.state.setTime_manual_err !==null)
+                                 clearTimeout( self.$store.state.setTime_manual_err);
+
+                            self.$store.state.Manual_error = e;
+
+                            self.$store.state.setTime_manual_err = setTimeout(()=>{
+                                self.$store.state.Manual_error ='';
+                            },1000);
+                    });
             }
 
       }

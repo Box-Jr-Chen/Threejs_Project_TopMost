@@ -45,5 +45,22 @@ export default {
                 this.$store.commit('Show_Panel_deleteArea');
                 this.$store.state.areas_delete.id =index;
             },
+            //如果有貨物在上面不給修改區域
+            check_area_can_fix(index){
+                var self = this;
+                    if(self.$store.state.show_afd)     return false;
+
+                    if(self.$store.state.pallet_exit.lenght <=0) return true;
+
+                    var result= true;
+                    self.$store.state.pallet_exit.forEach(e=>{
+                        if(e.id_areas === self.$store.state.areas[index].id) 
+                        {
+                            result = false;
+                            return result;
+                        }
+                    });
+                    return result;
+            }
       }
 }

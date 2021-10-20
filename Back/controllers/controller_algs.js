@@ -164,12 +164,7 @@ async function Sorting_prject(req, res) {
           return res_reuslt.send(result_error);
       }
 
-    //用來放置實體化地圖的矩陣
-    //放置方式：
-    //{
-        //id_area:0,
-        //array_area_3d:array_area_3d
-    //}
+
 
     //生成3D地圖(所有的地圖放置這裡)
     var list_array_area_3d=[];
@@ -191,31 +186,34 @@ async function Sorting_prject(req, res) {
             
             var setting_pallet_id =    palletss[i].id_pallet ;
             var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
-        
-            //人工設定棧板尺寸轉為系統尺吋
-            if(pallet_data !==null && pallet_data !==undefined)
+     
+            //判斷有沒有資料
+            if(pallet_data ===null || pallet_data ===undefined)
             {
-                 var pallet_width =   pallet_data.width/100;
-                 var pallet_length =  pallet_data.length/100;
-
-
-                 var width  = parseInt((pallet_width) / interval);
-                 var height = parseInt((pallet_length) / interval);
-                 if((pallet_width % interval) > 0)
-                 {
-                    width++;
-                 }
-        
-                 if((pallet_length % interval) > 0)
-                 {
-                    height++;
-                 }
-                 palletss[i]['width_rect'] = width;
-                 palletss[i]['height_rect'] = height;
-
-                 //return res_reuslt.send(result_error);
-        
+                result_error.cause ="error read pallet setting";
+                return res_reuslt.send(result_error);
             }
+
+            //人工設定棧板尺寸轉為系統尺吋
+            var pallet_width =   pallet_data.width/100;
+            var pallet_length =  pallet_data.length/100;
+
+
+            var width  = parseInt((pallet_width) / interval);
+            var height = parseInt((pallet_length) / interval);
+            if((pallet_width % interval) > 0)
+            {
+               width++;
+            }
+   
+            if((pallet_length % interval) > 0)
+            {
+               height++;
+            }
+            
+            palletss[i]['width_rect'] = width;
+            palletss[i]['height_rect'] = height;
+            //---------------------------------
 
 
             for(var j=0;j<areas.length;j++){
@@ -377,6 +375,9 @@ async function Sorting_prject(req, res) {
                     //(same_pallet和 other_pallet如果都是0的話就排列此區域)
                     if(same_pallet >=other_pallet)
                     {
+                        
+
+
                         //主體一致時區域排列
                         var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
                         
@@ -419,22 +420,26 @@ async function Sorting_prject(req, res) {
              if(start_sort ===false)
              {
                 //重新檢查各區域是否還有空間擺放
+                
                 for(var j=0;j<areas.length;j++){
                     
+
                     //當找不到同樣時回頭找區域空間排列
-                    var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
-
+                    var result = await SpaceinArea( list_array_area_3d[j].array_area_3d,palletss[i]);
                     //是否排列成功
-                    if(JsonisEmpty(result) ===false)
+                    if(result.pos.length>0)
                     {
-                        result_pallet.id     = palletss[i].id,
-                        result_pallet.init   = areas[j].pos_init;
-                        result_pallet.area   = areas[j].id;
-                        result_pallet.layout = result.layout;
-                        result_pallet.pos    = result.pos;
-
-                        start_sort = true;
-                        break;
+                        if(JsonisEmpty(result) ===false)
+                        {
+                            result_pallet.id     = palletss[i].id,
+                            result_pallet.init   = areas[j].pos_init;
+                            result_pallet.area   = areas[j].id;
+                            result_pallet.layout = result.layout;
+                            result_pallet.pos    = result.pos;
+    
+                            start_sort = true;
+                            break;
+                        }
                     }
                 }
              }
@@ -476,7 +481,6 @@ async function SpaceinArea(array_area_3d,project) {
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
                         continue;
 
-
                     //判斷貨物要放置的空間有沒有其他貨物
                     var  isOtherPallet = false;
                          result={
@@ -486,7 +490,6 @@ async function SpaceinArea(array_area_3d,project) {
 
 
                     var id_lastlayout = -1;
-                         
                     for(var h_check=h;h_check<=pallet_height;h_check++)  
                     {
                         for(var w_check=w;w_check<=pallet_width;w_check++)
@@ -496,6 +499,8 @@ async function SpaceinArea(array_area_3d,project) {
                                 {
                                     if(id_lastlayout <=0)
                                     {
+                                        
+
                                         if(array_area_3d[0][w_check][h_check] !== 0)
                                         {
                                             id_lastlayout = array_area_3d[0][w_check][h_check].id
@@ -537,7 +542,6 @@ async function SpaceinArea(array_area_3d,project) {
                           
                         }
                     }
-
                     if(isOtherPallet ===true)
                     {
                         result={};
@@ -575,7 +579,6 @@ async function SpaceinArea(array_area_3d,project) {
 
     });
 
-    //console.log("--------------------------------3");
 
 
     return    result;

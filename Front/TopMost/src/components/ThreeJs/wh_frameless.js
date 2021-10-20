@@ -148,6 +148,8 @@ class wh_frameless {
         this.raycaster = new THREE.Raycaster(); 
         this.mouse =null;
         this.offset_project =1;
+        this.pallet_height_scale =10;
+        this.pallet_height_offset =-0.2;
     }
     init(width,height,camera,scene){
         var self = this;
@@ -534,8 +536,8 @@ CreateProject(index,name,pos,posArr,type,area,layout){
     
 
    //var offset =1;
-   var height_max =10 *(layout+1) ;
-   var height_min =10 *(layout) ;
+   var height_max =this.pallet_height_scale *(layout+1) ;
+   var height_min =this.pallet_height_scale *(layout) ;
 
 
     const vertices = [
@@ -551,40 +553,40 @@ CreateProject(index,name,pos,posArr,type,area,layout){
         //前方上三角
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [0, 1],}, 
         { pos: [project_border_x -this.offset_project, height_max,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [1, 1],},       
-        { pos: [project_border_x -this.offset_project, height_min,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [1, 0],},
+        { pos: [project_border_x -this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [1, 0],},
         //前方下三角
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [0, 1],}, 
-        { pos:  [project_border_x -this.offset_project, height_min,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [1, 1],},       
-        { pos: [project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project],norm: [ 0,  0, 1], uv: [1, 0],},
+        { pos:  [project_border_x -this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project], norm: [ 0,  0,  1], uv: [1, 1],},       
+        { pos: [project_zeropoint[0] +this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project],norm: [ 0,  0, 1], uv: [1, 0],},
 
         //左方上三角
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project], norm: [ -1,   0,  0], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project] , norm: [ -1,   0,  0], uv: [1, 0],},
+        { pos: [project_zeropoint[0] +this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project] , norm: [ -1,   0,  0], uv: [1, 0],},
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project], norm: [ -1,   0,  0], uv: [1, 1],},       
         //左方下三角
-        { pos: [project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project], norm: [ -1,  0,  0], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project], norm: [ -1,  0,  0], uv: [1, 1],},       
+        { pos: [project_zeropoint[0] +this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project], norm: [ -1,  0,  0], uv: [0, 1],}, 
+        { pos: [project_zeropoint[0] +this.offset_project, height_min -this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project], norm: [ -1,  0,  0], uv: [1, 1],},       
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project], norm: [ -1, 0,  0], uv: [1, 0],},
 
         //右方上三角
         { pos: [project_border_x -this.offset_project , height_max,  -project_border_y +this.offset_project], norm: [ 1,  0,  0], uv: [0, 1],}, 
         { pos: [project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project] , norm: [ 1,  0,  0], uv: [1, 0],},
-        { pos: [project_border_x -this.offset_project , height_min,  -project_border_y +this.offset_project], norm: [ 1,  0,  0], uv: [1, 1],},       
+        { pos: [project_border_x -this.offset_project , height_min-this.pallet_height_offset,  -project_border_y +this.offset_project], norm: [ 1,  0,  0], uv: [1, 1],},       
         //右方下三角
         { pos: [project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project], norm: [ 1,  0,  0], uv: [0, 1],}, 
-        { pos: [project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project], norm: [ 1,  0,  0], uv: [1, 1],},       
-        { pos: [project_border_x -this.offset_project ,height_min,  -project_border_y +this.offset_project], norm: [ 1,  0,  0], uv: [1, 0],}, 
+        { pos: [project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project], norm: [ 1,  0,  0], uv: [1, 1],},       
+        { pos: [project_border_x -this.offset_project ,height_min-this.pallet_height_offset,  -project_border_y +this.offset_project], norm: [ 1,  0,  0], uv: [1, 0],}, 
             
             
         //後方上三角
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0,  -1], uv: [0, 1],},
-        { pos: [project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0, -1], uv: [1, 1],},    
+        { pos: [project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0, -1], uv: [1, 1],},    
         { pos: [project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project] , norm: [ 0,  0,  -1], uv: [1, 0],},
           
         //後方下三角
         { pos: [project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0,  -1], uv: [0, 1],}, 
-        { pos: [project_zeropoint[0] +this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0,  -1], uv: [1, 1],},       
-        { pos: [project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0, -1], uv: [1, 0],}  
+        { pos: [project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0,  -1], uv: [1, 1],},       
+        { pos: [project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project], norm: [ 0,  0, -1], uv: [1, 0],}  
 
     ]; //顶点坐标
 
@@ -622,7 +624,7 @@ CreateProject(index,name,pos,posArr,type,area,layout){
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
-
+        console.log("sort:"+ area)
         mesh = this.mesh_set(name,area,geometry,this.material_project_sort);
         mesh.position.set(mesh.position.x,mesh.position.y+100,mesh.position.z);
    
@@ -717,8 +719,8 @@ UpdateProject_sort(index,pos,posArr,area,layout)
         
 
         //var offset =1;
-        var height_max =10 *(layout+1) ;
-        var height_min =10 *(layout) ;
+        var height_max =this.pallet_height_scale *(layout+1) ;
+        var height_min =this.pallet_height_scale *(layout) ;
 
     // console.log(height_max+";"+height_min);
      
@@ -735,40 +737,40 @@ UpdateProject_sort(index,pos,posArr,area,layout)
             //前方上三角
              project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project, 
              project_border_x -this.offset_project, height_max,  -project_border_y +this.offset_project,    
-             project_border_x -this.offset_project, height_min,  -project_border_y +this.offset_project,
+             project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,
             //前方下三角
             project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project,
             project_border_x -this.offset_project, height_min,  -project_border_y +this.offset_project,     
-            project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project,
+            project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,
 
             //左方上三角
             project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project, 
-            project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project ,
+            project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project ,
             project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project,     
             //左方下三角
-            project_zeropoint[0] +this.offset_project, height_min,  -project_border_y +this.offset_project, 
-            project_zeropoint[0] +this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project,      
+            project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project, 
+            project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project,      
             project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project,
 
             //右方上三角
             project_border_x -this.offset_project , height_max,  -project_border_y +this.offset_project,
             project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project ,
-            project_border_x -this.offset_project , height_min,  -project_border_y +this.offset_project,   
+            project_border_x -this.offset_project , height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,   
             //右方下三角
             project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project,
-            project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project,        
-            project_border_x -this.offset_project ,height_min,  -project_border_y +this.offset_project,
+            project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project,        
+            project_border_x -this.offset_project ,height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,
                 
                 
             //後方上三角
             project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project,
-            project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project,   
+            project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project,   
             project_border_x -this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project ,
             
             //後方下三角
             project_zeropoint[0] +this.offset_project, height_max,  -project_zeropoint[1] -this.offset_project,  
-            project_zeropoint[0] +this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project,      
-            project_border_x -this.offset_project, height_min,  -project_zeropoint[1] -this.offset_project,
+            project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project,      
+            project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_zeropoint[1] -this.offset_project,
 
         ]; //顶点坐标
 
@@ -864,16 +866,17 @@ mesh_set(name,area,geometry,material)
 }
 
 //將排列完的結果轉成已上架
-PutSortToExit(area)
+PutSortToExit()
 {
     this.line_project_sort.map((e)=>{
             e.material =this.material_project_exit;
-            e.area = area;
             return e;
     });
 
 
     this.line_project_exit.push(...this.line_project_sort);
+
+    console.log( this.line_project_exit);
 
     //clear  line_project_sort
     this.line_project_sort.splice(0, this.line_project_sort.length);
@@ -952,7 +955,7 @@ compareDecimals(a, b) {
 //點擊事件
 //直接傳入pallet index  
 //直接傳入array_sort_finish
-add_clickEvent(event,index,array_sort_finish,pallet_exit)
+add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
 {
     var mouse = new THREE.Vector2();
 
@@ -991,14 +994,10 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
             var rect_move_outline = rect_move.filter(e=>{
                 
                 if(e[0] >this.line_GROUP_rectpos[i].length-1)
-                {
                     return e
-                }
                     
                 if(e[1] >this.line_GROUP_rectpos[i][0].length-1)
-                {
                     return e
-                }
             });
             if(rect_move_outline.length >0)
             {
@@ -1010,7 +1009,7 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
             var wrong_type = false;
             var over_layout = false;
             var pass_overlapping = false;
-            var layout_last =0 //之前的高度
+            var layout_last =0 ;//之前的高度
             //判斷是否有與演算法排列的棧板重疊或是錯位
             //如果完全重疊 同時是相同種類就疊上去
            
@@ -1023,17 +1022,14 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
 
                 var rect_array =[];
                 
-                for(var i=0;i<e.pos.length;i++)
-                {
-                    for(var j=0;j<rect_move.length;j++)
-                    {
-                        if(e.pos[i][0] ===rect_move[j][0] &&e.pos[i][1] ===rect_move[j][1])
-                        {
-                            rect_array.push(rect_move[j]);
-                        }
-                    }
-                }
 
+                rect_array = rect_move.filter(rect_e=>{
+                        for(var i=0;i<e.pos.length;i++)
+                            if(rect_e[0] ==e.pos[i][0] && rect_e[1] ==e.pos[i][1])
+                                return rect_e;
+                });
+                
+               
                 //是否有重疊
                 if(rect_array.length >0)
                 {
@@ -1049,9 +1045,11 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
                             if(e.layout <2)
                             {
                                 pass_overlapping = true; //通過
-
+                              
                                 if(layout_last < e.layout)
                                         layout_last = e.layout;
+
+                                console.log(layout_last+";"+e.layout);
                             }
                             else
                             {
@@ -1073,24 +1071,41 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
 
             if(cross_rent)
             {
-                console.log("錯位!");
+                action_error("錯位!");
                 return;
             }
             if(wrong_type)
             {
-                console.log("種類不一致!");
+                action_error("種類不一致!");
                 return;
             }
             if(over_layout)
             {
-                console.log("超出高度!");
+                action_error("種類不一致!");
                 return;
+            }
+
+            //高度判斷
+            if(pass_overlapping)
+            {
+                //有重疊直接更新 不必找尋存在的棧板
+                var init_pos_str = "["+result.init_pos[0]+","+result.init_pos[1]+"]";
+                array_sort_finish[index].init =init_pos_str;
+                array_sort_finish[index].pos = rect_move;
+                array_sort_finish[index].area = this.line_GROUP[i].areaid;
+                array_sort_finish[index].layout = layout_last+1;
+                this.UpdateProject_sort(index,result.init_pos,rect_move,this.line_GROUP[i].areaid,array_sort_finish[index].layout);
+                return;
+            }
+            else
+            {
+               array_sort_finish[index].layout =0 ; //回到高度
             }
 
             //判斷是否有與資料表排列的棧板重疊或是錯位
             //如果完全重疊 同時是相同種類就疊上去
 
-            layout_last =0 //之前的高度
+            layout_last =0 ;//之前的高度
 
             pallet_exit.forEach(e=>{
                     //是否同個區域
@@ -1100,19 +1115,14 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
                 var rect_array =[];
                 
                 var pos = JSON.parse(e.pos);
-               // console.log(pos);
-                for(var i=0;i<pos.length;i++)
-                {
-                    for(var j=0;j<rect_move.length;j++)
-                    {
-                        if(pos[i][0] ===rect_move[j][0] &&pos[i][1] ===rect_move[j][1])
-                        {
-                            rect_array.push(rect_move[j]);
-                        }
-                    }
-                }
+             
 
-                
+                rect_array = rect_move.filter(rect_e=>{
+                    for(var i=0;i<pos.length;i++)
+                        if(rect_e[0] ==pos[i][0] && rect_e[1] ==pos[i][1])
+                            return rect_e;
+            });
+        
                 //是否有重疊
                 if(rect_array.length >0)
                 {
@@ -1120,8 +1130,6 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
                     {
                         var type = e.id_pallet+"-"+e.id_project;
 
-                        //console.log(type);
-                        //console.log(array_sort_finish[index].type);
                         //是否種類一樣  
                         if(array_sort_finish[index].type ===type)
                         {
@@ -1152,22 +1160,22 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
 
             if(cross_rent)
             {
-                console.log("錯位!");
+                action_error("錯位!");
                 return;
             }
             if(wrong_type)
             {
-                console.log("種類不一致!");
+                action_error("種類不一致!");
                 return;
             }
             if(over_layout)
             {
-                console.log("超出高度!");
+                action_error("種類不一致!");
                 return;
             }
 
 
-            var init_pos_str = "["+result.init_pos[0]+","+result.init_pos[1]+"]";
+             init_pos_str = "["+result.init_pos[0]+","+result.init_pos[1]+"]";
              array_sort_finish[index].init =init_pos_str;
              array_sort_finish[index].pos = rect_move;
              array_sort_finish[index].area = this.line_GROUP[i].areaid;
@@ -1175,23 +1183,18 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit)
              if(pass_overlapping)
              {
                 array_sort_finish[index].layout = layout_last+1;
-                
              }
              else
              {
-                array_sort_finish[index].layout =array_sort_finish[index].layout_init ; //回到高度
+                array_sort_finish[index].layout =0 ; //回到高度
              }
             // console.log(array_sort_finish[index].layout);
-             this.UpdateProject_sort(index,result.init_pos,rect_move,this.line_GROUP[i].areaid,0);
+             this.UpdateProject_sort(index,result.init_pos,rect_move,this.line_GROUP[i].areaid,array_sort_finish[index].layout);
         }
     }
 }
 
 
 }
-
-
-
-
 
 export default {wh_frameless :new wh_frameless()}

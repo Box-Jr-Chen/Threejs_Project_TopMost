@@ -36,14 +36,25 @@
     position: absolute;
     cursor: pointer;
 }
-
+.data_show_pallet{
+    width: 17.5rem;
+    height: 8rem;
+    padding-top: 0.5rem;
+    padding-left: 0.4rem;
+    background: rgba(41, 41, 41, 0.52);
+    transform:translate(-50%,-50%);
+    left: 90%;
+    top: 23%;
+    color: white;
+    position: absolute;
+}
 .area_select{
     width: 18rem;
     height: 35rem;
     background: rgba(41, 41, 41, 0.52);
     transform:translate(-50%,-50%);
     left: 90%;
-    top: 50%;
+    top:65%;
     color: white;
     position: absolute;
 }
