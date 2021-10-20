@@ -410,7 +410,6 @@ export default  new Vuex.Store({
           return await store
             .dispatch('AxiosPost', data)
             .then(response => {
-              console.log(response);
               return  response;
             }
             ).catch(error => {

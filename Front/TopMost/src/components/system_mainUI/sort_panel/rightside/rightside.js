@@ -218,7 +218,6 @@ export default {
                                     self.$store.dispatch('A_GetPallet_needSort').then(response =>{
                                         if(response.result !=='error')
                                         {
-                                            console.log(response);
 
                                             self.$store.state.pallet_needsort = response;
                                             self.$store.commit('WaitToPallet_needSort');
@@ -250,7 +249,6 @@ export default {
                 this.$store.state.pallet_sort_finish.forEach(e=>{
                     e.layout_init =  e.layout ;
                 });
-
 
                 document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
             },

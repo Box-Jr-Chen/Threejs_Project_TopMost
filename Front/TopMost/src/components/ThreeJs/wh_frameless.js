@@ -636,7 +636,10 @@ CreateProject(index,name,pos,posArr,type,area,layout){
         {
             x_offset = ((project_zeropoint[0] ) -(project_border_x ))/3;
         }
-
+        if(index >=10)
+        {
+            x_offset = ((project_zeropoint[0] ) -(project_border_x ))/1.7;
+        }
         var z_offset = ((-project_zeropoint[1] ) - (-project_border_y))/3 ;
 
 
@@ -792,6 +795,10 @@ UpdateProject_sort(index,pos,posArr,area,layout)
         {
             x_offset = ((project_zeropoint[0] ) -(project_border_x ))/3;
         }
+        if(index >=9)
+        {
+            x_offset = ((project_zeropoint[0] ) -(project_border_x ))/1.7;
+        }
         var z_offset = ((-project_zeropoint[1] ) - (-project_border_y))/3 ;
 
         var x = ((project_zeropoint[0] ) +(project_border_x ))/2 +x_offset;
@@ -876,7 +883,6 @@ PutSortToExit()
 
     this.line_project_exit.push(...this.line_project_sort);
 
-    console.log( this.line_project_exit);
 
     //clear  line_project_sort
     this.line_project_sort.splice(0, this.line_project_sort.length);
@@ -977,18 +983,23 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
            // console.log(result);
            // console.log(array_sort_finish);
 
-
+           
            //先將陣列轉換到(0,0)為初始，然後再移位
             var x_sub = array_sort_finish[index].pos[0][0];
             var z_sub = array_sort_finish[index].pos[0][1];
-            var rect_move = array_sort_finish[index].pos.map(e=>{
+
+            var rect_move =[];
+            array_sort_finish[index].pos.forEach(e=>{
+                var cell =[e[0],e[1]];
+                rect_move.push(cell);
+            });
+            rect_move.map((e)=>{
                 e[0] = e[0] -x_sub;
                 e[1] = e[1] -z_sub;
                 e[0] =e[0] +result.rect.x;
                 e[1] =e[1] +result.rect.y;
                 return e;
             });
-           
 
             //判斷是否超出點選區域範圍
             var rect_move_outline = rect_move.filter(e=>{
@@ -1005,6 +1016,16 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
             }
 
 
+           //如果點擊的位置跟現在的位置一樣不用改變
+            if (JSON.stringify(rect_move) === JSON.stringify(array_sort_finish[index].pos))
+            {
+                action_error("位置一樣");
+                return;
+            }
+        
+
+
+
             var cross_rent = false;
             var wrong_type = false;
             var over_layout = false;
@@ -1014,7 +1035,7 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
             //如果完全重疊 同時是相同種類就疊上去
            
             var  areaid =  this.line_GROUP[i].areaid;
-            array_sort_finish.forEach(e=>{
+            array_sort_finish.forEach(function(e,i_a){
 
                 //是否同個區域
                 if(e.area !==areaid)
@@ -1022,10 +1043,12 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
 
                 var rect_array =[];
                 
-
+                //不可以找自己
                 rect_array = rect_move.filter(rect_e=>{
                         for(var i=0;i<e.pos.length;i++)
-                            if(rect_e[0] ==e.pos[i][0] && rect_e[1] ==e.pos[i][1])
+                            if(rect_e[0] ==e.pos[i][0] && 
+                                rect_e[1] ==e.pos[i][1]  &&
+                                i_a !==index)
                                 return rect_e;
                 });
                 
@@ -1049,7 +1072,6 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
                                 if(layout_last < e.layout)
                                         layout_last = e.layout;
 
-                                console.log(layout_last+";"+e.layout);
                             }
                             else
                             {
@@ -1081,9 +1103,31 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
             }
             if(over_layout)
             {
-                action_error("種類不一致!");
+                action_error("超過高度!");
                 return;
             }
+
+
+
+            //做更新之前找出之前相同位置不同高度的棧板，上面的棧板要做高度更新
+            var pallet_same_pos_index=[];
+            var pallet_same_pos = array_sort_finish.filter(function(e, i_same){
+                if(JSON.stringify(e.pos) === JSON.stringify(array_sort_finish[index].pos ) &&
+                   e.layout > array_sort_finish[index].layout  &&
+                   index !== i_same
+                   )
+                {
+                    pallet_same_pos_index.push(i_same);
+                    return e;
+                }
+            }); 
+            if(pallet_same_pos.length >0)
+            {
+                pallet_same_pos.forEach(e=>{
+                    e.layout = e.layout -1;
+                })
+            }
+
 
             //高度判斷
             if(pass_overlapping)
@@ -1097,16 +1141,13 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
                 this.UpdateProject_sort(index,result.init_pos,rect_move,this.line_GROUP[i].areaid,array_sort_finish[index].layout);
                 return;
             }
-            else
-            {
-               array_sort_finish[index].layout =0 ; //回到高度
-            }
+     
+            layout_last =0 ;//之前的高度
+            array_sort_finish[index].layout =0 ; //回到高度
+            
 
             //判斷是否有與資料表排列的棧板重疊或是錯位
             //如果完全重疊 同時是相同種類就疊上去
-
-            layout_last =0 ;//之前的高度
-
             pallet_exit.forEach(e=>{
                     //是否同個區域
                     if(e.id_areas !==areaid)
@@ -1170,7 +1211,7 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
             }
             if(over_layout)
             {
-                action_error("種類不一致!");
+                action_error("超過高度!");
                 return;
             }
 

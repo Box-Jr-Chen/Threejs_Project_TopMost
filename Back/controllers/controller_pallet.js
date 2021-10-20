@@ -231,14 +231,15 @@ async function update_Area_Muliti(req, res){
 
   var error = false;
 
-  await data.forEach(async element => {
-        pallets.update({
-          id_areas:element.id_areas,
-          layout:element.layout,
-          pos:element.pos
-        },{where:{id:element.pallet}})
-        .then((area) => {})
-        .catch((error) => { error=true;  return; });
+  await data.forEach(
+        async element => {
+            pallets.update({
+              id_areas:element.id_areas,
+              layout:element.layout,
+              pos:element.pos
+            },{where:{id:element.pallet}})
+            .then((area) => {})
+            .catch((error) => { error=true;  return; });
   });
 
   if(error)

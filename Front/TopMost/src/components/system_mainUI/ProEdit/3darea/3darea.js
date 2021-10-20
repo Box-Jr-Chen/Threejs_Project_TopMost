@@ -56,8 +56,6 @@ export default {
                 }
               })
 
-              console.log('area_pro_data');
-              console.log(self.$store.state.area_pro_data);
 
               self.$store.state.threejs.Threejs_Area.GetProject(result);
             }
