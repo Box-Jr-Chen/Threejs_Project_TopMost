@@ -58,6 +58,7 @@ export default {
   
                       if(response.result==="success")
                       {
+                          console.log(response);
                            self.$store.state.pallet_sort_finish = response.cause;
 
                            //生成演算法出來的各棧板
@@ -251,6 +252,7 @@ export default {
 
                 this.$store.state.threejs.WH_FrameLess.Mat_Active_SelectSortPallet(index);
               
+                this.$store.state.threejs.WH_FrameLess.change_Material(index,this.$store.state.pallet_sort_finish)
 
                 document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
             },

@@ -24,13 +24,13 @@
                 </div> 
 
                 <div class="pallet_cell_btn">
-                    <div class="btn_fix_panel_pallet" @click="show_fixpanel(index,item)" v-if="check_area_can_fix(index)">
+                    <div class="btn_fix_panel_pallet" @click="show_fixpanel(index,item)" v-if="check_area_can_fix_fixnow(index)">
                         <div class="word" >
                         修改
                         </div>
                     </div> 
 
-                    <div class="btn_delete_panel_pallet" @click="show_deletepanel(item.id)" v-if="check_area_can_fix(index)">
+                    <div class="btn_delete_panel_pallet" @click="show_deletepanel(item.id)" v-if="check_area_can_fix_fixnow(index)">
                         <div class="word" >
                         刪除
                         </div>

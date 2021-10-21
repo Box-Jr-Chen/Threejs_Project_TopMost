@@ -692,10 +692,11 @@ CreateProject(index,name,pos,posArr,type,area,layout){
 UpdateProject_sort(index,pos,posArr,area,layout)
 {
         //var self = this;
+//        console.log(pos);
         var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
         var x_arraw = [];
         var y_arrow = [];
-
+        console.log(area_zeropoint);
 
         if(posArr ===null)
         {
@@ -972,6 +973,32 @@ compareDecimals(a, b) {
     return a < b ? -1 : 1;
 }
 
+
+//選擇的棧板，上方的棧板改色
+change_Material(index,array_sort_finish)
+{
+    var pallet_same_pos_index =[];
+    var pallet_same_pos = array_sort_finish.filter(function(e, i_same){
+        if(JSON.stringify(e.pos) === JSON.stringify(array_sort_finish[index].pos ) &&
+           e.layout > array_sort_finish[index].layout  &&
+           index !== i_same
+           )
+        {
+            pallet_same_pos_index.push(i_same);
+            return e;
+        }
+    }); 
+
+    if(pallet_same_pos.length >0)
+    {
+        var self=this;
+        pallet_same_pos.forEach(function(e,index_2){
+
+            self.line_project_sort[pallet_same_pos_index[index_2]].material = self.material_project_sort_select;
+        })
+    }
+}
+
 //點擊事件
 //直接傳入pallet index  
 //直接傳入array_sort_finish
@@ -1135,10 +1162,18 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
                     return e;
                 }
             }); 
+
             if(pallet_same_pos.length >0)
             {
-                pallet_same_pos.forEach(e=>{
+                var self=this;
+                pallet_same_pos.forEach(function(e,index2){
                     e.layout = e.layout -1;
+                    console.log(array_sort_finish[index]);
+                    console.log(e.init);
+
+                    var init = JSON.parse(e.init);
+                    self.line_project_sort[pallet_same_pos_index[index2]].material = self.material_project_sort;
+                    self.UpdateProject_sort(pallet_same_pos_index[index2],init,e.pos,self.line_GROUP[i].areaid,e.layout);
                 })
             }
 

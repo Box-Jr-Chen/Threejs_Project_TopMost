@@ -6,6 +6,7 @@ const setting_pallet = db['setting_pallet'];
 const setting_project = db['setting_project'];
 const pallets = db['pallets'];
 const { Op } = require("sequelize");
+
 function JsonisEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
@@ -232,7 +233,7 @@ async function Sorting_prject(req, res) {
                         var  arr_area_y =[];
                         for(var y=0;y<areas[j].length;y++)
                         {
-                            arr_area_y.push(0);
+                            arr_area_y.push(null);
                         }
                         array_area.push(arr_area_y);
                     }
@@ -275,19 +276,29 @@ async function Sorting_prject(req, res) {
 
                     
                     //這裡單一區域生成多層區域
-                    var layout_max =0;
+                    //原本看資料庫裏面有的棧板資料生成高度，
+                    //現在改為直接升成三層
+                    var layout_max =2;
 
-                    pallets_inarea.forEach(pallet_area =>{
-                            var l = pallet_area.layout;
-                            if(l >layout_max )
-                                    layout_max = l;
-                    });
                     if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
                     {
 
                         for(var f=0;f<layout_max;f++)
                         {
-                            var array_area2 = array_area.slice();
+                            var array_area2 = [];
+                            // console.log(list_array_area_3d[array_area_3dindex].array_area_3d[0].length);
+                            // console.log(list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length);
+                            for(var q=0;q<list_array_area_3d[array_area_3dindex].array_area_3d[0].length;q++)
+                            {
+                                var onecol =[];
+                                for(var q2=0;q2<list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length;q2++)
+                                {
+                                    onecol.push(null);
+                                }
+
+                                array_area2.push(onecol);
+                            }
+
                             list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
                         }
                     }
@@ -312,16 +323,12 @@ async function Sorting_prject(req, res) {
                 //區域有東西2
                 if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
                 {
-                   // console.log("有東西");
                     //判斷區域內貨物大部分是否跟自己相同
                     var same_pallet  =0;
                     var other_pallet =0;
 
                     pallets_inarea.forEach(pallet_check=>{
 
-                        // var types = pallet_check.type.split('-');
-                        // var  id_pallet = parseInt(types[0]);
-                        // var  id_project = parseInt(types[1]);
 
                         var  id_pallet  = pallet_check.id_pallet;
                         var  id_project = pallet_check.id_project;
@@ -351,7 +358,6 @@ async function Sorting_prject(req, res) {
                         var  id_pallet = parseInt(types[0]);
                         var  id_project = parseInt(types[1]);
 
-                       // console.log(id_pallet+";"+id_project);
 
                         if(id_pallet ==palletss[i].id_pallet)
                         {
@@ -375,8 +381,9 @@ async function Sorting_prject(req, res) {
                     {
                         
                         //主體一致時區域排列
+                        //console.log("pallet s_a:"+i);
+
                         var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
-                          //  console.log(result);
                             //是否排列成功
                             if(JsonisEmpty(result) ===false)
                             {
@@ -400,7 +407,9 @@ async function Sorting_prject(req, res) {
                 else
                 {
                     //空區域排列
+                   // console.log("pallet s_e:"+i);
                     var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+
                     //是否排列成功
                     if(JsonisEmpty(result) ===false)
                     {
@@ -417,7 +426,10 @@ async function Sorting_prject(req, res) {
                 }
 
             };
+
+
              //檢查完還是沒排列的情況
+             //console.log("start_sort:"+start_sort);
              if(start_sort ===false)
              {
                 //重新檢查各區域是否還有空間擺放
@@ -450,7 +462,7 @@ async function Sorting_prject(req, res) {
       };
 
       result_success.cause = result_sortpallet;
-
+   
       return res_reuslt.send(result_success);
 }
 
@@ -464,33 +476,43 @@ async function SpaceinArea(array_area_3d,project) {
 
     //從橫向找
     var fin_space = false;
-    array_area_3d.forEach(function(array_area,layout){
-        
-        //TODO
-       if(fin_space === true)
-       {
-           return;
-       }
+    for(var a_a_n=0;a_a_n <array_area_3d.length;a_a_n++){
+
+        var array_area = array_area_3d[a_a_n];
+        var layout = a_a_n;
+
+
 
         var array_area_w = array_area.length;
         var array_area_h = array_area[0].length;
+        console.log("layout:"+layout);
+    
 
         for(var h=0;h<array_area_h;h++)
         {
             for(var w=0;w<array_area_w;w++)
             {
                 //找到未放置空間
-                if(array_area[w][h] ===0)
+                if(array_area[w][h] ===null || array_area[w][h] ===undefined)
                 {   
-                   
+       
+
                     //下一格
                     var pallet_width = (w + pallet_w -1);
                     var pallet_height = (h + pallet_h -1);
 
+                   // if(layout >0)
+                   // {
+                     //   console.log(array_area_w+";"+array_area_h);
+                      //  return;
+                   // }
         
                     //超過範圍　不用計算
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
                         continue;
+
+
+
 
                     //判斷貨物要放置的空間有沒有其他貨物
                     var  isOtherPallet = false;
@@ -501,21 +523,18 @@ async function SpaceinArea(array_area_3d,project) {
 
               
                     var id_lastlayout = -1;
+                    
                     for(var h_check=h;h_check<=pallet_height;h_check++)  
                     {
                         for(var w_check=w;w_check<=pallet_width;w_check++)
                         {
                                 //從第二層開始要判斷第一層的貨物種類是不是一致，並要判斷不是跨貨物區域
-                                
-                                
-                               
                                 if(layout >0)
                                 {
+                                    console.log("layout2:"+layout);
                                     if(id_lastlayout <=0)
                                     {
-                                        
-
-                                        if(array_area_3d[0][w_check][h_check] !== 0)
+                                        if(array_area_3d[0][w_check][h_check] !== null)
                                         {
                                             id_lastlayout = array_area_3d[0][w_check][h_check].id
                                         }
@@ -544,7 +563,7 @@ async function SpaceinArea(array_area_3d,project) {
                                     }     
                                 }
 
-                                if(array_area[w_check][h_check] !==0)
+                                if(array_area[w_check][h_check] !==null)
                                 {
                                     isOtherPallet = true;
                                 }
@@ -562,13 +581,11 @@ async function SpaceinArea(array_area_3d,project) {
                     if(isOtherPallet ===true)
                     {
                         result={};
-
                         continue;
                     }
                     else
                     {
                         fin_space = true;
-                        console.log("success!!");
                         break;   
                     } 
                     
@@ -584,25 +601,37 @@ async function SpaceinArea(array_area_3d,project) {
 
         //如果找到位置，重新把貨物的編碼放置回找到的區域位置
         //以便下一個貨物不會重複排列(但不存資料庫)
+
         if( (JsonisEmpty(result) === false) && result.pos.length >0)
         {
-                result.pos.forEach(cell=>{
-                    array_area[cell[0]][cell[1]] = {
-                    　'id':project.id,
-                     'pallet':project.id_pallet,
-                     'project':project.id_project
+                var array_pos = [];
+                result.pos.forEach(e=>{
+                        var s = [e[0],e[1]];
+                        array_pos.push(s);
+                });
+                
+
+                var set = {
+                　  'id':project.id,
+                    'pallet':project.id_pallet,
+                    'project':project.id_project
                 };
 
-            });
+                for(var pos_n=0;pos_n<array_pos.length;pos_n++)
+                {
+                    var x =array_pos[pos_n][0];
+                    var z =array_pos[pos_n][1];
+                    array_area_3d[layout][x][z] = set;
+                }
 
         }
 
 
         if(fin_space ===true)
         {
-            return;
+            break ;
         }
-    });
+    }
 
     return    result;
 

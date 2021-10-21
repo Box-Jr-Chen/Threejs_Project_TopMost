@@ -45,10 +45,17 @@ export default {
                 this.$store.commit('Show_Panel_deleteArea');
                 this.$store.state.areas_delete.id =index;
             },
+            //check in fixnow
+            check_area_can_fix_fixnow(index){
+                var self = this;
+                index
+                    if(self.$store.state.show_afd)     return false;
+
+                return true;
+            },
             //如果有貨物在上面不給修改區域
             check_area_can_fix(index){
                 var self = this;
-                    if(self.$store.state.show_afd)     return false;
 
                     if(self.$store.state.pallet_exit.lenght <=0) return true;
 
