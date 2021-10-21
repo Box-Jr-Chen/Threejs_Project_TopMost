@@ -27,6 +27,10 @@ class wh_frameless {
             color: new THREE.Color("rgb(0, 255, 255)"),
         });
 
+        this.material_project_sort_select = new THREE.MeshBasicMaterial({
+            color: new THREE.Color("rgb(0, 170, 170)"),
+        });
+
         this.material_project_exit = new THREE.MeshBasicMaterial({
             color: new THREE.Color("rgb(255, 0, 0)"),
         });
@@ -624,7 +628,6 @@ CreateProject(index,name,pos,posArr,type,area,layout){
     //分排列種類還是已存在種類
     if(type==='sort')
     {    
-        console.log("sort:"+ area)
         mesh = this.mesh_set(name,area,geometry,this.material_project_sort);
         mesh.position.set(mesh.position.x,mesh.position.y+100,mesh.position.z);
    
@@ -743,7 +746,7 @@ UpdateProject_sort(index,pos,posArr,area,layout)
              project_border_x -this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,
             //前方下三角
             project_zeropoint[0] +this.offset_project, height_max,  -project_border_y +this.offset_project,
-            project_border_x -this.offset_project, height_min,  -project_border_y +this.offset_project,     
+            project_border_x -this.offset_project, height_min -this.pallet_height_offset,  -project_border_y +this.offset_project,     
             project_zeropoint[0] +this.offset_project, height_min-this.pallet_height_offset,  -project_border_y +this.offset_project,
 
             //左方上三角
@@ -806,6 +809,17 @@ UpdateProject_sort(index,pos,posArr,area,layout)
         var z = ((-project_zeropoint[1] ) + (-project_border_y))/2 + z_offset;
 
         this.line_project_sort_font[index].position.set(x,y,z);
+}
+
+Mat_Active_SelectSortPallet(index)
+{
+    this.line_project_sort[index].material  = this.material_project_sort_select ;
+}
+Mat_Enactive_SelectSortPallet()
+{
+    this.line_project_sort.forEach(e=>{
+        e.material  = this.material_project_sort ;
+    });
 }
 
 CreateDemoPlane(X_min,X_max,Y_min,Y_max)

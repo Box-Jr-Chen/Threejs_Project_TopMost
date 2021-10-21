@@ -50,7 +50,6 @@ export default {
 
                   self.$store.state.isstart_sort = 1;
                   self.$store.dispatch('A_Postsorting_project').then(response =>{
-                    //console.log(response);
                       if(response.result ===undefined)
                       {
                         self.$store.state.isstart_sort = 0;
@@ -250,6 +249,9 @@ export default {
                     e.layout_init =  e.layout ;
                 });
 
+                this.$store.state.threejs.WH_FrameLess.Mat_Active_SelectSortPallet(index);
+              
+
                 document.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
             },
             //取消手動
@@ -258,11 +260,12 @@ export default {
                 this.$store.state.Manual_index   = -1;
                 this.$store.state.isPalletManual = false;
 
-
+                this.$store.state.threejs.WH_FrameLess.Mat_Enactive_SelectSortPallet();
                //移除參數 高度原始
                this.$store.state.pallet_sort_finish.forEach(e=>{
                   delete e.layout_init ;
-            });
+                });
+
 
                 document.removeEventListener("mousedown", this.onDocumentMouseDown, false); 
             },

@@ -307,14 +307,12 @@ async function Sorting_prject(req, res) {
                                 }
                             });
                     });
-
-      
-
                 }
 
                 //區域有東西2
                 if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
                 {
+                   // console.log("有東西");
                     //判斷區域內貨物大部分是否跟自己相同
                     var same_pallet  =0;
                     var other_pallet =0;
@@ -346,6 +344,7 @@ async function Sorting_prject(req, res) {
                         }
                     });
 
+
                     pallets_inarea_sort.forEach(pallet_check=>{
 
                         var types = pallet_check.type.split('-');
@@ -370,17 +369,14 @@ async function Sorting_prject(req, res) {
                             other_pallet++;
                         }
                     });
-
                     //主體貨物數量是否跟貨物一致
                     //(same_pallet和 other_pallet如果都是0的話就排列此區域)
                     if(same_pallet >=other_pallet)
                     {
                         
-
-
                         //主體一致時區域排列
                         var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
-                        
+                          //  console.log(result);
                             //是否排列成功
                             if(JsonisEmpty(result) ===false)
                             {
@@ -393,6 +389,11 @@ async function Sorting_prject(req, res) {
                                 start_sort = true;
                                 break;
                             }
+                            else
+                            {
+                                console.log("pallet :"+i+";area :"+j+" 排列失敗" );
+                            }
+                        
                     }
                     
                 }
@@ -459,13 +460,21 @@ async function SpaceinArea(array_area_3d,project) {
     var result={};
     var pallet_w =project['width_rect'];
     var pallet_h =project['height_rect'];
+
+
     //從橫向找
+    var fin_space = false;
     array_area_3d.forEach(function(array_area,layout){
         
+        //TODO
+       if(fin_space === true)
+       {
+           return;
+       }
+
         var array_area_w = array_area.length;
         var array_area_h = array_area[0].length;
 
-        var fin_space = false;
         for(var h=0;h<array_area_h;h++)
         {
             for(var w=0;w<array_area_w;w++)
@@ -473,10 +482,12 @@ async function SpaceinArea(array_area_3d,project) {
                 //找到未放置空間
                 if(array_area[w][h] ===0)
                 {   
+                   
                     //下一格
                     var pallet_width = (w + pallet_w -1);
                     var pallet_height = (h + pallet_h -1);
 
+        
                     //超過範圍　不用計算
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
                         continue;
@@ -488,13 +499,16 @@ async function SpaceinArea(array_area_3d,project) {
                              pos:[]
                          };
 
-
+              
                     var id_lastlayout = -1;
                     for(var h_check=h;h_check<=pallet_height;h_check++)  
                     {
                         for(var w_check=w;w_check<=pallet_width;w_check++)
                         {
                                 //從第二層開始要判斷第一層的貨物種類是不是一致，並要判斷不是跨貨物區域
+                                
+                                
+                               
                                 if(layout >0)
                                 {
                                     if(id_lastlayout <=0)
@@ -539,17 +553,22 @@ async function SpaceinArea(array_area_3d,project) {
                                 var point =[w_check,h_check];
                                 result.pos.push(point);
 
-                          
+                              
+
                         }
                     }
+
+
                     if(isOtherPallet ===true)
                     {
                         result={};
+
                         continue;
                     }
                     else
                     {
                         fin_space = true;
+                        console.log("success!!");
                         break;   
                     } 
                     
@@ -557,8 +576,9 @@ async function SpaceinArea(array_area_3d,project) {
             }
 
             if(fin_space===true)
+            {
                 break;
-
+            }
 
         }
 
@@ -577,9 +597,12 @@ async function SpaceinArea(array_area_3d,project) {
 
         }
 
+
+        if(fin_space ===true)
+        {
+            return;
+        }
     });
-
-
 
     return    result;
 
