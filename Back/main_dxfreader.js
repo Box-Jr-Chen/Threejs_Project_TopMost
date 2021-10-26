@@ -27,9 +27,6 @@ function getFiles (dir, files_){
 
 setInterval(() => {
     
-    //讀取DXF資料庫
-  //  var  DXF_FILE_PATH = path.join(__dirname, 'DXF_READ');
-
   try {
   
     var  Flies_DXF = getFiles('DXF_READ');

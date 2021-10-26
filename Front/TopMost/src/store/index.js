@@ -151,7 +151,7 @@ export default  new Vuex.Store({
   //偵測棧板的計時器
   t_getpallet:null,
 
-  //3d area
+  //3d區域
   is_3d_area:false,
   area_pro_data:[],
   select_show_data_num:-1
@@ -206,7 +206,7 @@ export default  new Vuex.Store({
       this.state.area_show_afd= false;
     },
 
-    //Area
+    //區域
     Show_Panel_deleteArea(){
       this.state.panel_show_deleteArea_inSet_Area= true;
     },
@@ -218,7 +218,7 @@ export default  new Vuex.Store({
 
       if(this.state.threejs.areas_ins_add.length >0)
       {
-        //z 要轉負
+        //z 要轉負(顯示的時候要將z座標轉-)
         this.state.addIns_pos.index = -1;
         this.state.addIns_pos.left.x  =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
         this.state.addIns_pos.left.z  = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
@@ -681,8 +681,6 @@ export default  new Vuex.Store({
           };
           state
 
-        //  console.log(data);
-
           return await store
               .dispatch('AxiosGet', data)
               .then(response => {
@@ -700,8 +698,6 @@ export default  new Vuex.Store({
             'path': self.state.pallet_sort_Api+'?id='+self.state.factory_id,
           };
           state
-
-        //  console.log(data);
 
           return await store
               .dispatch('AxiosGet', data)

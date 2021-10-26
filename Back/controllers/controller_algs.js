@@ -171,7 +171,7 @@ async function Sorting_prject(req, res) {
     var list_array_area_3d=[];
     //排列結果
     var result_sortpallet =[]
-   //開始排列
+    //開始排列
     for(var i=0;i<palletss.length;i++){
 
             var start_sort = false;
@@ -266,9 +266,6 @@ async function Sorting_prject(req, res) {
                 });
 
 
-                // if(i >0)
-                //     return res_reuslt.send(pallets_inarea_sort);
-
                 //之前貨物資料中有排放到區域內先排放裡面以免演算法錯誤
                 if(pallets_inarea !== null ||pallets_inarea.length >0 )
                 {
@@ -286,8 +283,6 @@ async function Sorting_prject(req, res) {
                         for(var f=0;f<layout_max;f++)
                         {
                             var array_area2 = [];
-                            // console.log(list_array_area_3d[array_area_3dindex].array_area_3d[0].length);
-                            // console.log(list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length);
                             for(var q=0;q<list_array_area_3d[array_area_3dindex].array_area_3d[0].length;q++)
                             {
                                 var onecol =[];
@@ -381,7 +376,6 @@ async function Sorting_prject(req, res) {
                     {
                         
                         //主體一致時區域排列
-                        //console.log("pallet s_a:"+i);
 
                         var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
                             //是否排列成功
@@ -407,7 +401,6 @@ async function Sorting_prject(req, res) {
                 else
                 {
                     //空區域排列
-                   // console.log("pallet s_e:"+i);
                     var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
 
                     //是否排列成功
@@ -429,11 +422,9 @@ async function Sorting_prject(req, res) {
 
 
              //檢查完還是沒排列的情況
-             //console.log("start_sort:"+start_sort);
              if(start_sort ===false)
              {
                 //重新檢查各區域是否還有空間擺放
-                
                 for(var j=0;j<areas.length;j++){
                     
 
@@ -500,12 +491,6 @@ async function SpaceinArea(array_area_3d,project) {
                     //下一格
                     var pallet_width = (w + pallet_w -1);
                     var pallet_height = (h + pallet_h -1);
-
-                   // if(layout >0)
-                   // {
-                     //   console.log(array_area_w+";"+array_area_h);
-                      //  return;
-                   // }
         
                     //超過範圍　不用計算
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
