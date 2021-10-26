@@ -14,20 +14,6 @@ var routes = [
         path:'*',
         redirect:'/'
     },
-    // {
-    //   path:'/service',
-    //   component: ServiceView,
-    //   children:[
-    //     {
-    //         path:'tms',
-    //         component: TMS,
-    //         children:[
-    //           {path:'', redirect:'status'},
-    //           {path:'status', component: TMS_equipment_3D},
-    //         ]
-    //     }
-    //   ]
-    // }
   ]
 //第四部  創建路由對象
 var router = new VueRouter({
@@ -35,7 +21,7 @@ var router = new VueRouter({
     routes
 })
 
-// //路由守衛
+//路由守衛
 router.beforeEach((to,from,next) => {
     next();
   });

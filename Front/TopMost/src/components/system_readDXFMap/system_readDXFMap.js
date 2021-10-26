@@ -126,13 +126,13 @@ export default {
                             });
 
 
-                            //讀取貨物設定資訊
-                            self.$store.dispatch('A_GetProjects').then(response =>{
-                                if(response.result !=='error')
-                                  {
-                                      self.$store.state.projects = response;
-                                  }
-                              });
+                            // //讀取貨物設定資訊
+                            // self.$store.dispatch('A_GetProjects').then(response =>{
+                            //     if(response.result !=='error')
+                            //       {
+                            //           self.$store.state.projects = response;
+                            //       }
+                            //   });
 
                             //讀取棧板設定資訊
                               self.$store.dispatch('A_GetPallets').then(response =>{

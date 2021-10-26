@@ -41,7 +41,7 @@ export default {
                 this.$store.commit('Show_Panel_deleteArea');
                 this.$store.state.areas_delete.id =index;
             },
-            sortPRoject_recommand()
+            sortProject_recommand()
             {
                   var self= this;
 
@@ -129,7 +129,7 @@ export default {
               {     
                   self.$store.state.isstart_sort = true;
       
-                  self.sortPRoject_recommand();
+                  self.sortProject_recommand();
                   //排列
               }
             },

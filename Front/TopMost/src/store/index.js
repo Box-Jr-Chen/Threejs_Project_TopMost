@@ -11,22 +11,41 @@ Vue.use(Vuex)
 export default  new Vuex.Store({
   state: {  
     //Api
+
+    //根目錄
     baseUrlApi: process.env.VUE_APP_baseUrl,
+    //倉儲API
     data_warehouse_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_warehouse,
+     //區域設定API
     data_area_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area,
+    //演算法間隔API
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
+    //啟動演算法API
     data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
+    //設定棧板資料API
     setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
+    //設定貨物資料API
     setting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_project,
+    //獲取地圖數量API
     setting_files_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getfiles_dxf,
+    //獲取地圖資料API
     setting_json_DXF_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getjson_dxf,
+    //獲取需要排列的棧板資料API
     pallet_sort_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet,
+    //獲取已排列的棧板資料API
     pallet_exit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit,
+    //獲取已排列的棧板資料的頁面數API
     pallet_exit_pagemax_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_getpallet_exit_count,
+    //棧板多重更新API
     pallet_muliupdate_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_update,
+    //棧板多重移除API
     pallet_muliremove_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_pallet_remove,
+    //獲取此區域初始(左下)位置API
     pallet_getPosinit_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_area_posinit,
     
+
+
+
     //Main
     width_main:0,
     height_main:0,
@@ -49,6 +68,7 @@ export default  new Vuex.Store({
         'img':'area_icon',
         'title':'區域設定'
       },
+      //先移除棧板設定與貨物設定按鈕，不確定之後是否需要
       // {
       //   'img':'pallet_icon',
       //   'title':'棧板設定'
@@ -142,6 +162,7 @@ export default  new Vuex.Store({
 
 
   mutations: {
+    //螢幕調整
     onWindowResize() {
       var self =this;
 
@@ -149,7 +170,7 @@ export default  new Vuex.Store({
       self.state.threejs.camera.updateProjectionMatrix();
     },
 
-    //Pallet
+    //棧板設定資訊顯示
     Show_Panel_addPallet(){
       this.state.panel_show_addPallet_inSetting_Pallet= true;
     },
@@ -163,7 +184,7 @@ export default  new Vuex.Store({
       this.state.panel_show_deletePallet_inSetting_Pallet= false;
     },
 
-    //Project
+    //貨物設定資訊顯示
     Show_Panel_addProject(){
       this.state.panel_show_addPallet_inSetting_Project= true;
     },
@@ -177,13 +198,14 @@ export default  new Vuex.Store({
       this.state.panel_show_deletePallet_inSetting_Project= false;
     },
 
-    //adfArea
+    //區域設定資訊顯示
     Show_Panel_adfArea(){
       this.state.area_show_afd= true;
     },
     Hide_Panel_adfArea(){
       this.state.area_show_afd= false;
     },
+
     //Area
     Show_Panel_deleteArea(){
       this.state.panel_show_deleteArea_inSet_Area= true;
@@ -205,6 +227,7 @@ export default  new Vuex.Store({
       }
 
     },
+    //讀取區域資訊
     LoadAreas(){
       var self =this;
 
@@ -235,54 +258,45 @@ export default  new Vuex.Store({
                     {
                         element.borders      =  JSON.parse(element.borders);
 
-                       // console.log(element.borders);
 
                          //演算法 格子計算
                          var algs_grid = self.state.threejs.WH_FrameLess.Algs_grid(element.borders);
                          //演算法 方格中心計算
                          var algs_rectcenter = self.state.threejs.WH_FrameLess.Algs_RectCenter(algs_grid[0]);
-                         
-                        //判斷Area 是否需要重新計算
-                        // if(element.width ===0 || element.length ===0|| element.pos_init ==="" ||element.interval!==self.state.threejs.WH_FrameLess.interval)
-                         {
-                            //找到長高與初始位置 重新上傳資料庫
-                               element.width = algs_rectcenter.length;
-                               element.length = algs_rectcenter[0].length;
-
-                               var pos = algs_rectcenter[0][0];
-
-                              element.pos_init ="["+pos[0]+","+pos[1]+"]";
-                              element.rect = algs_rectcenter;
-                              var borderstr = JSON.stringify(element.borders);
                       
-                              //更新area資料 因為width和lengh 需要更新
-                              var data={
-                                  id:element.id,
-                                  id_warehouse:element.id_warehouse,
-                                  title:element.title,
-                                  borders:borderstr,
-                                  width:element.width,
-                                  length:element.length,
-                                  pos_init:element.pos_init,
-                                  interval:self.state.threejs.WH_FrameLess.interval
-                              };
+                        //找到長高與初始位置 重新上傳資料庫
+                         element.width = algs_rectcenter.length;
+                          element.length = algs_rectcenter[0].length;
+
+                            var pos = algs_rectcenter[0][0];
+
+                          element.pos_init ="["+pos[0]+","+pos[1]+"]";
+                          element.rect = algs_rectcenter;
+                          var borderstr = JSON.stringify(element.borders);
+                  
+                          //更新area資料 因為width和lengh 需要更新
+                          var data={
+                              id:element.id,
+                              id_warehouse:element.id_warehouse,
+                              title:element.title,
+                              borders:borderstr,
+                              width:element.width,
+                              length:element.length,
+                              pos_init:element.pos_init,
+                              interval:self.state.threejs.WH_FrameLess.interval
+                          };
 
 
-                              //區域更新
-                              store.dispatch('A_UpdateArea',data).then(response =>{
-                                      if(response.result !==undefined)
-                                      {
-                                         // console.log("success :"+element.id);
-                                      }
-                              });
+                          //區域更新
+                          store.dispatch('A_UpdateArea',data).then(response =>{
+                               
+                          });
 
-                             //創建區域視覺
-                             self.state.threejs.WH_FrameLess.createAreaLine(element.borders);
-                             self.state.threejs.WH_FrameLess.CreateAreaGrid(element.id,algs_grid[0],algs_grid[1]);
-                         
-                             self.state.threejs.WH_FrameLess.line_GROUP_rectpos.push(algs_rectcenter);
-                            // console.log( self.state.threejs.WH_FrameLess.line_GROUP_rectpos);
-                        }
+                          //創建區域視覺
+                          self.state.threejs.WH_FrameLess.createAreaLine(element.borders);
+                          self.state.threejs.WH_FrameLess.CreateAreaGrid(element.id,algs_grid[0],algs_grid[1]);
+                      
+                          self.state.threejs.WH_FrameLess.line_GROUP_rectpos.push(algs_rectcenter);
 
                     }
                 }
@@ -316,17 +330,13 @@ export default  new Vuex.Store({
                     self.state.isPalletManual= false; 
                     clearInterval(self.state.t_getpallet); 
                   }
-                  
-                  // if(store.state.pallet_needsort.length >10)
-                  // {
-                  //   clearInterval(self.state.t_getpallet); 
-                  // }
               }
             });
          },3000);
       }
 
     },
+    //刪除棧板(在3D Area裡面)
     selectPro_delete(state, index)
     {
       var self =this;
@@ -349,23 +359,24 @@ export default  new Vuex.Store({
     }
   },
   actions: {
+        //Get 方法
         async AxiosGet(state, data) {
         return await axios.get(data.path).then(response => {
             return response.data;
         }).catch(error => {
             return error;
-            //return Promise(error);
         })
         },
+        //Post 方法
         async AxiosPost(state, data) {
 
         return await axios.post(data.path, data.form).then(response => {
             return response.data;
         }).catch(error => {
             return error;
-        // return Promise.rejecte(error);
         })
         },
+        //Patch 方法
         async AxiosPatch(state, data) {  
         return await axios.patch(data.path, data.form).then(response => {
             return response.data;
@@ -373,6 +384,7 @@ export default  new Vuex.Store({
             return Promise.rejecte(error);
         })
         },
+        //Delete 方法
         async AxiosDelete(state, data) {   
         return await axios.delete(data.path).then(response => {
             return response.data;
@@ -380,6 +392,8 @@ export default  new Vuex.Store({
             return error;
         })
         },
+
+        //獲取地圖間格資訊
         async A_Getinterval(state) {
           var self= this;
           var data = {
@@ -395,6 +409,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //獲取需要排列的棧板
         async A_Postsorting_project(state) {
           var self= this;
 
@@ -417,6 +432,7 @@ export default  new Vuex.Store({
               return error;
             });
         },
+        //獲取倉儲資訊(已無用)
         async A_GetWarehouse(state) {
           var self= this;
           var data = {
@@ -432,7 +448,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Area Data
+        //獲取需要倉儲內的地圖資訊
         async A_GetArea(state) {
           var self= this;
           var data = {
@@ -448,6 +464,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //新增倉儲內的地圖資訊
         async A_PostArea(state, areadata) {
           var self= this;
           var data = {
@@ -464,6 +481,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //更新倉儲內的地圖資訊
         async A_UpdateArea(state, areadata) {
           var self= this;
           var data = {
@@ -480,6 +498,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //刪除倉儲內的地圖資訊
         async A_DeleteArea(state, id) {
           var self= this;
           var data = {
@@ -496,7 +515,7 @@ export default  new Vuex.Store({
               });
         },
 
-        //Pallets Data
+        //讀取棧版設定資訊
         async A_GetPallets(state) {
           var self= this;
           var data = {
@@ -512,6 +531,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+        //新增棧版設定資訊
         async A_PostPallets(state,data_post) {
           var self= this;
           var data = {
@@ -528,6 +549,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+        //更新棧版設定資訊
         async A_UpdatePallets(state,data_post) {
           var self= this;
           var data = {
@@ -544,6 +566,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+         //清除棧版設定資訊
         async A_DeletePallets(state,id) {
           var self= this;
           var data = {
@@ -560,7 +583,7 @@ export default  new Vuex.Store({
               });
         },
 
-        //Projects Data
+        //獲取貨物設定資訊
         async A_GetProjects(state) {
           var self= this;
           var data = {
@@ -576,6 +599,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+        //新增貨物設定資訊
         async A_PostProjects(state,data_post) {
           var self= this;
           var data = {
@@ -587,7 +612,6 @@ export default  new Vuex.Store({
           return await store
               .dispatch('AxiosPost', data)
               .then(response => {
-               // console.log(response);
                 return  response;
               }
               ).catch(error => {
@@ -595,6 +619,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+        //更新貨物設定資訊
         async A_UpdateProjects(state,data_post) {
           var self= this;
           var data = {
@@ -611,6 +637,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
+
+        //清除貨物設定資訊
         async A_DeleteProjects(state,id) {
           var self= this;
           var data = {
@@ -628,7 +656,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Factory
+
+        //獲取倉儲資訊(無用)
         async A_GetFactories(state){
           var self= this;
           var data = {
@@ -644,7 +673,7 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Json
+        //獲取倉儲 地圖 DXF Json 資訊
         async A_GetJson(state,name){
           var self= this;
           var data = {
@@ -664,7 +693,7 @@ export default  new Vuex.Store({
               });
         },
 
-        //Pallet_needsort
+        //獲取需要排列的棧板
         async A_GetPallet_needSort(state){
           var self= this;
           var data = {
@@ -684,7 +713,7 @@ export default  new Vuex.Store({
               });
         },
 
-        //Pallet_exit
+        //獲取已存在的棧板
         async A_GetPallet_Exit(state,page){
           var self= this;
           var data = {
@@ -701,7 +730,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Pallet_exit_page
+
+        //獲取已存在的棧板數量頁面
         async A_GetPallet_Exit_page(state){
           var self= this;
           var data = {
@@ -718,7 +748,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Pallet_exit
+
+        //更新演算法排列的多重棧板
         async A_UpdatePallet_muliti(state,data_muli){
           var self= this;
 
@@ -736,7 +767,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //Pallet_remove
+
+        //移除演算法排列的多重棧板
         async A_RemovePallet_muliti(state,data_muli){
           var self= this;
 
@@ -754,7 +786,8 @@ export default  new Vuex.Store({
                 return error;
               });
         },
-        //GetAreas Posinit
+
+        //獲取地圖的初始位置
         async A_GetAreas_Posinit(state,id){
           var self= this;
 
