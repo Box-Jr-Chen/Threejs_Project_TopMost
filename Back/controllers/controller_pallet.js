@@ -297,4 +297,13 @@ async function remove_Area_Muliti(req, res){
       .then((area) => res.status(200).send(p_id))
       .catch((error) => { res.status(400).send(error); })}
   
-module.exports = { list,list_Exit,list_ExitExeCount,update_Area_Muliti,remove_Area_Muliti,add,update,deleted};
+module.exports = { 
+  list,    //列表
+  list_Exit,   //已經排列完的棧板列表
+  list_ExitExeCount,  //需要抓幾次已經排列完的棧板列表
+  update_Area_Muliti,  //多重更新
+  remove_Area_Muliti,  //多重移除
+  add,                  //單一新增
+  update,               //單一更新
+  deleted               //單一刪除
+};
