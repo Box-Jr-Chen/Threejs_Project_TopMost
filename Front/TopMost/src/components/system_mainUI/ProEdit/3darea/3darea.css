@@ -95,7 +95,7 @@
 .area_select_delete{
     display: flex;
     flex-direction: Row;
-    justify-content:end;
+    justify-content:flex-end;
 }
 
 .btn_delete{

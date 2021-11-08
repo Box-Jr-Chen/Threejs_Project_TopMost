@@ -50,8 +50,15 @@ export default {
                 var self = this;
                 index
                     if(self.$store.state.show_afd)     return false;
-
-                return true;
+                var result= true;
+                self.$store.state.pallet_exit.forEach(e=>{
+                    if(e.id_areas === self.$store.state.areas[index].id) 
+                    {
+                        result = false;
+                        return result;
+                    }
+                });
+                return result;
             },
             //如果有貨物在上面不給修改區域
             check_area_can_fix(index){

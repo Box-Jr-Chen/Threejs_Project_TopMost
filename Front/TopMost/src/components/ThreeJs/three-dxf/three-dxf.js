@@ -545,13 +545,13 @@ THREEx.BulgeGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
     vector1.cross(vector2);
 
     // If z < 0 then we must draw these in reverse order
-    if (vector1.z < 0) {
-      geometry.faces.push(new THREE.Face3(2, 1, 0));
-      geometry.faces.push(new THREE.Face3(2, 3, 1));
-    } else {
-      geometry.faces.push(new THREE.Face3(0, 1, 2));
-      geometry.faces.push(new THREE.Face3(1, 3, 2));
-    }
+    // if (vector1.z < 0) {
+    //   geometry.faces.push(new THREE.Face3(2, 1, 0));
+    //   geometry.faces.push(new THREE.Face3(2, 3, 1));
+    // } else {
+    //   geometry.faces.push(new THREE.Face3(0, 1, 2));
+    //   geometry.faces.push(new THREE.Face3(1, 3, 2));
+    // }
 
     material = new THREE.MeshBasicMaterial({ color: getColor(entity, data) });
 

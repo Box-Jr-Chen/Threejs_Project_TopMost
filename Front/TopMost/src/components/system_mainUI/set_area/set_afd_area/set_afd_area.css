@@ -28,7 +28,7 @@
     margin-left: 0.5rem;
     display: flex;
     flex-direction: Row;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .set_block .title_block{

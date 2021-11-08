@@ -289,7 +289,7 @@ export default  new Vuex.Store({
 
                           //區域更新
                           store.dispatch('A_UpdateArea',data).then(response =>{
-                               
+                            response
                           });
 
                           //創建區域視覺

@@ -46,7 +46,7 @@
     text-align: center;
     display: flex;
     flex-direction: Row;
-    justify-content: end;
+    justify-content: flex-end;
 }
 .btn{
     border: 1px rgb(148, 148, 148) solid;

@@ -11,7 +11,7 @@ function JsonisEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
 
-///貨物排列演算法
+///貨物排列演算法--平排
 async function Sorting_prject(req, res) { 
 
     var res_reuslt = res.status(202)
@@ -455,6 +455,1355 @@ async function Sorting_prject(req, res) {
       result_success.cause = result_sortpallet;
    
       return res_reuslt.send(result_success);
+}
+
+
+///貨物排列演算法-單一先堆高
+async function Sorting_prject_singlefirst(req, res) { 
+
+    var res_reuslt = res.status(202)
+    var  result_error=
+        {
+            'result':'error',
+            'cause':''
+        };
+    var  result_success=
+        {
+            'result':'success',
+            'cause':''
+        };
+    var interval =0;
+    var sort_amount =0;
+    if(req.body.id_warehouse ===undefined || req.body.id_warehouse ===null ||req.body.id_warehouse ==="")
+    {
+        result_error.cause ='no id_warehouse';
+        return res_reuslt.send(result_error);
+    }
+
+    var id_warehouse = req.body.id_warehouse;
+
+   if (!Number.isInteger(id_warehouse))
+    {
+        result_error.cause ='not integer';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有倉庫
+   var warehouses = await  warehouse.findOne({
+          attributes: ['id'],
+          where: {id: id_warehouse}
+        });
+
+    if(warehouses === null)
+    {
+        result_error.cause ='no warehouse';
+        return res_reuslt.send(result_error);
+    }
+  
+    
+    //判斷是否有區域
+    var areas = await  area.findAll({
+        attributes: ['id','width','length','pos_init'],
+        where: {id_warehouse: id_warehouse}
+      });
+
+    
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+
+        var indexs=[];
+        areas.forEach(function(area,index) {
+
+            if(area.width ===0 || area.length===0)
+            {
+                indexs.push(area.id);
+            }
+            else if(area.width=== null||area.length=== null )
+            {
+                indexs.push(area.id);
+            }
+        });
+
+        //刪除不能判斷的矩陣
+        indexs.forEach(index =>{
+            if (index > -1) {
+                
+                const found = areas.findIndex(area => area.id === index);
+
+                if(found>=0)
+                {
+                    areas.splice(found,1);
+                }
+            }
+        });
+
+
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定intervals
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['interval']
+    });
+    interval = setting_interval.interval;
+    if(interval <=0)
+    {
+        result_error.cause ="interval less 0";
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定sort_amount (排列數量)
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['sort_amount']
+    });
+    sort_amount = setting_interval.sort_amount;
+    if(sort_amount <=0)
+    {
+        result_error.cause ="sort_amount less 0";
+        return res_reuslt.send(result_error);
+    }
+    //判斷是否有設定棧板
+    var setting_pallets = await  setting_pallet.findAll({
+        attributes: ['id','width','length']
+      });
+
+      if(setting_pallets.length <=0)
+      {
+          result_error.cause ='no setting_pallets';
+          return res_reuslt.send(result_error);
+      }
+
+    //判斷是否有設定貨物
+    var setting_projects = await  setting_project.findAll({
+        attributes: ['id']
+      });
+
+      if(setting_projects.length <=0)
+      {
+          result_error.cause ='no setting_projects';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //判斷是否有貨物棧板需要排列
+    var palletss = await  pallets.findAll({
+        attributes: ['id','id_areas','id_pallet','id_project'],
+        limit : sort_amount,
+        where: {
+            id_warehouse: id_warehouse,
+            id_areas:0,
+            remove:0,
+            id_pallet:{[Op.gt]:0},
+            id_project:{[Op.gt]:0}
+        }
+      });
+
+      if(palletss.length <=0)
+      {
+          result_error.cause = 'warehoue:'+id_warehouse+ ' has  no pallets_sort';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //生成3D地圖(所有的地圖放置這裡)
+    var list_array_area_3d=[];
+    //排列結果
+    var result_sortpallet =[]
+    //開始排列
+    for(var i=0;i<palletss.length;i++){
+
+            var start_sort = false;
+            //結果
+            var result_pallet ={
+                'pallet':palletss[i].id,
+                'type':palletss[i].id_pallet+'-'+ palletss[i].id_project,
+                'area':0,
+                'init':[-999,-999,-999],
+                'layout':0,
+                'pos':[]
+            };
+            
+            var setting_pallet_id =    palletss[i].id_pallet ;
+            var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
+     
+            //判斷有沒有資料
+            if(pallet_data ===null || pallet_data ===undefined)
+            {
+                result_error.cause ="error read pallet setting";
+                return res_reuslt.send(result_error);
+            }
+
+            //人工設定棧板尺寸轉為系統尺吋
+            var pallet_width =   pallet_data.width/100;
+            var pallet_length =  pallet_data.length/100;
+
+
+            var width  = parseInt((pallet_width) / interval);
+            var height = parseInt((pallet_length) / interval);
+            if((pallet_width % interval) > 0)
+            {
+               width++;
+            }
+   
+            if((pallet_length % interval) > 0)
+            {
+               height++;
+            }
+            
+            palletss[i]['width_rect'] = width;
+            palletss[i]['height_rect'] = height;
+            //---------------------------------
+
+
+            for(var j=0;j<areas.length;j++){
+
+                var array_area_3dindex  = -1;
+                if(list_array_area_3d.length >0)
+                     array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                if(array_area_3dindex <0)
+                {
+                    //生成area 空間矩陣--單層
+                    var array_area_3d = [];
+                    var array_area = [];
+                    for(var x=0;x<areas[j].width;x++)
+                    {
+                        var  arr_area_y =[];
+                        for(var y=0;y<areas[j].length;y++)
+                        {
+                            arr_area_y.push(null);
+                        }
+                        array_area.push(arr_area_y);
+                    }
+                    array_area_3d.push(array_area);
+
+                    list_array_area_3d.push({
+                        'id_area':areas[j].id,
+                        'array_area_3d' :array_area_3d
+                    });
+                }    
+
+
+                //先判斷資料表裡是否有之前的貨物已經在區域內
+                var pallets_inarea = await  pallets.findAll({
+                    attributes: ['id','id_areas','id_pallet','id_project','pos','layout'],
+                    where: {
+                        id_warehouse: id_warehouse,
+                        id_areas:areas[j].id,
+                        remove:0,
+                    }
+                  });
+                
+
+                //演算法內是否有排列的貨物
+                var pallets_inarea_sort = result_sortpallet.filter(e=>{
+                    if(areas[j].id === e.area)
+                    {
+                        return e;
+                    }
+                });
+
+
+                //之前貨物資料中有排放到區域內先排放裡面以免演算法錯誤
+                if(pallets_inarea !== null ||pallets_inarea.length >0 )
+                {
+                    array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                    
+                    //這裡單一區域生成多層區域
+                    //原本看資料庫裏面有的棧板資料生成高度，
+                    //現在改為直接升成三層
+                    var layout_max =2;
+
+                    if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
+                    {
+
+                        for(var f=0;f<layout_max;f++)
+                        {
+                            var array_area2 = [];
+                            for(var q=0;q<list_array_area_3d[array_area_3dindex].array_area_3d[0].length;q++)
+                            {
+                                var onecol =[];
+                                for(var q2=0;q2<list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length;q2++)
+                                {
+                                    onecol.push(null);
+                                }
+
+                                array_area2.push(onecol);
+                            }
+
+                            list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
+                        }
+                    }
+
+                    //將之前已經有的貨物排列上去
+                    pallets_inarea.forEach(pallet_area =>{
+                            var pos = JSON.parse(pallet_area.pos);
+                            pos.forEach(cell=>{
+                                if(cell[0] >=0 && cell[1] >=0 )
+                                {
+                                    //需要它的id_pallet,id_project
+                                    list_array_area_3d[array_area_3dindex].array_area_3d[pallet_area.layout][cell[0]][cell[1]] ={
+                                            'id':pallet_area.id,
+                                            'pallet':pallet_area.id_pallet,
+                                            'project':pallet_area.id_project
+                                    };
+                                }
+                            });
+                    });
+                }
+
+                //區域有東西2
+                if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
+                {
+                    //判斷區域內貨物大部分是否跟自己相同
+                    var same_pallet  =0;
+                    var other_pallet =0;
+
+                    pallets_inarea.forEach(pallet_check=>{
+
+
+                        var  id_pallet  = pallet_check.id_pallet;
+                        var  id_project = pallet_check.id_project;
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+
+
+                    pallets_inarea_sort.forEach(pallet_check=>{
+
+                        var types = pallet_check.type.split('-');
+                        var  id_pallet = parseInt(types[0]);
+                        var  id_project = parseInt(types[1]);
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+                    //主體貨物數量是否跟貨物一致
+                    //(same_pallet和 other_pallet如果都是0的話就排列此區域)
+                    if(same_pallet >=other_pallet)
+                    {
+                        
+                        //主體一致時區域排列
+
+                        var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+                            //是否排列成功
+                            if(JsonisEmpty(result) ===false)
+                            {
+                                result_pallet.id     = palletss[i].id,
+                                result_pallet.init = areas[j].pos_init;
+                                result_pallet.area = areas[j].id;
+                                result_pallet.layout = result.layout;
+                                result_pallet.pos = result.pos;
+                                
+                                start_sort = true;
+                                break;
+                            }
+                            else
+                            {
+                                console.log("pallet :"+i+";area :"+j+" 排列失敗" );
+                            }
+                        
+                    }
+                    
+                }
+                else
+                {
+                    //空區域排列
+                    var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+
+                    //是否排列成功
+                    if(JsonisEmpty(result) ===false)
+                    {
+                        result_pallet.id     = palletss[i].id,
+                        result_pallet.init = areas[j].pos_init;
+                        result_pallet.area = areas[j].id;
+                        result_pallet.layout = result.layout;
+                        result_pallet.pos = result.pos;
+
+                        start_sort = true;
+                        break;
+                    }
+
+                }
+
+            };
+
+
+             //檢查完還是沒排列的情況
+             if(start_sort ===false)
+             {
+                //重新檢查各區域是否還有空間擺放
+                for(var j=0;j<areas.length;j++){
+                    
+
+                    //當找不到同樣時回頭找區域空間排列
+                    var result = await SpaceinArea( list_array_area_3d[j].array_area_3d,palletss[i]);
+                    //是否排列成功
+                    if(result.pos.length>0)
+                    {
+                        if(JsonisEmpty(result) ===false)
+                        {
+                            result_pallet.id     = palletss[i].id,
+                            result_pallet.init   = areas[j].pos_init;
+                            result_pallet.area   = areas[j].id;
+                            result_pallet.layout = result.layout;
+                            result_pallet.pos    = result.pos;
+    
+                            start_sort = true;
+                            break;
+                        }
+                    }
+                }
+             }
+
+             //排列演算法結束　確認排列結果
+             result_sortpallet.push(result_pallet);
+      };
+
+      result_success.cause = result_sortpallet;
+   
+      return res_reuslt.send(result_success);
+}
+
+///貨物排列演算法-單排先堆高
+async function Sorting_prject_rowfirst(req, res) { 
+
+    var res_reuslt = res.status(202)
+    var  result_error=
+        {
+            'result':'error',
+            'cause':''
+        };
+    var  result_success=
+        {
+            'result':'success',
+            'cause':''
+        };
+    var interval =0;
+    var sort_amount =0;
+    if(req.body.id_warehouse ===undefined || req.body.id_warehouse ===null ||req.body.id_warehouse ==="")
+    {
+        result_error.cause ='no id_warehouse';
+        return res_reuslt.send(result_error);
+    }
+
+    var id_warehouse = req.body.id_warehouse;
+
+   if (!Number.isInteger(id_warehouse))
+    {
+        result_error.cause ='not integer';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有倉庫
+   var warehouses = await  warehouse.findOne({
+          attributes: ['id'],
+          where: {id: id_warehouse}
+        });
+
+    if(warehouses === null)
+    {
+        result_error.cause ='no warehouse';
+        return res_reuslt.send(result_error);
+    }
+  
+    
+    //判斷是否有區域
+    var areas = await  area.findAll({
+        attributes: ['id','width','length','pos_init'],
+        where: {id_warehouse: id_warehouse}
+      });
+
+    
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+
+        var indexs=[];
+        areas.forEach(function(area,index) {
+
+            if(area.width ===0 || area.length===0)
+            {
+                indexs.push(area.id);
+            }
+            else if(area.width=== null||area.length=== null )
+            {
+                indexs.push(area.id);
+            }
+        });
+
+        //刪除不能判斷的矩陣
+        indexs.forEach(index =>{
+            if (index > -1) {
+                
+                const found = areas.findIndex(area => area.id === index);
+
+                if(found>=0)
+                {
+                    areas.splice(found,1);
+                }
+            }
+        });
+
+
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定intervals
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['interval']
+    });
+    interval = setting_interval.interval;
+    if(interval <=0)
+    {
+        result_error.cause ="interval less 0";
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定sort_amount (排列數量)
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['sort_amount']
+    });
+    sort_amount = setting_interval.sort_amount;
+    if(sort_amount <=0)
+    {
+        result_error.cause ="sort_amount less 0";
+        return res_reuslt.send(result_error);
+    }
+    //判斷是否有設定棧板
+    var setting_pallets = await  setting_pallet.findAll({
+        attributes: ['id','width','length']
+      });
+
+      if(setting_pallets.length <=0)
+      {
+          result_error.cause ='no setting_pallets';
+          return res_reuslt.send(result_error);
+      }
+
+    //判斷是否有設定貨物
+    var setting_projects = await  setting_project.findAll({
+        attributes: ['id']
+      });
+
+      if(setting_projects.length <=0)
+      {
+          result_error.cause ='no setting_projects';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //判斷是否有貨物棧板需要排列
+    var palletss = await  pallets.findAll({
+        attributes: ['id','id_areas','id_pallet','id_project'],
+        limit : sort_amount,
+        where: {
+            id_warehouse: id_warehouse,
+            id_areas:0,
+            remove:0,
+            id_pallet:{[Op.gt]:0},
+            id_project:{[Op.gt]:0}
+        }
+      });
+
+      if(palletss.length <=0)
+      {
+          result_error.cause = 'warehoue:'+id_warehouse+ ' has  no pallets_sort';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //生成3D地圖(所有的地圖放置這裡)
+    var list_array_area_3d=[];
+    //排列結果
+    var result_sortpallet =[]
+    //開始排列
+    for(var i=0;i<palletss.length;i++){
+
+            var start_sort = false;
+            //結果
+            var result_pallet ={
+                'pallet':palletss[i].id,
+                'type':palletss[i].id_pallet+'-'+ palletss[i].id_project,
+                'area':0,
+                'init':[-999,-999,-999],
+                'layout':0,
+                'pos':[]
+            };
+            
+            var setting_pallet_id =    palletss[i].id_pallet ;
+            var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
+     
+            //判斷有沒有資料
+            if(pallet_data ===null || pallet_data ===undefined)
+            {
+                result_error.cause ="error read pallet setting";
+                return res_reuslt.send(result_error);
+            }
+
+            //人工設定棧板尺寸轉為系統尺吋
+            var pallet_width =   pallet_data.width/100;
+            var pallet_length =  pallet_data.length/100;
+
+
+            var width  = parseInt((pallet_width) / interval);
+            var height = parseInt((pallet_length) / interval);
+            if((pallet_width % interval) > 0)
+            {
+               width++;
+            }
+   
+            if((pallet_length % interval) > 0)
+            {
+               height++;
+            }
+            
+            palletss[i]['width_rect'] = width;
+            palletss[i]['height_rect'] = height;
+            //---------------------------------
+
+
+            for(var j=0;j<areas.length;j++){
+
+                var array_area_3dindex  = -1;
+                if(list_array_area_3d.length >0)
+                     array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                if(array_area_3dindex <0)
+                {
+                    //生成area 空間矩陣--單層
+                    var array_area_3d = [];
+                    var array_area = [];
+                    for(var x=0;x<areas[j].width;x++)
+                    {
+                        var  arr_area_y =[];
+                        for(var y=0;y<areas[j].length;y++)
+                        {
+                            arr_area_y.push(null);
+                        }
+                        array_area.push(arr_area_y);
+                    }
+                    array_area_3d.push(array_area);
+
+                    list_array_area_3d.push({
+                        'id_area':areas[j].id,
+                        'array_area_3d' :array_area_3d
+                    });
+                }    
+
+
+                //先判斷資料表裡是否有之前的貨物已經在區域內
+                var pallets_inarea = await  pallets.findAll({
+                    attributes: ['id','id_areas','id_pallet','id_project','pos','layout'],
+                    where: {
+                        id_warehouse: id_warehouse,
+                        id_areas:areas[j].id,
+                        remove:0,
+                    }
+                  });
+                
+
+                //演算法內是否有排列的貨物
+                var pallets_inarea_sort = result_sortpallet.filter(e=>{
+                    if(areas[j].id === e.area)
+                    {
+                        return e;
+                    }
+                });
+
+
+                //之前貨物資料中有排放到區域內先排放裡面以免演算法錯誤
+                if(pallets_inarea !== null ||pallets_inarea.length >0 )
+                {
+                    array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                    
+                    //這裡單一區域生成多層區域
+                    //原本看資料庫裏面有的棧板資料生成高度，
+                    //現在改為直接升成三層
+                    var layout_max =2;
+
+                    if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
+                    {
+
+                        for(var f=0;f<layout_max;f++)
+                        {
+                            var array_area2 = [];
+                            for(var q=0;q<list_array_area_3d[array_area_3dindex].array_area_3d[0].length;q++)
+                            {
+                                var onecol =[];
+                                for(var q2=0;q2<list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length;q2++)
+                                {
+                                    onecol.push(null);
+                                }
+
+                                array_area2.push(onecol);
+                            }
+
+                            list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
+                        }
+                    }
+
+                    //將之前已經有的貨物排列上去
+                    pallets_inarea.forEach(pallet_area =>{
+                            var pos = JSON.parse(pallet_area.pos);
+                            pos.forEach(cell=>{
+                                if(cell[0] >=0 && cell[1] >=0 )
+                                {
+                                    //需要它的id_pallet,id_project
+                                    list_array_area_3d[array_area_3dindex].array_area_3d[pallet_area.layout][cell[0]][cell[1]] ={
+                                            'id':pallet_area.id,
+                                            'pallet':pallet_area.id_pallet,
+                                            'project':pallet_area.id_project
+                                    };
+                                }
+                            });
+                    });
+                }
+
+                //區域有東西2
+                if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
+                {
+                    //判斷區域內貨物大部分是否跟自己相同
+                    var same_pallet  =0;
+                    var other_pallet =0;
+
+                    pallets_inarea.forEach(pallet_check=>{
+
+
+                        var  id_pallet  = pallet_check.id_pallet;
+                        var  id_project = pallet_check.id_project;
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+
+
+                    pallets_inarea_sort.forEach(pallet_check=>{
+
+                        var types = pallet_check.type.split('-');
+                        var  id_pallet = parseInt(types[0]);
+                        var  id_project = parseInt(types[1]);
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+                    //主體貨物數量是否跟貨物一致
+                    //(same_pallet和 other_pallet如果都是0的話就排列此區域)
+                    if(same_pallet >=other_pallet)
+                    {
+                        
+                        //主體一致時區域排列
+
+                        var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+                            //是否排列成功
+                            if(JsonisEmpty(result) ===false)
+                            {
+                                result_pallet.id     = palletss[i].id,
+                                result_pallet.init = areas[j].pos_init;
+                                result_pallet.area = areas[j].id;
+                                result_pallet.layout = result.layout;
+                                result_pallet.pos = result.pos;
+                                
+                                start_sort = true;
+                                break;
+                            }
+                            else
+                            {
+                                console.log("pallet :"+i+";area :"+j+" 排列失敗" );
+                            }
+                        
+                    }
+                    
+                }
+                else
+                {
+                    //空區域排列
+                    var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+
+                    //是否排列成功
+                    if(JsonisEmpty(result) ===false)
+                    {
+                        result_pallet.id     = palletss[i].id,
+                        result_pallet.init = areas[j].pos_init;
+                        result_pallet.area = areas[j].id;
+                        result_pallet.layout = result.layout;
+                        result_pallet.pos = result.pos;
+
+                        start_sort = true;
+                        break;
+                    }
+
+                }
+
+            };
+
+
+             //檢查完還是沒排列的情況
+             if(start_sort ===false)
+             {
+                //重新檢查各區域是否還有空間擺放
+                for(var j=0;j<areas.length;j++){
+                    
+
+                    //當找不到同樣時回頭找區域空間排列
+                    var result = await SpaceinArea( list_array_area_3d[j].array_area_3d,palletss[i]);
+                    //是否排列成功
+                    if(result.pos.length>0)
+                    {
+                        if(JsonisEmpty(result) ===false)
+                        {
+                            result_pallet.id     = palletss[i].id,
+                            result_pallet.init   = areas[j].pos_init;
+                            result_pallet.area   = areas[j].id;
+                            result_pallet.layout = result.layout;
+                            result_pallet.pos    = result.pos;
+    
+                            start_sort = true;
+                            break;
+                        }
+                    }
+                }
+             }
+
+             //排列演算法結束　確認排列結果
+             result_sortpallet.push(result_pallet);
+      };
+
+      result_success.cause = result_sortpallet;
+   
+      return res_reuslt.send(result_success);
+}
+
+///貨物排列演算法-單行先堆高
+async function Sorting_prject_rowfirst(req, res) { 
+
+    var res_reuslt = res.status(202)
+    var  result_error=
+        {
+            'result':'error',
+            'cause':''
+        };
+    var  result_success=
+        {
+            'result':'success',
+            'cause':''
+        };
+    var interval =0;
+    var sort_amount =0;
+    if(req.body.id_warehouse ===undefined || req.body.id_warehouse ===null ||req.body.id_warehouse ==="")
+    {
+        result_error.cause ='no id_warehouse';
+        return res_reuslt.send(result_error);
+    }
+
+    var id_warehouse = req.body.id_warehouse;
+
+   if (!Number.isInteger(id_warehouse))
+    {
+        result_error.cause ='not integer';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有倉庫
+   var warehouses = await  warehouse.findOne({
+          attributes: ['id'],
+          where: {id: id_warehouse}
+        });
+
+    if(warehouses === null)
+    {
+        result_error.cause ='no warehouse';
+        return res_reuslt.send(result_error);
+    }
+  
+    
+    //判斷是否有區域
+    var areas = await  area.findAll({
+        attributes: ['id','width','length','pos_init'],
+        where: {id_warehouse: id_warehouse}
+      });
+
+    
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+
+        var indexs=[];
+        areas.forEach(function(area,index) {
+
+            if(area.width ===0 || area.length===0)
+            {
+                indexs.push(area.id);
+            }
+            else if(area.width=== null||area.length=== null )
+            {
+                indexs.push(area.id);
+            }
+        });
+
+        //刪除不能判斷的矩陣
+        indexs.forEach(index =>{
+            if (index > -1) {
+                
+                const found = areas.findIndex(area => area.id === index);
+
+                if(found>=0)
+                {
+                    areas.splice(found,1);
+                }
+            }
+        });
+
+
+    if(areas.length <=0)
+    {
+        result_error.cause ='no areas';
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定intervals
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['interval']
+    });
+    interval = setting_interval.interval;
+    if(interval <=0)
+    {
+        result_error.cause ="interval less 0";
+        return res_reuslt.send(result_error);
+    }
+
+    //判斷是否有設定sort_amount (排列數量)
+    var setting_interval = await  setting_system.findOne({
+        attributes: ['sort_amount']
+    });
+    sort_amount = setting_interval.sort_amount;
+    if(sort_amount <=0)
+    {
+        result_error.cause ="sort_amount less 0";
+        return res_reuslt.send(result_error);
+    }
+    //判斷是否有設定棧板
+    var setting_pallets = await  setting_pallet.findAll({
+        attributes: ['id','width','length']
+      });
+
+      if(setting_pallets.length <=0)
+      {
+          result_error.cause ='no setting_pallets';
+          return res_reuslt.send(result_error);
+      }
+
+    //判斷是否有設定貨物
+    var setting_projects = await  setting_project.findAll({
+        attributes: ['id']
+      });
+
+      if(setting_projects.length <=0)
+      {
+          result_error.cause ='no setting_projects';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //判斷是否有貨物棧板需要排列
+    var palletss = await  pallets.findAll({
+        attributes: ['id','id_areas','id_pallet','id_project'],
+        limit : sort_amount,
+        where: {
+            id_warehouse: id_warehouse,
+            id_areas:0,
+            remove:0,
+            id_pallet:{[Op.gt]:0},
+            id_project:{[Op.gt]:0}
+        }
+      });
+
+      if(palletss.length <=0)
+      {
+          result_error.cause = 'warehoue:'+id_warehouse+ ' has  no pallets_sort';
+          return res_reuslt.send(result_error);
+      }
+
+
+
+    //生成3D地圖(所有的地圖放置這裡)
+    var list_array_area_3d=[];
+    //排列結果
+    var result_sortpallet =[]
+    //開始排列
+    for(var i=0;i<palletss.length;i++){
+
+            var start_sort = false;
+            //結果
+            var result_pallet ={
+                'pallet':palletss[i].id,
+                'type':palletss[i].id_pallet+'-'+ palletss[i].id_project,
+                'area':0,
+                'init':[-999,-999,-999],
+                'layout':0,
+                'pos':[]
+            };
+            
+            var setting_pallet_id =    palletss[i].id_pallet ;
+            var pallet_data       =    setting_pallets.find(element => element.id === setting_pallet_id);
+     
+            //判斷有沒有資料
+            if(pallet_data ===null || pallet_data ===undefined)
+            {
+                result_error.cause ="error read pallet setting";
+                return res_reuslt.send(result_error);
+            }
+
+            //人工設定棧板尺寸轉為系統尺吋
+            var pallet_width =   pallet_data.width/100;
+            var pallet_length =  pallet_data.length/100;
+
+
+            var width  = parseInt((pallet_width) / interval);
+            var height = parseInt((pallet_length) / interval);
+            if((pallet_width % interval) > 0)
+            {
+               width++;
+            }
+   
+            if((pallet_length % interval) > 0)
+            {
+               height++;
+            }
+            
+            palletss[i]['width_rect'] = width;
+            palletss[i]['height_rect'] = height;
+            //---------------------------------
+
+
+            for(var j=0;j<areas.length;j++){
+
+                var array_area_3dindex  = -1;
+                if(list_array_area_3d.length >0)
+                     array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                if(array_area_3dindex <0)
+                {
+                    //生成area 空間矩陣--單層
+                    var array_area_3d = [];
+                    var array_area = [];
+                    for(var x=0;x<areas[j].width;x++)
+                    {
+                        var  arr_area_y =[];
+                        for(var y=0;y<areas[j].length;y++)
+                        {
+                            arr_area_y.push(null);
+                        }
+                        array_area.push(arr_area_y);
+                    }
+                    array_area_3d.push(array_area);
+
+                    list_array_area_3d.push({
+                        'id_area':areas[j].id,
+                        'array_area_3d' :array_area_3d
+                    });
+                }    
+
+
+                //先判斷資料表裡是否有之前的貨物已經在區域內
+                var pallets_inarea = await  pallets.findAll({
+                    attributes: ['id','id_areas','id_pallet','id_project','pos','layout'],
+                    where: {
+                        id_warehouse: id_warehouse,
+                        id_areas:areas[j].id,
+                        remove:0,
+                    }
+                  });
+                
+
+                //演算法內是否有排列的貨物
+                var pallets_inarea_sort = result_sortpallet.filter(e=>{
+                    if(areas[j].id === e.area)
+                    {
+                        return e;
+                    }
+                });
+
+
+                //之前貨物資料中有排放到區域內先排放裡面以免演算法錯誤
+                if(pallets_inarea !== null ||pallets_inarea.length >0 )
+                {
+                    array_area_3dindex  = list_array_area_3d.findIndex(element =>element.id_area ===areas[j].id );
+
+                    
+                    //這裡單一區域生成多層區域
+                    //原本看資料庫裏面有的棧板資料生成高度，
+                    //現在改為直接升成三層
+                    var layout_max =2;
+
+                    if(layout_max>0 && list_array_area_3d[array_area_3dindex].array_area_3d.length <=layout_max)
+                    {
+
+                        for(var f=0;f<layout_max;f++)
+                        {
+                            var array_area2 = [];
+                            for(var q=0;q<list_array_area_3d[array_area_3dindex].array_area_3d[0].length;q++)
+                            {
+                                var onecol =[];
+                                for(var q2=0;q2<list_array_area_3d[array_area_3dindex].array_area_3d[0][0].length;q2++)
+                                {
+                                    onecol.push(null);
+                                }
+
+                                array_area2.push(onecol);
+                            }
+
+                            list_array_area_3d[array_area_3dindex].array_area_3d.push(array_area2);
+                        }
+                    }
+
+                    //將之前已經有的貨物排列上去
+                    pallets_inarea.forEach(pallet_area =>{
+                            var pos = JSON.parse(pallet_area.pos);
+                            pos.forEach(cell=>{
+                                if(cell[0] >=0 && cell[1] >=0 )
+                                {
+                                    //需要它的id_pallet,id_project
+                                    list_array_area_3d[array_area_3dindex].array_area_3d[pallet_area.layout][cell[0]][cell[1]] ={
+                                            'id':pallet_area.id,
+                                            'pallet':pallet_area.id_pallet,
+                                            'project':pallet_area.id_project
+                                    };
+                                }
+                            });
+                    });
+                }
+
+                //區域有東西2
+                if(pallets_inarea.length >0 || pallets_inarea_sort.length >0)
+                {
+                    //判斷區域內貨物大部分是否跟自己相同
+                    var same_pallet  =0;
+                    var other_pallet =0;
+
+                    pallets_inarea.forEach(pallet_check=>{
+
+
+                        var  id_pallet  = pallet_check.id_pallet;
+                        var  id_project = pallet_check.id_project;
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+
+
+                    pallets_inarea_sort.forEach(pallet_check=>{
+
+                        var types = pallet_check.type.split('-');
+                        var  id_pallet = parseInt(types[0]);
+                        var  id_project = parseInt(types[1]);
+
+
+                        if(id_pallet ==palletss[i].id_pallet)
+                        {
+                            if(id_project ==palletss[i].id_project)
+                            {
+                                same_pallet++;
+                            }
+                            else
+                            {
+                                other_pallet++;
+                            }
+                        }
+                        else
+                        {
+                            other_pallet++;
+                        }
+                    });
+                    //主體貨物數量是否跟貨物一致
+                    //(same_pallet和 other_pallet如果都是0的話就排列此區域)
+                    if(same_pallet >=other_pallet)
+                    {
+                        
+                        //主體一致時區域排列
+
+                        var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+                            //是否排列成功
+                            if(JsonisEmpty(result) ===false)
+                            {
+                                result_pallet.id     = palletss[i].id,
+                                result_pallet.init = areas[j].pos_init;
+                                result_pallet.area = areas[j].id;
+                                result_pallet.layout = result.layout;
+                                result_pallet.pos = result.pos;
+                                
+                                start_sort = true;
+                                break;
+                            }
+                            else
+                            {
+                                console.log("pallet :"+i+";area :"+j+" 排列失敗" );
+                            }
+                        
+                    }
+                    
+                }
+                else
+                {
+                    //空區域排列
+                    var result = await SpaceinArea( list_array_area_3d[array_area_3dindex].array_area_3d,palletss[i]);
+
+                    //是否排列成功
+                    if(JsonisEmpty(result) ===false)
+                    {
+                        result_pallet.id     = palletss[i].id,
+                        result_pallet.init = areas[j].pos_init;
+                        result_pallet.area = areas[j].id;
+                        result_pallet.layout = result.layout;
+                        result_pallet.pos = result.pos;
+
+                        start_sort = true;
+                        break;
+                    }
+
+                }
+
+            };
+
+
+             //檢查完還是沒排列的情況
+             if(start_sort ===false)
+             {
+                //重新檢查各區域是否還有空間擺放
+                for(var j=0;j<areas.length;j++){
+                    
+
+                    //當找不到同樣時回頭找區域空間排列
+                    var result = await SpaceinArea( list_array_area_3d[j].array_area_3d,palletss[i]);
+                    //是否排列成功
+                    if(result.pos.length>0)
+                    {
+                        if(JsonisEmpty(result) ===false)
+                        {
+                            result_pallet.id     = palletss[i].id,
+                            result_pallet.init   = areas[j].pos_init;
+                            result_pallet.area   = areas[j].id;
+                            result_pallet.layout = result.layout;
+                            result_pallet.pos    = result.pos;
+    
+                            start_sort = true;
+                            break;
+                        }
+                    }
+                }
+             }
+
+             //排列演算法結束　確認排列結果
+             result_sortpallet.push(result_pallet);
+      };
+
+      result_success.cause = result_sortpallet;
+   
+      return res_reuslt.send(result_success);
+}
+
+
+function CheckData(error_tip)
+{
+    var  result_error=
+    {
+        'result':'error',
+        'cause':''
+    };
 }
 
 //排列貨物 並檢查空間是否可以排列貨物(包括陣列內是否有空間與貨物大小是否符合空間)
