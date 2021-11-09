@@ -21,7 +21,8 @@ export default  new Vuex.Store({
     //演算法間隔API
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
     //啟動演算法API
-    data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
+    //data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
+    data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project_single3,
     //設定棧板資料API
     setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
     //設定貨物資料API
