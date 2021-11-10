@@ -1287,6 +1287,7 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                        {
                             console.log("2-----------------------------------------------------"+project.id);
                             isOtherPallet =true;
+                             
                             
                        }
 
