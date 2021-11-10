@@ -4,7 +4,7 @@ import Leftbar from '@/components/system_mainUI/Leftbar/Leftbar.vue'
 // import system_WH_FrameLess from '@/components/system_WH_FrameLess/system_WH_FrameLess.vue'
 import system_mainUI from '@/components/system_mainUI/system_mainUI.vue'
 
-import json_factory from "@/assets/dxf/20210526_3.json"
+// import json_factory from "@/assets/dxf/20210526_3.json"
 export default {
     name: 'System_Main',
     components: {
@@ -13,7 +13,7 @@ export default {
       navbar,
       system_mainUI,
       Leftbar,
-      json_factory,
+
       },
       computed:{
         leftmargin: function() {

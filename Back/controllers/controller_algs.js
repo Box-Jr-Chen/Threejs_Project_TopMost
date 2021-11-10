@@ -932,7 +932,7 @@ async function Sorting_prject_singlefirst(req, res) {
                     
 
                     //當找不到同樣時回頭找區域空間排列
-                    var result = await SpaceinArea( list_array_area_3d[j].array_area_3d,palletss[i]);
+                    var result = await SpaceinArea_singleLay3( list_array_area_3d[j].array_area_3d,palletss[i]);
                     //是否排列成功
                     if(result.pos.length>0)
                     {
@@ -1019,7 +1019,6 @@ async function SpaceinArea(array_area_3d,project) {
                                 //從第二層開始要判斷第一層的貨物種類是不是一致，並要判斷不是跨貨物區域
                                 if(layout >0)
                                 {
-                                    console.log("layout2:"+layout);
                                     if(id_lastlayout <=0)
                                     {
                                         if(array_area_3d[0][w_check][h_check] !== null)
@@ -1153,7 +1152,12 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                 //找到未放置空間 --判斷是不是同一產品 如果是往上堆
                 if(array_area[w][h] ===null || array_area[w][h] ===undefined)
                 {   
-       
+                    
+                    if(project.id ===7)
+                    {
+                        console.log("a");
+                    }
+
                     //下一格
                     var pallet_width = (w + pallet_w -1);
                     var pallet_height = (h + pallet_h -1);
@@ -1161,8 +1165,6 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                     //超過範圍　不用計算
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
                         continue;
-
-
 
 
                     //判斷貨物要放置的空間有沒有其他貨物
@@ -1194,7 +1196,6 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                                         }
                                     }
                                       
-
                                     //判斷是否跨貨物擺放
                                     if( id_lastlayout !== array_area_3d[0][w_check][h_check].id)
                                     {
@@ -1242,7 +1243,7 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                 }
                 else  
                 {
-                    //是不是同產品 如果是往下疊
+                    //是不是同產品 如果是往上疊
 
                     //下一格
                     var pallet_width = (w + pallet_w -1);
@@ -1252,6 +1253,7 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                     if(pallet_width >= array_area_w || pallet_height >=array_area_h)
                         continue;
 
+
                     //判斷貨物要放置的空間有沒有其他貨物
                     var  isOtherPallet = false;
                     result={
@@ -1259,37 +1261,70 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                         pos:[]
                     };
                     var id_lastlayout = -1;
-                
+                    
+                    //檢查階層是否有東西
+                    //var check_layout_hasCell  = false  ;
+
+                    //檢查階層層數
+                    var layout_check = layout + 1;
+              
+
                     for(var h_check=h;h_check<=pallet_height;h_check++)  
                     {
+                        var check_one = false;
+
                         for(var w_check=w;w_check<=pallet_width;w_check++)
                         {
-                                if(array_area[w_check][h_check] ===null || array_area[w_check][h_check].pallet !==project.pallet || array_area[w_check][h_check].project !==project.project)
+                                if(array_area[w_check][h_check] ===null || array_area[w_check][h_check].pallet !==project.id_pallet || array_area[w_check][h_check].project !==project.id_project)
                                 {
                                     isOtherPallet = true;
+                                    check_one = true;
+                                    break;
+                                }
+                               // console.log(project.id+";"+w_check+";"+h_check);
+
+
+                               
+                                //檢查往上一層是否有東西
+                                while(layout_check <3)
+                                {
+                                    var  area_up  =  array_area_3d[layout_check];
+
+                                    if(area_up[w_check][h_check] !==null)
+                                    {
+                                        layout_check = layout_check +1;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
 
                                 //紀錄點位置
                                 var point =[w_check,h_check];
                                 result.pos.push(point);
 
+                                
+
+                        }
+
+                        if(check_one)
+                        {
+                            break;
                         }
                     }
 
-                       //往上疊
-                       if(layout <2)
-                       {
-                            layout++;
-                            console.log(project);
-                            console.log("-----------------------------------------------------"+project.id);
-                       }
-                       else
-                       {
-                            console.log("2-----------------------------------------------------"+project.id);
-                            isOtherPallet =true;
-                             
-                            
-                       }
+                    //如果超過第三層就跳過
+                    if(layout_check>=3)
+                    {
+                        isOtherPallet =true;
+                    }
+
+                    // if(project.id ===7)
+                    // {
+                    //      console.log(project.id+";"+layout_check + ";"+isOtherPallet);
+                    // }
+
 
 
                     if(isOtherPallet ===true)
@@ -1300,6 +1335,15 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                     else
                     {
                         fin_space = true;
+
+                       //往上疊
+                       //console.log(project.id+"----"+layout_check);
+                       if(layout_check <=2)
+                       {
+                            result.layout = layout_check;
+                            layout        = layout_check;
+                       }
+
                         break;   
                     } 
 
@@ -1316,7 +1360,6 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
 
         //如果找到位置，重新把貨物的編碼放置回找到的區域位置
         //以便下一個貨物不會重複排列(但不存資料庫)
-
         if( (JsonisEmpty(result) === false) && result.pos.length >0)
         {
                 var array_pos = [];
@@ -1347,6 +1390,7 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
             break ;
         }
     }
+
 
     return    result;
 }
