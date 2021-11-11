@@ -21,8 +21,8 @@ export default  new Vuex.Store({
     //演算法間隔API
     data_interval_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_interval,
     //啟動演算法API
-    //data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
-    data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project_single3,
+    data_sorting_project_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project,
+    data_sorting_project_single3_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_algs_sorting_project_single3,
     //設定棧板資料API
     setting_pillet_Api: process.env.VUE_APP_baseUrl+process.env.VUE_APP_setting_pillet,
     //設定貨物資料API
@@ -134,6 +134,10 @@ export default  new Vuex.Store({
   areas_delete:{
     id:0
   },
+
+  //選定排列方式
+  sort_selected:0,
+
   //需要排列棧板
   pallet_needsort:[],
   //已排列棧板
@@ -357,6 +361,18 @@ export default  new Vuex.Store({
           }
       });
 
+    },
+    sort_delete(state){
+      state
+      var self =this;
+
+      self.state.threejs.WH_FrameLess.DeleteProject_sort();
+
+      self.state.pallet_sort_finish.splice(0, self.state.pallet_sort_finish.length);
+      self.state.pallet_sort_finish =[];
+
+      self.state.isstart_sort =0; 
+      self.state.isPalletManual =false;
     }
   },
   actions: {
@@ -417,9 +433,17 @@ export default  new Vuex.Store({
           var form = {
             "id_warehouse":self.state.factory_id
           };
+          
+          var path =self.state.data_sorting_project_Api;
+
+          if(self.state.sort_selected ==1)
+          {
+            path =self.state.data_sorting_project_single3_Api;
+          }
+
 
           var data = {
-            'path': self.state.data_sorting_project_Api,
+            'path': path,
             'form': form
           };
           state

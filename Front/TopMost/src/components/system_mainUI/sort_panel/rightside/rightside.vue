@@ -3,22 +3,43 @@
 
       <div class="rightside_sort">
         <div class="title">
-                <p class="context">
-                    棧板排列
-                </p>
-                <div class="err">
-                    <p v-if="$store.state.sort_err !==''">({{$store.state.sort_err}})</p>
-                </div>
+              <div class="inner">
+                  <div  class="context">
+                        <p >
+                            棧板排列
+                        </p>
+                        <select v-model="$store.state.sort_selected" v-if="
+                        ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)">
+                            <option value="0">平舖排列</option>
+                            <option value="1">單格先排滿</option>
+                        </select>
+
+                        <div class="btn_clearsort" @click="btn_clear_algs" v-if="$store.state.isstart_sort ===2 && !$store.state.isPalletManual"  
+                            v-bind:class="[
+                                $store.state.isstart_sort !==0? 'btn_active_panel_pallet_startsort':'btn_active_panel_pallet']">
+                                    <div class="word"  
+                                        v-if="$store.state.isstart_sort ===2"> 
+                                        清除排列 
+                        </div>
+                    </div>
+                  </div>
+
+                    <div class="err" v-if="$store.state.sort_err !==''">
+                            {{$store.state.sort_err}})
+                    </div>
+
+              </div>
+
                 <div class="add_block" >
                     <div @click="btn_algs" v-if="
-                    ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)&& 
-                    ($store.state.pallet_needsort.length>0 && $store.state.projects.length >0 && $store.state.pillets.length >0 && $store.state.areas.length >0)
-                    "  v-bind:class="[
-                        $store.state.isstart_sort !==0? 'btn_active_panel_pallet_startsort':'btn_active_panel_pallet']">
-                            <div class="word"  
-                                v-if="$store.state.isstart_sort ===0"> 
-                                開始排列 
-                            </div>
+                        ($store.state.isstart_sort ===0 ||$store.state.isstart_sort ===1)&& 
+                        ($store.state.pallet_needsort.length>0 && $store.state.projects.length >0 && $store.state.pillets.length >0 && $store.state.areas.length >0)"  
+                        v-bind:class="[
+                            $store.state.isstart_sort !==0? 'btn_active_panel_pallet_startsort':'btn_active_panel_pallet']">
+                                <div class="word"  
+                                    v-if="$store.state.isstart_sort ===0"> 
+                                    開始排列 
+                                </div>
                     </div>
 
                     <div  @click="btn_pallet_HasSet"   v-if="$store.state.isstart_sort ===2 && !$store.state.isPalletManual"

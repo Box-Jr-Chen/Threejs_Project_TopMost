@@ -1320,11 +1320,6 @@ async function SpaceinArea_singleLay3(array_area_3d,project)
                         isOtherPallet =true;
                     }
 
-                    // if(project.id ===7)
-                    // {
-                    //      console.log(project.id+";"+layout_check + ";"+isOtherPallet);
-                    // }
-
 
 
                     if(isOtherPallet ===true)

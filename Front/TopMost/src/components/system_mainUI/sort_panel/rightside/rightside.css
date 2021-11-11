@@ -2,7 +2,7 @@
 
 .rightside_sort{
     width: 25rem;
-    height: 30rem;
+    height: 35rem;
     background: rgb(211, 211, 211);
     border: 1px rgb(42, 42, 42) solid;
     border-radius: 5px;
@@ -21,37 +21,57 @@
 .title{
     display: flex;
     flex-direction: start;
+    width: 100%;
+    height: 4.9rem;
 }
-.title .context {
+.title .inner {
     padding-left: 0.5rem;
-    width: 30%;
-    height: 10%;
+    width: 70%;
     font-size: 1.2rem ;
     font-family:  sans-serif;
     font-weight: bold;
 }
-.title .err {
-    width: 16rem;
-    height: 10%;
-    color: red;
+.title .inner .context{
+    display: flex;
+    flex-direction: start;
 }
-.err_p{
-    width:  12rem;
-    height: 100%;
-    font-size: 1.5rem;
-    font-family:  sans-serif;
+.title .inner .context p{
+    margin-top: 1rem;
+    margin-bottom: 0rem;
+}
+.title .inner .context select{
+    height: 2.7rem;
+    margin-left: 1rem;
+    margin-top: 0.65rem;
+    width: 11rem;
+    text-align: center;
+    font: 1em sans-serif;
     font-weight: bold;
- 
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
+.title .inner .context .btn_clearsort{
+    height: 2.7rem;
+    margin-left: 1rem;
+    margin-top: 0.65rem;
+    width: 11rem;
+    text-align: center;
+    font: 1em sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.title .inner .err {
+    width: 16rem;
+    height: 20%;
+    color: rgb(245, 8, 8);
+    font-size: 0.95rem ;
+    margin-top: 0.1rem;
+}
+
+
 .title .add_block{
-    width: 40%;
-    height: 100%;
+    width: 25%;
+    height: 80%;
     padding-top: 0.45rem;
     padding-left: 0.2rem;
 }

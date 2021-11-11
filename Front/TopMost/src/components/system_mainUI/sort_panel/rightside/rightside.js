@@ -133,6 +133,13 @@ export default {
                   //排列
               }
             },
+            //點擊清除演算法
+            btn_clear_algs()
+            {
+               // var self =this;
+                //console.log(self.$store.state.pallet_sort_finish);
+                this.$store.commit("sort_delete");
+            },
             //托盤已放置
             btn_pallet_HasSet()
             {

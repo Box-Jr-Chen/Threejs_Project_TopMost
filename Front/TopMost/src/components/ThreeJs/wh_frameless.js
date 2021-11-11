@@ -922,8 +922,15 @@ DeleteProject_sort()
             this.scene.remove(element);
         });
 
+        this.line_project_sort_font.forEach(element=>{
+            this.scene.remove(element);
+        });
+
         this.line_project_sort.splice(0, this.line_project_sort.length);
         this.line_project_sort =[];
+
+        this.line_project_sort_font.splice(0, this.line_project_sort_font.length);
+        this.line_project_sort_font =[];
      }
 }
 
