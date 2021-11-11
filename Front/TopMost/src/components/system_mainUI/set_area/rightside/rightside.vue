@@ -1,6 +1,6 @@
 <template>
   <div  id="rightside_area">
-      <set_area />
+      <!-- <set_area /> -->
       <div class="rightside_area">
         <div class="title">
                 <p>區域設定</p>

@@ -219,17 +219,17 @@ export default  new Vuex.Store({
       this.state.panel_show_deleteArea_inSet_Area= false;
     },
     Create_Ins_AddArea(){
-      this.state.threejs.CreateArea_Add_01();
+      // this.state.threejs.CreateArea_Add_01();
 
-      if(this.state.threejs.areas_ins_add.length >0)
-      {
-        //z 要轉負(顯示的時候要將z座標轉-)
-        this.state.addIns_pos.index = -1;
-        this.state.addIns_pos.left.x  =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
-        this.state.addIns_pos.left.z  = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
-        this.state.addIns_pos.right.x =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
-        this.state.addIns_pos.right.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[17];
-      }
+      // if(this.state.threejs.areas_ins_add.length >0)
+      // {
+      //   //z 要轉負(顯示的時候要將z座標轉-)
+      //   this.state.addIns_pos.index = -1;
+      //   this.state.addIns_pos.left.x  =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[3];
+      //   this.state.addIns_pos.left.z  = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[5];
+      //   this.state.addIns_pos.right.x =  this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[15];
+      //   this.state.addIns_pos.right.z = -this.state.threejs.areas_ins_add[0].geometry.attributes.position.array[17];
+      // }
 
     },
     //讀取區域資訊

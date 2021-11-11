@@ -15,6 +15,8 @@ class wh_frameless {
         this.scene = null;
         this.loader_text =  new FontLoader();
 
+        this.area_create_plane =null; //創建區域用的平面
+
         this.geometry_box= new THREE.PlaneGeometry( 8, 8 );
         this.material_line = new THREE.LineBasicMaterial({
             color: new THREE.Color("rgb(255, 255, 255)")
@@ -148,12 +150,27 @@ class wh_frameless {
             side: THREE.DoubleSide
         } );
 
-
+        this.add_ins_mat = new THREE.MeshBasicMaterial( { color: "rgb(255, 255, 0)" } );
         this.raycaster = new THREE.Raycaster(); 
         this.mouse =null;
         this.offset_project =1;
         this.pallet_height_scale =10;
         this.pallet_height_offset =-0.2;
+
+
+        // this.area_create_click=0;
+        // this.area_create_vertex =
+        // [
+        //     {
+        //         vertex:[]
+        //     },
+        //     {
+        //         vertex:[]
+        //     }
+        // ];
+        // this.areas_ins_add =[];
+        
+
     }
     init(width,height,camera,scene){
         var self = this;
@@ -1290,6 +1307,30 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
         }
     }
 }
+
+//點擊事件
+//區域選擇
+add_clickEvent_Area(event,event_addpoint){
+
+
+    var mouse = new THREE.Vector2();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    this.raycaster.setFromCamera( mouse, this.camera );
+
+    
+    var intersects = this.raycaster.intersectObjects( this.scene.children );
+    if ( intersects.length > 0 )
+    {
+        if(intersects[0].object.name ==="area_create")
+        {
+            event_addpoint(intersects[0].point);
+        }
+
+    }
+}
+
 
 
 }

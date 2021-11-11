@@ -67,8 +67,8 @@ export default {
                         //實例化
                         self.$store.state.threejs.DXFReader(dxf_json);
 
-                        self.isloading = true;
-
+                        self.isloading = false;
+                        self.$store.state.init_loadFactory =true;
                         //讀取工廠區域
                         self.$store.commit('LoadAreas');
 

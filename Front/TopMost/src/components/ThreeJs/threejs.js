@@ -4,6 +4,7 @@ import MapDesign from './map.js';  // 地圖設計系統
 import WH_FrameLess from './wh_frameless.js';  // 地圖設計系統
 import Threejs_Area from './threejs_area.js';  // 地圖設計系統
 import {Viewer} from './three-dxf/three-dxf.js';  // dxf匯入
+// import { Color } from "three";
 const OrbitControls = require('three-orbit-controls')(THREE);
 
 
@@ -28,7 +29,19 @@ class ThreeJs_3D {
         this.grid = null;
         this.grid_color = null;
         this.otherender =[];
-        // this.areas_ins =[];
+
+
+        //新增區域參數
+        this.area_create_click=0;
+        this.area_create_vertex =
+        [
+            {
+                vertex:[]
+            },
+            {
+                vertex:[]
+            }
+        ];
         this.areas_ins_add =[];
 
         this.mapDesign = MapDesign.MapDesign;
@@ -230,37 +243,130 @@ class ThreeJs_3D {
 
     DXFReader(data)
     {
-        //data
         Viewer(this.scene,this.camera,this.controls,this.container,this.width,this.height,data);
+
+        
+        
+        const geometry = new THREE.PlaneGeometry( 100000, 100000 );
+        const material = new THREE.MeshBasicMaterial
+        ( 
+            {
+                 color: new THREE.Color("rgba(180, 80, 80)"),
+                 side: THREE.DoubleSide,
+                 transparent:true,
+                 opacity:0
+            } 
+        );
+        this.WH_FrameLess.area_create_plane = new THREE.Mesh( geometry, material );
+        this.WH_FrameLess.area_create_plane.position.y = -0.1;
+        this.WH_FrameLess.area_create_plane.rotation.x = -Math.PI/2;
+        this.WH_FrameLess.area_create_plane.name = "area_create";
+        this.scene.add( this.WH_FrameLess.area_create_plane );
+        
+        
     }
 
-    CreateArea_Add_01()
+    add_clickEvent_Area(event)
     {
+       this.WH_FrameLess.add_clickEvent_Area(event,(point)=>{
+                this.area_create_click ++;
+                    
+                if(this.area_create_click ===1)
+                {
+                    this.area_create_vertex[0].vertex.push(point.x);
+                    this.area_create_vertex[0].vertex.push(point.y);
+                    this.area_create_vertex[0].vertex.push(point.z);
+                }
+                else  if(this.area_create_click ===2)
+                {
+                    this.area_create_vertex[1].vertex.push(point.x);
+                    this.area_create_vertex[1].vertex.push(point.y);
+                    this.area_create_vertex[1].vertex.push(point.z);
+                    this.CreateArea_Add();
+                    
+                }
+       });
+    }
+
+
+
+    CreateArea_Add()
+    {
+    
         const geometry = new THREE.BufferGeometry();
-
+    
         const vertices = new Float32Array( [
-            0.0, 5.0,  0.0,
-            0.0, 5.0,  -30.0,
-            30.0, 5.0,  0.0,
-
-
-            0.0, 5.0,  -30.0,
-            30.0, 5.0,  -30.0,
-            30.0, 5.0,  0.0,
+            this.area_create_vertex[0].vertex[0], 5.0,   this.area_create_vertex[1].vertex[2],
+            this.area_create_vertex[0].vertex[0], 5.0,  this.area_create_vertex[0].vertex[2],
+            this.area_create_vertex[1].vertex[0], 5.0,  this.area_create_vertex[0].vertex[2],
+    
+    
+            this.area_create_vertex[1].vertex[0], 5.0,  this.area_create_vertex[0].vertex[2],
+            this.area_create_vertex[1].vertex[0], 5.0,  this.area_create_vertex[1].vertex[2],
+            this.area_create_vertex[0].vertex[0], 5.0,  this.area_create_vertex[1].vertex[2],
         ] );
-
-        // itemSize = 3 because there are 3 values (components) per vertex
+    
+        
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
         const material = this.add_ins_mat;
         const mesh = new THREE.Mesh( geometry, material );
         this.areas_ins_add.push(mesh);
-        mesh.scale.set(1,-1,1);
+    
+    
+        if( 
+            this.area_create_vertex[0].vertex[0] >this.area_create_vertex[1].vertex[0] &&
+            this.area_create_vertex[0].vertex[2] <this.area_create_vertex[1].vertex[2]
+            )
+        {
+            mesh.scale.set(1,1,1);
+        }
+        else  if( 
+            this.area_create_vertex[0].vertex[0] <this.area_create_vertex[1].vertex[0] &&
+            this.area_create_vertex[0].vertex[2] >this.area_create_vertex[1].vertex[2]
+        )
+        {
+            mesh.scale.set(1,1,1);
+        }
+        else
+        {
+            mesh.scale.set(1,-1,1);
+        }
+    
         mesh.position.set(mesh.position.x,10,mesh.position.z);
         mesh.geometry.attributes.position.dynamic =true;
         this.scene.add(mesh);
+    
+    
+    
+    }
+
+    // CreateArea_Add_01()
+    // {
+    //     const geometry = new THREE.BufferGeometry();
+
+    //     const vertices = new Float32Array( [
+    //         0.0, 5.0,  0.0,
+    //         0.0, 5.0,  -30.0,
+    //         30.0, 5.0,  0.0,
+
+
+    //         0.0, 5.0,  -30.0,
+    //         30.0, 5.0,  -30.0,
+    //         30.0, 5.0,  0.0,
+    //     ] );
+
+    //     // itemSize = 3 because there are 3 values (components) per vertex
+    //     geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+    //     const material = this.add_ins_mat;
+    //     const mesh = new THREE.Mesh( geometry, material );
+    //     this.areas_ins_add.push(mesh);
+    //     mesh.scale.set(1,-1,1);
+    //     mesh.position.set(mesh.position.x,10,mesh.position.z);
+    //     mesh.geometry.attributes.position.dynamic =true;
+    //     this.scene.add(mesh);
 
         
-    }
+    // }
 
     CreateArea_Delete_01(){
             this.scene.remove(this.areas_ins_add[0]);
