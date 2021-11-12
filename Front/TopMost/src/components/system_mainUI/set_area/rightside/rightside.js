@@ -145,6 +145,7 @@ export default {
                     self.$store.state.afd_isAdd=false;
                     self.$store.commit('Hide_Panel_adfArea');
                     self.$store.state.threejs.container.style.cursor = "default";
+                    
                 }
 
 

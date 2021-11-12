@@ -443,6 +443,7 @@ class ThreeJs_3D {
         });
     }
 
+    
     clear_area_tip()
     {
         //清除點跟線

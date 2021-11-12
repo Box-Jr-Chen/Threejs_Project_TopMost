@@ -1196,6 +1196,7 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
                 })
             }
 
+            
 
             //高度判斷
             if(pass_overlapping)
