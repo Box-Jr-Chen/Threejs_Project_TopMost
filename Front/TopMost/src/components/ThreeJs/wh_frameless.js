@@ -713,7 +713,7 @@ UpdateProject_sort(index,pos,posArr,area,layout)
         var area_zeropoint =[pos[0]-(this.interval/2),pos[1]-(this.interval/2)]
         var x_arraw = [];
         var y_arrow = [];
-        console.log(area_zeropoint);
+       // console.log(area_zeropoint);
 
         if(posArr ===null)
         {
@@ -1044,11 +1044,6 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
         {
            var result =   this.get_AreaRect_pos(i,intersects[0].point);
         
-           // console.log(this.line_project_sort[index]);
-           // console.log(result);
-           // console.log(array_sort_finish);
-
-           
            //先將陣列轉換到(0,0)為初始，然後再移位
             var x_sub = array_sort_finish[index].pos[0][0];
             var z_sub = array_sort_finish[index].pos[0][1];
@@ -1192,8 +1187,8 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
                 var self=this;
                 pallet_same_pos.forEach(function(e,index2){
                     e.layout = e.layout -1;
-                    console.log(array_sort_finish[index]);
-                    console.log(e.init);
+                    // console.log(array_sort_finish[index]);
+                    // console.log(e.init);
 
                     var init = JSON.parse(e.init);
                     self.line_project_sort[pallet_same_pos_index[index2]].material = self.material_project_sort;
@@ -1311,8 +1306,6 @@ add_clickEvent(event,index,array_sort_finish,pallet_exit,action_error)
 //點擊事件
 //區域選擇
 add_clickEvent_Area(event,event_addpoint){
-
-
     var mouse = new THREE.Vector2();
 
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -1331,6 +1324,27 @@ add_clickEvent_Area(event,event_addpoint){
     }
 }
 
+//連動事件
+//區域選擇
+add_clickMove_Area(event,event_addpoint)
+{
+    var mouse = new THREE.Vector2();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    this.raycaster.setFromCamera( mouse, this.camera );
+
+    
+    var intersects = this.raycaster.intersectObjects( this.scene.children );
+    if ( intersects.length > 0 )
+    {
+        if(intersects[0].object.name ==="area_create")
+        {
+            event_addpoint(intersects[0].point);
+        }
+
+    }
+}
 
 
 }

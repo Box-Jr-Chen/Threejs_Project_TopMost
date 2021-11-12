@@ -43,11 +43,16 @@ class ThreeJs_3D {
             }
         ];
         this.areas_ins_add =[];
+        //顯示區域的點
+        this.area_create_points=[];
+        //顯示區域的線
+        this.area_create_lines=[];
+
+
 
         this.mapDesign = MapDesign.MapDesign;
         this.WH_FrameLess = WH_FrameLess.wh_frameless;
         this.Threejs_Area = Threejs_Area.ThreeJs_Area;
-      //  this.threeDxf  = ThreeDxf;
         this.sysInit = false;
 
 
@@ -266,28 +271,188 @@ class ThreeJs_3D {
         
     }
 
+    //新增區域_點擊
     add_clickEvent_Area(event)
     {
        this.WH_FrameLess.add_clickEvent_Area(event,(point)=>{
+
+
                 this.area_create_click ++;
-                    
+
+                if(this.area_create_points.length ===0)
+                {
+                    var p =0;
+                    while(p<2)
+                    {
+                        const geometry = new THREE.PlaneGeometry( 5, 5);
+                        const material = new THREE.MeshBasicMaterial( {color: new THREE.Color("rgba(220, 220, 220)"), side: THREE.DoubleSide} );
+                        const plane    = new THREE.Mesh( geometry, material );
+                        plane.scale.set(1,1,1);
+                        plane.rotation.x = -Math.PI/2;
+                        this.area_create_points.push(plane);
+                        this.scene.add( plane );
+                        p++;
+                    }
+
+                }
+
+
+                if(this.area_create_lines.length ===0)
+                {
+                    //然後畫線
+                    var i = 0;
+                    while(i<4)
+                    {
+                        const points = [];
+                        points.push( new THREE.Vector3( point.x, point.y, point.z ) );
+                        points.push( new THREE.Vector3( point.x, point.y, point.z ) );
+
+                        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+                        const material = new THREE.LineBasicMaterial({
+                            color: new THREE.Color("rgba(220, 220, 0)")
+                        });
+                        
+                        const line = new THREE.Line( geometry, material );
+                        this.area_create_lines.push(line);
+                        this.scene.add( line );
+
+                        i++;
+                    }
+
+                }
+
+
                 if(this.area_create_click ===1)
                 {
+                    //直接給點
                     this.area_create_vertex[0].vertex.push(point.x);
                     this.area_create_vertex[0].vertex.push(point.y);
                     this.area_create_vertex[0].vertex.push(point.z);
-                }
-                else  if(this.area_create_click ===2)
-                {
+
                     this.area_create_vertex[1].vertex.push(point.x);
                     this.area_create_vertex[1].vertex.push(point.y);
                     this.area_create_vertex[1].vertex.push(point.z);
+
+
+                    this.scene.add( this.area_create_points[0] );
+                    this.scene.add( this.area_create_points[1] );
+
+                    this.scene.add( this.area_create_lines[0] );
+                    this.scene.add( this.area_create_lines[1] );
+                    this.scene.add( this.area_create_lines[2] );
+                    this.scene.add( this.area_create_lines[3] );
+
+                    this.area_create_points[0].position.set(point.x);
+                    this.area_create_points[0].position.set(point.y);
+                    this.area_create_points[0].position.set(point.z);
+
+                    this.area_create_points[1].position.set(point.x);
+                    this.area_create_points[1].position.set(point.y);
+                    this.area_create_points[1].position.set(point.z);
+
+                    this.area_create_lines[0].geometry.attributes.position.array[0] = point.x;
+                    this.area_create_lines[0].geometry.attributes.position.array[1] = point.y;
+                    this.area_create_lines[0].geometry.attributes.position.array[2] = point.z;
+                    this.area_create_lines[0].geometry.attributes.position.array[3] = point.x;
+                    this.area_create_lines[0].geometry.attributes.position.array[4] = point.y;
+                    this.area_create_lines[0].geometry.attributes.position.array[5] = point.z;
+                    this.area_create_lines[1].geometry.attributes.position.array[0] = point.x;
+                    this.area_create_lines[1].geometry.attributes.position.array[1] = point.y;
+                    this.area_create_lines[1].geometry.attributes.position.array[2] = point.z;
+                    this.area_create_lines[1].geometry.attributes.position.array[3] = point.x;
+                    this.area_create_lines[1].geometry.attributes.position.array[4] = point.y;
+                    this.area_create_lines[1].geometry.attributes.position.array[5] = point.z;
+                    this.area_create_lines[2].geometry.attributes.position.array[0] = point.x;
+                    this.area_create_lines[2].geometry.attributes.position.array[1] = point.y;
+                    this.area_create_lines[2].geometry.attributes.position.array[2] = point.z;
+                    this.area_create_lines[2].geometry.attributes.position.array[3] = point.x;
+                    this.area_create_lines[2].geometry.attributes.position.array[4] = point.y;
+                    this.area_create_lines[2].geometry.attributes.position.array[5] = point.z;
+                    this.area_create_lines[3].geometry.attributes.position.array[0] = point.x;
+                    this.area_create_lines[3].geometry.attributes.position.array[1] = point.y;
+                    this.area_create_lines[3].geometry.attributes.position.array[2] = point.z;
+                    this.area_create_lines[3].geometry.attributes.position.array[3] = point.x;
+                    this.area_create_lines[3].geometry.attributes.position.array[4] = point.y;
+                    this.area_create_lines[3].geometry.attributes.position.array[5] = point.z;
+                    this.area_create_lines[0].geometry.attributes.position.needsUpdate  =  true;
+                    this.area_create_lines[1].geometry.attributes.position.needsUpdate  =  true;
+                    this.area_create_lines[2].geometry.attributes.position.needsUpdate  =  true;
+                    this.area_create_lines[3].geometry.attributes.position.needsUpdate  =  true;
+
+                    this.area_create_points[0].position.set(point.x,point.y,point.z);
+                }
+                else  if(this.area_create_click ===2)
+                {
+                    this.area_create_points[1].position.set(point.x,point.y,point.z);
+
+                    //清除點跟線
+                    this.clear_area_tip();
+
                     this.CreateArea_Add();
-                    
+                
                 }
        });
     }
 
+    //新增區域_滑鼠連動
+    add_clickMove_Area(event)
+    {
+        this.WH_FrameLess.add_clickMove_Area(event,(point)=>{
+            if(this.area_create_click ===1)
+            {
+                this.area_create_vertex[1].vertex[0] = point.x;
+                this.area_create_vertex[1].vertex[1] = point.y;
+                this.area_create_vertex[1].vertex[2] = point.z;
+                this.area_create_points[1].position.set(point.x,point.y,point.z);
+
+               // console.log(this.area_create_lines);
+
+                this.area_create_lines[0].geometry.attributes.position.array[0] = this.area_create_vertex[0].vertex[0];
+                this.area_create_lines[0].geometry.attributes.position.array[1] = this.area_create_vertex[0].vertex[1];
+                this.area_create_lines[0].geometry.attributes.position.array[2] = this.area_create_vertex[0].vertex[2];
+                this.area_create_lines[0].geometry.attributes.position.array[3] = this.area_create_vertex[0].vertex[0];
+                this.area_create_lines[0].geometry.attributes.position.array[4] = point.y;
+                this.area_create_lines[0].geometry.attributes.position.array[5] = point.z;
+                this.area_create_lines[0].geometry.attributes.position.needsUpdate  =  true;
+
+                this.area_create_lines[1].geometry.attributes.position.array[0] = this.area_create_vertex[0].vertex[0];
+                this.area_create_lines[1].geometry.attributes.position.array[1] = point.y;
+                this.area_create_lines[1].geometry.attributes.position.array[2] = point.z;
+                this.area_create_lines[1].geometry.attributes.position.array[3] = point.x;
+                this.area_create_lines[1].geometry.attributes.position.array[4] = point.y;
+                this.area_create_lines[1].geometry.attributes.position.array[5] = point.z;
+                this.area_create_lines[1].geometry.attributes.position.needsUpdate  =  true;
+
+                this.area_create_lines[2].geometry.attributes.position.array[0] = this.area_create_vertex[0].vertex[0];
+                this.area_create_lines[2].geometry.attributes.position.array[1] = this.area_create_vertex[0].vertex[1];
+                this.area_create_lines[2].geometry.attributes.position.array[2] = this.area_create_vertex[0].vertex[2];
+                this.area_create_lines[2].geometry.attributes.position.array[3] = point.x;
+                this.area_create_lines[2].geometry.attributes.position.array[4] = point.y;
+                this.area_create_lines[2].geometry.attributes.position.array[5] = this.area_create_vertex[0].vertex[2];
+                this.area_create_lines[2].geometry.attributes.position.needsUpdate  =  true;
+
+                this.area_create_lines[3].geometry.attributes.position.array[0] = point.x;
+                this.area_create_lines[3].geometry.attributes.position.array[1] = point.y;
+                this.area_create_lines[3].geometry.attributes.position.array[2] = this.area_create_vertex[0].vertex[2];
+                this.area_create_lines[3].geometry.attributes.position.array[3] = point.x;
+                this.area_create_lines[3].geometry.attributes.position.array[4] = point.y;
+                this.area_create_lines[3].geometry.attributes.position.array[5] = point.z;
+                this.area_create_lines[3].geometry.attributes.position.needsUpdate  =  true;
+
+            }
+        });
+    }
+
+    clear_area_tip()
+    {
+        //清除點跟線
+        this.area_create_points.forEach(e=>{
+            this.scene.remove(e);
+        });
+        this.area_create_lines.forEach(e=>{
+            this.scene.remove(e);
+        });
+    }
 
 
     CreateArea_Add()
